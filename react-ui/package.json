@@ -1,0 +1,75 @@
+{
+  "name": "variantgraphcraft",
+  "version": "1.0.0",
+  "main": "public/start-electron.js",
+  "private": true,
+  "dependencies": {
+    "@syncfusion/ej2": "^19.4.48",
+    "@syncfusion/ej2-base": "^20.2.43",
+    "@syncfusion/ej2-react-heatmap": "^20.2.43",
+    "@syncfusion/ej2-react-popups": "^19.4.52",
+    "@syncfusion/ej2-react-splitbuttons": "^20.4.50",
+    "@syncfusion/ej2-react-spreadsheet": "^20.2.43",
+    "axios": "^0.27.2",
+    "concurrently": "^7.2.1",
+    "electron": "^19.0.3",
+    "electron-is-dev": "^2.0.0",
+    "find-free-port": "^2.0.0",
+    "homepage": "./",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-force-graph-2d": "^1.23.10",
+    "react-force-graph-3d": "^1.21.12",
+    "react-icons": "^4.3.1",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "^5.0.1",
+    "recharts": "^2.1.10",
+    "wait-on": "^6.0.1"
+  },
+  "scripts": {
+    "start": "HOST=127.0.0.1 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "electron-dev": "concurrently \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-package": "./node_modules/.bin/electron-builder -c.extraMetadata.main=build/start-electron.js",
+    "preelectron-package": "npm run build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.2",
+    "electron-builder": "^23.6.0",
+    "electron-packager": "^15.5.1",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "postcss": "^8.4.6",
+    "tailwindcss": "^3.0.19"
+  },
+  "build": {
+    "appId": "com.vgc.app",
+    "directory": {
+      "output": "build"
+    }
+  }
+}

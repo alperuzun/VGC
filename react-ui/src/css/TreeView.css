@@ -1,0 +1,35 @@
+.custom-link {
+    stroke-width: 6;
+    stroke: blue;
+}
+
+/* #pgraphs {
+    stroke: black;
+    stroke-width: 2px;
+} */
+
+/* .node {
+    font-size: small;
+} */
+
+.link {
+    fill: none;
+    stroke: rgb(174, 174, 174);
+    stroke-width: 1px;
+}
+
+.node-text {
+    fill:rgb(113, 113, 113);
+    text-shadow: 0 0 2px rgb(175, 175, 175);
+    /* text-shadow: 0 0 2px #f1f5f9 ; */
+    /* stroke: #f1f5f9;
+    stroke-width: 0.5px; */
+    /* font-size: small; */
+    font-weight: 100;
+    
+}
+
+/* .node {
+    stroke: black;
+    stroke-width: 2px;
+} */

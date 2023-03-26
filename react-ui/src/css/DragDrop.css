@@ -1,0 +1,28 @@
+.e-upload.e-control-wrapper, .e-bigger.e-small .e-upload.e-control-wrapper {
+    height: 200px;
+    width: 800px;
+    border-color: #3f89c7 ;
+}
+
+.e-upload .e-file-select-wrap .e-btn, .e-upload .e-upload-actions .e-btn, .e-bigger.e-small .e-upload .e-file-select-wrap .e-btn, .e-bigger.e-small .e-upload .e-upload-actions .e-btn {
+    /* font-family: cursive; */
+    /* height: 40px; */
+    background-color: #3f89c7;
+    color: white; 
+}
+
+.welcome {
+    font-family: 'Courier New';
+    color:darkslategray;
+    font-size: 24px;
+}
+
+.selectMessage {
+    font-family: 'Courier New';
+    color:darkslategray;
+    font-size: 18px;
+}
+
+/* .e-upload .e-upload-files .e-upload-file-list {
+    background-color: rgb(108, 108, 17);
+} */

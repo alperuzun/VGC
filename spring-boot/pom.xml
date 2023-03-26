@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.0</version>
+        <relativePath/> <!-- lookup parent from com.example.variantgraphcraftbackend.repository -->
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>variantgraphcraft-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>variantgraphcraft-backend</name>
+    <description>variantgraphcraft-backend</description>
+    <properties>
+        <java.version>1.8</java.version>
+<!--        <spring.boot.mainclass>com.example.variantgraphcraftbackend.VGCApplication</spring.boot.mainclass>-->
+
+    </properties>
+
+    <!--For running R scripts-->
+    <repositories>
+        <repository>
+            <id>bedatadriven</id>
+            <name>bedatadriven public repo</name>
+            <url>https://nexus.bedatadriven.com/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!--For running R scripts-->
+        <dependency>
+            <groupId>org.renjin</groupId>
+            <artifactId>renjin-script-engine</artifactId>
+            <version>3.5-beta76</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.12</artifactId>
+            <version>3.0.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${project.parent.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
