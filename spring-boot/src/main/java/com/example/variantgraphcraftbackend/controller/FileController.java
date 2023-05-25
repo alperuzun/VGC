@@ -4,6 +4,8 @@ import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.repository.FileRepository;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -18,11 +20,24 @@ public class FileController {
     @Autowired
     private FileRepository fileRepository;
     private ServiceHandler handler;
+    private Boolean applicationReady;
 
     @Autowired
     public FileController(ServiceHandler handler) {
         System.out.println("Constructor of FileController called.");
         this.handler = handler;
+        this.applicationReady = false;
+    }
+
+    @EventListener(ApplicationReadyEvent.class) 
+    public void onStart() {
+        System.out.println("Hello world! VGC backend is ready to receive requests...");
+        applicationReady = true;
+    }
+
+    @GetMapping("ready")
+    public Boolean ready() {
+        return applicationReady;
     }
 
     /**
