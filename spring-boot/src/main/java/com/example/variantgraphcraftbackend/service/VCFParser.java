@@ -24,17 +24,23 @@ public class VCFParser {
 
     public void processSelectedFile(UploadedFile file) throws IOException {
 //        System.out.println("Creating support files...");
+        String storePath = this.makeGeneratedFilesDirectory();
 
         File vcf = new File(file.getPath());
         String name = vcf.getName();
         name = name.substring(0, name.length() - 4);
 
-        File info = new File("VGC_" + name + "/info_" + name + ".txt");
-        File index = new File("VGC_" + name + "/index_" + name + ".txt");
+        String directoryPath = storePath + "/VGC_" + name;
+        File info = new File(directoryPath + "/info_" + name + ".txt");
+        File index = new File(directoryPath + "/index_" + name + ".txt");
 
         if(!info.exists() && !index.exists()) {
-            File directory = new File("VGC_" + name);
-            directory.mkdir();
+            File directory = new File(directoryPath);
+
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
             InfoWriter infoWriter = new InfoWriter(info);
             IndexWriter indexWriter = new IndexWriter(index);
 
@@ -55,6 +61,24 @@ public class VCFParser {
         this.infoMap.put(file, infoReader);
         this.indexMap.put(file, indexReader);
 //        System.out.println("Files retrieved and read.");
+    }
+
+    private String makeGeneratedFilesDirectory() {
+        String userHome = System.getProperty("user.home");
+        String directoryName = "VGCGeneratedFiles";
+        String directoryPath = userHome + File.separator + directoryName;
+
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                System.out.println("Directory created successfully: " + directoryPath);
+            } else {
+                System.out.println("Failed to create the directory: " + directoryPath);
+            }
+        } else {
+            System.out.println("Directory already exists: " + directoryPath);
+        }
+        return directoryPath;
     }
 
 
