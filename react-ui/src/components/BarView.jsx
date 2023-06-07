@@ -14,7 +14,6 @@ const BarView = () => {
   const prevVals = useRef({ selected, refresh, isClicked });
 
 
-  //Come back to this - Clean up the tooltip code!!
   const tool_tip_outer_flex = `flex flex-col w-60 h-16 bg-white items-center shadow rounded-sm border-slate-400`
   const tool_tip_purple = `flex w-full h-2 bg-[#1f547e]`
   const tool_tip_inner_flex = `flex justify-center w-full flex-col`
@@ -55,31 +54,6 @@ const BarView = () => {
     var conditionArray = conditions.split("&&nextvariant&&")
     var significanceArray = significances.split("&&nextvariant&&")
     var html = ''
-    /*     for (let i = 0; i < nameArray.length; i++) {
-          if (passFilter == "PATHOGENIC") {
-            if (significanceArray[i].startsWith("Pathogenic")) {
-              html = html + '<br /><div> \
-              <div><strong>&#40;' + (i + 1) + '&#41; Variant name:</strong> ' + nameArray[i] + '</div> \
-              <div><strong>Condition&#40;s&#41;:</strong> ' + conditionArray[i] + '</div> \
-              <div><strong>Clinical significance:</strong> <span class="text-red-600">' + significanceArray[i] + '</span> </div> \
-            </div>'
-            }
-          } else {
-            if (significanceArray[i].startsWith("Pathogenic")) {
-              html = html + '<br /><div> \
-              <div><strong>&#40;' + (i + 1) + '&#41; Variant name:</strong> ' + nameArray[i] + '</div> \
-              <div><strong>Condition&#40;s&#41;:</strong> ' + conditionArray[i] + '</div> \
-              <div><strong>Clinical significance:</strong> <span class="text-red-600">' + significanceArray[i] + '</span> </div> \
-            </div>'
-            } else {
-              html = html + '<br /><div> \
-              <div><strong>&#40;' + (i + 1) + '&#41; Variant name:</strong> ' + nameArray[i] + '</div> \
-              <div><strong>Condition&#40;s&#41;:</strong> ' + conditionArray[i] + '</div> \
-              <div><strong>Clinical significance:</strong> <span class="text-green-500">' + significanceArray[i] + '</span> </div> \
-            </div>'
-            }
-          }
-        } */
 
     if (passFilter == "PATHOGENIC") {
       var pathogenicVariantCount = 0
@@ -142,7 +116,6 @@ const BarView = () => {
                       {subBar.gene}, {subBar.type.charAt(0).toUpperCase() + subBar.type.slice(1)} {subBar.num}: {subBar.val} variants
                     </div>
                   )}
-                  {/* {subBar.gene}, {subBar.type.charAt(0).toUpperCase() + subBar.type.slice(1)} {subBar.num}: {subBar.val} variants */}
 
 
                   {subBar.inClinvar ?
@@ -364,7 +337,6 @@ const BarView = () => {
 
   return (
     <div className="flex p-2 w-full h-full justify-center">
-      {/* <ResponsiveContainer width="99%" height="99%"> */}
         <BarChart
           data={histogramData.data.data}
           margin={{
@@ -400,7 +372,6 @@ const BarView = () => {
             ))
           }
         </BarChart>
-      {/* </ResponsiveContainer> */}
     </div>
   )
 }

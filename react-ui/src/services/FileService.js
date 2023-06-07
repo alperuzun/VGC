@@ -15,6 +15,7 @@ import axios from 'axios';
 
 const URL = 'http://localhost:8080/api';
 const USERS_REST_API_URL = 'http://localhost:8080/api/view';
+const USERS_REST_READY_URL = 'http://localhost:8080/api/ready';
 // const USERS_REST_API_URL_GETFILES = 'http://localhost:8080/api/getview';
 const USERS_REST_BARGRAPH_URL = 'http://localhost:8080/bargraph/view';
 // const DP_GRAPH_URL = 'http://localhost:8080/bargraph/dp';
@@ -37,6 +38,14 @@ class UserService {
 
     start() {
         return axios.put(USERS_REST_API_URL);
+    }
+
+    ready() {
+        return axios.get(USERS_REST_READY_URL).catch(
+            function (error) {
+                return false;
+            }
+        );
     }
 
     getFiles() {

@@ -3,7 +3,7 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { BsPencilFill } from 'react-icons/bs';
 import { HiOutlineDotsVertical } from 'react-icons/hi';
 import { useStateContext } from '../contexts/ContextProvider';
-import { UploadElement } from '.';
+import { UploadElement } from './UploadElement';
 import FileService from '../services/FileService';
 import { useDisplayContext } from '../contexts/DisplayContext';
 
@@ -40,10 +40,6 @@ const FileDeleter = (props) => {
                     </div>
                 </TooltipComponent>
             </label>
-
-            {/* <button className="flex mr-1 rounded-full p-1 hover:bg-slate-100 z-1" onClick={() => setFileMenu(!fileMenu)}>
-        <HiOutlineDotsVertical />
-      </button> */}
 
         </div >
     )

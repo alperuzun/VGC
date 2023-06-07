@@ -9,7 +9,7 @@ import { CgViewGrid } from 'react-icons/cg';
 import { BiGitCompare } from 'react-icons/bi';
 import { HiLightBulb } from 'react-icons/hi';
 import { useStateContext } from '../contexts/ContextProvider';
-import { SearchBar } from '.';
+import SearchBar from './SearchBar';
 import { useDisplayContext } from '../contexts/DisplayContext';
 
 

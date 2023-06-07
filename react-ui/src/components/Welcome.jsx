@@ -2,10 +2,34 @@ import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom'
 import vgc_final from './Images/vgc_final.png';
 import welcome_logo from './Images/welcome_logo.png';
+
+// const icon1 = require(`${__dirname}/Images/icon1.png`)
+// const icon2 = require(`${__dirname}/Images/icon2.png`)
+// const icon3 = require(`${__dirname}/Images/icon3.png`)
+// const icon4 = require(`${__dirname}/Images/icon4.png`)
+
+// const icon1 = `${process.env.PUBLIC_URL}/Images/icon1.png`
+// const icon2 = `${process.env.PUBLIC_URL}/Images/icon2.png`
+// const icon3 = `${process.env.PUBLIC_URL}/Images/icon3.png`
+// const icon4 = `${process.env.PUBLIC_URL}/Images/icon4.png`
+// import icon1 from `${process.env.PUBLIC_URL}/Images/icon1.png`
+// import icon2 from `${process.env.PUBLIC_URL}/Images/icon2.png`
+// import icon3 from `${process.env.PUBLIC_URL}/Images/icon3.png`
+// import icon4 from `${process.env.PUBLIC_URL}/Images/icon4.png`
+
 import icon1 from './Images/icon1.png';
 import icon2 from './Images/icon2.png';
 import icon3 from './Images/icon3.png';
 import icon4 from './Images/icon4.png';
+// import icon1 from '../.webpack/renderer/Images/icon1.png';
+// import icon2 from '../.webpack/renderer/Images/icon2.png';
+// import icon3 from '../.webpack/renderer/Images/icon3.png';
+// import icon4 from '../.webpack/renderer/Images/icon4.png';
+
+// import icon1 from `${__dirname}/Images/icon1.png`;
+// import icon2 from `${__dirname}/Images/icon2.png`;
+// import icon3 from `${__dirname}/Images/icon3.png`;
+// import icon4 from `${__dirname}/Images/icon4.png`;
 import logo_no_border from './Images/logo_no_border.png';
 
 
@@ -17,6 +41,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 
 
 const Welcome = () => {
+
   const navigate = useNavigate();
   const { activeMenu, selected} = useStateContext();
   const {handleClick} = useDisplayContext();
@@ -113,7 +138,8 @@ const Welcome = () => {
             <div className="flex rounded-2xl">
               <img className="" src={welcome_logo}></img>
             </div>
-            <div className="flex flex-row mt-4">
+            
+            {/* <div className="flex flex-row mt-4">
               <button className="flex w-40 h-8 border-1 border-white rounded-lg text-white shadow-sm  hover:shadow-md justify-center items-center">
                 About
               </button>
@@ -123,7 +149,7 @@ const Welcome = () => {
               <button className="flex w-40 h-8 border-1 border-white rounded-lg text-white shadow-sm  hover:shadow-md justify-center items-center ml-24">
                 Tutorial
               </button>
-            </div>
+            </div> */}
 
             <div className="flex flex-row w-full mt-16 justify-evenly text-white text-sm">
               <div className="flex flex-col justify-center items-center w-1/4 ">

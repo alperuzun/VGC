@@ -1,7 +1,7 @@
 import React from 'react'
 import { useStateContext } from '../contexts/ContextProvider';
 import { SimplePane } from './Panes';
-import { HeatMap } from '.';
+import  HeatMap  from './HeatMap';
 import { useCompareContext } from '../contexts/CompareContext';
 import { useDisplayContext } from '../contexts/DisplayContext';
 
@@ -38,8 +38,6 @@ const Compare = () => {
       <SimplePane>
         {mapObj == null && <div className="fixed p-2">Enter a query above and upload a phenotype file to view sample read depth comparisons.</div> }
         <div className="flex flex-row text-sm w-full">
-          {/* <text className="px-2 mt-2">VCF File Path: {getFileData()}</text>
-        <text className="px-2">Phenotype File Path: {getPhenotypeData()}</text> */}
           <div className="flex w-[40rem] h-full p-2 ">
             <HeatMap />
           </div>
@@ -73,9 +71,6 @@ const Compare = () => {
               :
               <div></div>
             }
-            {/* <div className="flex h-8 ml-1.5 mt-1.5 justify-center border-y-1 border-slate-300 hover:bg-[#E9F0F2] cursor-pointer " onClick={() => {console.log("hi"); console.log(mapObj.data.varInfoList)}}>
-              <text className="flex items-center">Variant Position: 120000000</text>
-            </div> */}
           </div>
 
         </div>

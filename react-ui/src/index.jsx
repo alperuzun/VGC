@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+
 import './index.css';
-import App from './App';
+import App from './App.jsx';
 import { ContextProvider } from './contexts/ContextProvider';
 import { registerLicense } from '@syncfusion/ej2-base';
 
-registerLicense('ORg4AjUWIQA/Gnt2VVhiQlFadVlJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdk1jUX5ZdX1RT2ZaV0A=');
+console.log('Loaded React.');
 
+registerLicense('ORg4AjUWIQA/Gnt2VVhkQlFadVdJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxQdkBhUX5fcHZQRGlYUUQ=');
 
 ReactDOM.render(
   <ContextProvider>
-    <App />
-  </ContextProvider>, document.getElementById('root'));
+    <App/>
+  </ContextProvider>, document.body);

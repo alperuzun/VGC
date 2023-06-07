@@ -92,9 +92,6 @@ const HeatMap = () => {
   }
 
   const handleFileChosen = async (filePath) => {
-    // console.log({ filePath });
-    // const phenPath = phenotypeList[pathList.indexOf(filePath)];
-    // console.log(phenPath);
     await FileService.addFile({ path: filePath, 
       phenotypePath: phenotypeList[pathList.indexOf(filePath)], 
       size: sizeList[pathList.indexOf(filePath)]  });
@@ -156,7 +153,6 @@ const HeatMap = () => {
       border: { type: 'Brace', color: '#a19d9d' },
       textStyle: {
         color: 'black',
-        // fontWeight: 'Bold',
         fontFamily: "Open Sans",
       },
       categories: horizontalBrackets
@@ -186,14 +182,6 @@ const HeatMap = () => {
               dataSource={mapData}
               legendSettings={{ position: 'Right' }}
               renderingMode={'Auto'}
-            //   paletteSettings={{
-            //     palette: [
-            //         { color: '#C06C84', label: 'Low', value: 50 },
-            //         { color: '#6C5B7B', label: 'Moderate', value: 80 },
-            //         { color: '#355C7D', label: 'High', value: 100 }
-            //     ],
-            //     type: "Gradient"
-            // }} 
             >
               <Inject services={[Legend]} />
 
@@ -230,50 +218,3 @@ const HeatMap = () => {
 }
 
 export default HeatMap
-
-
-// xAxis={{
-//   labels: [
-//     'China',
-//     'India',
-//     'Australia',
-//     'Mexico',
-//     'Canada',
-//     'Brazil',
-//     'USA',
-//     'UK',
-//     'Germany',
-//     'Russia',
-//     'France',
-//     'Japan'
-//   ],
-// }}
-// yAxis={{
-//   labels: [
-//     '2008',
-//     '2009',
-//     '2010',
-//     '2011',
-//     '2012',
-//     '2013',
-//     '2014',
-//     '2015',
-//     '2016',
-//     '2017'
-//   ]
-// }}
-
-// const heatMapData = [
-//   [9.5, 2.2, 4.2, 8.2, -0.5, 3.2, 5.4, 7.4, 6.2, 1.4],
-//   [4.3, 8.9, 10.8, 6.5, 5.1, 6.2, 7.6, 7.5, 6.1, 7.6],
-//   [3.9, 2.7, 2.5, 3.7, 2.6, 5.1, 5.8, 2.9, 4.5, 5.1],
-//   [2.4, -3.7, 4.1, 6.0, 5.0, 2.4, 3.3, 4.6, 4.3, 2.7],
-//   [2.0, 7.0, -4.1, 8.9, 2.7, 5.9, 5.6, 1.9, -1.7, 2.9],
-//   [5.4, 1.1, 6.9, 4.5, 2.9, 3.4, 1.5, -2.8, -4.6, 1.2],
-//   [-1.3, 3.9, 3.5, 6.6, 5.2, 7.7, 1.4, -3.6, 6.6, 4.3],
-//   [-1.6, 2.3, 2.9, -2.5, 1.3, 4.9, 10.1, 3.2, 4.8, 2.0],
-//   [10.8, -1.6, 4.0, 6.0, 7.7, 2.6, 5.6, -2.5, 3.8, -1.9],
-//   [6.2, 9.8, -1.5, 2.0, -1.5, 4.3, 6.7, 3.8, -1.2, 2.4],
-//   [1.2, 10.9, 4.0, -1.4, 2.2, 1.6, -2.6, 2.3, 1.7, 2.4],
-//   [5.1, -2.4, 8.2, -1.1, 3.5, 6.0, -1.3, 7.2, 9.0, 4.2]
-// ];

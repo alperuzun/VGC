@@ -3,11 +3,13 @@ import axios from 'axios';
 import { link, useNavigate, NavLink } from 'react-router-dom';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { SiMicrogenetics } from 'react-icons/si';
-import { BsPencilFill } from 'react-icons/bs';
+import { BsArrowCounterclockwise, BsPencilFill } from 'react-icons/bs';
 import { AiFillPropertySafety, AiOutlinePlus } from 'react-icons/ai';
 import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
 import { useStateContext } from '../contexts/ContextProvider';
-import { FileSelector, FileDeleter, UploadElement } from '.'
+import  FileDeleter  from './FileDeleter'
+import  UploadElement  from './UploadElement'
+
 import FileService from '../services/FileService';
 import { useDisplayContext } from '../contexts/DisplayContext';
 import vgc_final from './Images/vgc_final.png';
@@ -26,6 +28,7 @@ const Sidebar = () => {
   const [analysisHidden, setAnalysisHidden] = useState(false);
   const [browserData, setBrowserData] = useState(undefined);
   const [fileDeleterToggle, setFileDeleterToggle] = useState(false)
+  const [ready, setReady] = useState(false)
 
   const handleBrowserQuery = async () => {
     console.log("Calling handleBrowserQuery with: ")
@@ -44,7 +47,20 @@ const Sidebar = () => {
     editToggle = !editToggle
   }
 
+  function awaitStartUp() {
+    return FileService.ready().then((response) => {
+      if (!response) {
+        return awaitStartUp();
+      } else {
+        setReady(true);
+        return;
+      }
+    })
+  }
+
   useEffect(() => {
+    awaitStartUp();
+    
     FileService.getFiles().then(items => {
       const pathArray = []
       const phenotypeArray = []
@@ -67,6 +83,26 @@ const Sidebar = () => {
       // console.log(items);
     });
   }, []);
+
+  if(!ready) {
+    return (
+    <div className={`${activeMenu ? '' : 'hidden'} p-2 h-full `}>
+      <div className="flex justify-between w-full items-center px-1">
+        <NavLink className="flex w-full justify-center items-center text-xl p-2"
+          to="/home" onClick={() => { 
+            setSelected(undefined); 
+            setIsClicked(initialState);
+            setSearchGeneTerm('');
+            setSearchRangeTerm(''); }}>
+          <div className="flex h-0.5 w-10 bg-black"></div>
+          <div className="px-4">VariantGraphCraft</div>
+          <div className="flex h-0.5 w-10 bg-black"></div>
+        </NavLink>
+      </div>
+      Preparing backend to receive files...
+    </div>
+    )
+  }
 
   return (
     <div className={`${activeMenu ? '' : 'hidden'} p-2 h-full `}>
