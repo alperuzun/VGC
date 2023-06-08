@@ -1,10 +1,10 @@
 package com.example.variantgraphcraftbackend.model;
 
 import com.example.variantgraphcraftbackend.service.PathogenicParser;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
+// import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
+// import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,9 +67,6 @@ public class SingleVariantPathogenicity {
 
         if (this.isPathogenic) {
             ArrayList<String[]> mutList = pathogenicParser.getMutationInfo(this.chr, varInfo.get(1));
-//            System.out.println("Mutlist is: ");
-//            System.out.println(mutList);
-
             for (String[] mut : mutList) {
                 System.out.println("Printing mut...");
                 for (String s : mut) {

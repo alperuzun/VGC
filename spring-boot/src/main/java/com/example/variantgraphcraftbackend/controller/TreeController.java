@@ -49,8 +49,6 @@ public class TreeController {
         System.out.println("TREECONTROLLER METHOD GETTREEFORGENE CALLED");
 
         gene = gene.trim();
-//        ArrayList<String> geneList = new ArrayList<String>();
-//        geneList.add(gene);
         System.out.println("Filter is: " + passFilter);
         System.out.println("Gene is: " + gene);
 
