@@ -13,10 +13,32 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
-  "author": {
-    "name": "Jennifer Li",
-    "email": "jennifer_li1@brown.edu"
-  },
+  "contributers": [
+    {
+      "name": "Jennifer Li",
+      "email": "jennifer_li1@brown.edu"
+    },
+    {
+      "name": "Andy Yang",
+      "email": "andy_yang@brown.edu"
+    },    
+    {
+      "name": "Benedito A Carneiro",
+      "email": "benedito_carneiro@brown.edu"
+    },
+    {
+      "name": "Ece Gamsiz Uzun",
+      "email": "dilber_gamsiz@brown.edu"
+    },
+    {
+      "name": "Lauren Massingham",
+      "email": "lmassingham@lifespan.org"
+    },
+    {
+      "name": "Alper Uzun",
+      "email": "alper_uzun@brown.edu"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.21.4",
