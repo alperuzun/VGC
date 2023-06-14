@@ -9,7 +9,7 @@ To install VGC for MacOS, click on the corresponding link. Download and expand t
 | Windows | Coming Soon |
 | Linux | Coming Soon|
 
-VGC is currently being packaged for Linux and Windows. For now, we recommend the following steps to download and run the code:
+Packaging for Linux and Windows is currently in progress. For now, we recommend the following steps to download and run the code:
 
 1. Clone the VGC repository to your local computer, and open the project on your IDE of choice (i.e. VSCode). 
 2. `cd` into the react-ui directory, and run the `command npm install`.
