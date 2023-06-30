@@ -104,25 +104,6 @@ const AboutData = () => {
           title="Samples w/ Unknown GT"
           list={unknownList}
         />
-        {/* <div className="flex flex-col w-1/3 items-center">
-          <text className="flex font-bold">Samples w/ Pathogenic GT </text>
-          {pathogenicList.map((item) => (
-            <div>{item}</div>
-          ))}
-        </div>
-        <div className="flex flex-col w-1/3 items-center">
-          <text className="flex font-bold">Samples w/ Benign GT </text>
-          {benignList.map((item) => (
-            <div>{item}</div>
-          ))}
-        </div>
-
-        <div className="flex flex-col w-1/3 items-center">
-          <text className="flex font-bold">Samples w/ Unknown GT </text>
-          {unknownList.map((item) => (
-            <div>{item}</div>
-          ))}
-        </div> */}
       </div>
 
     </div>
