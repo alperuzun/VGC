@@ -25,7 +25,7 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 
 ## Installation
 
-To install VGC, simply click on the link correspoding to your operating system. Download and expand the zip file, and double click on the application icon to start. 
+To install VGC, click on the link corresponding to your operating system. Download and expand the zip file, and double click on the application icon to start. 
 
 | System | Installation Link |
 | --- | --- |
