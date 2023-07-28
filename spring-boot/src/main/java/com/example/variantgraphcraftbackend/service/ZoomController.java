@@ -10,16 +10,11 @@ import java.util.HashMap;
 @Component
 public class ZoomController {
 
-    private File bpInfo;
     private BufferedReader input;
     private HashMap<String, Integer> chromToBPMap;
     private boolean read;
 
     public ZoomController() throws IOException {
-
-//        this.bpInfo = new File("/Users/jenniferli/Desktop/variantgraphcraft-backend/src/chrom_bp_info.txt");
-//        this.input = new BufferedReader(new FileReader(this.bpInfo));
-
         this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/chrom_bp_info.txt")));
 
         this.chromToBPMap = new HashMap<String, Integer>();
@@ -30,7 +25,6 @@ public class ZoomController {
         String currLine = this.input.readLine();
         while(currLine != null) {
             String[] arr = currLine.split(",");
-////            System.out.println("arr0 is: " + arr[0]);
             this.chromToBPMap.put(arr[0], Integer.valueOf(arr[1]));
             currLine = this.input.readLine();
         }
@@ -48,16 +42,12 @@ public class ZoomController {
     }
 
     public int generateZoomedTemplate(HashMap<Integer, Integer> template, HashMap<Integer, ArrayList<String[]>> posMap, int start, int end, int zoomFactor) {
-//        int increment = (end - start) * zoomFactor / 100;
         int increment;
         if (zoomFactor < 100) {
             increment = 1;
         } else {
             increment = (end - start) / 100;
         }
-//        System.out.println("Increment is: " + increment + ", Start is: " + start + ", end is: " + end);
-//        int bpStart = start * zoomFactor;
-//        int bpEnd = end * zoomFactor;
         for (int i = start; i <= end; i += increment) {
             template.put(i, 0);
             posMap.put(i, new ArrayList<String[]>());
@@ -68,7 +58,6 @@ public class ZoomController {
     public int generateTemplateForGeneGraph(HashMap<Integer, Integer> template, HashMap<Integer, ArrayList<String[]>> posMap, int start, int end, int zoomFactor) {
         int startVal = (start / zoomFactor) * zoomFactor;
         int endVal = (end / zoomFactor) * zoomFactor + zoomFactor;
-//        System.out.println("Increment is: " + zoomFactor + ", Start is: " + startVal + ", end is: " + endVal);
         for (int i = startVal; i <= endVal; i += zoomFactor) {
             template.put(i, 0);
             posMap.put(i, new ArrayList<String[]>());
@@ -89,7 +78,6 @@ public class ZoomController {
         }
         int startVal = (start / increment) * increment;
         int endVal = (end / increment) * increment + increment;
-//        System.out.println("Increment is: " + increment + ", Start is: " + startVal + ", end is: " + endVal);
         for (int i = startVal; i <= endVal; i += increment) {
             template.put(i, 0);
             posMap.put(i, new ArrayList<String[]>());

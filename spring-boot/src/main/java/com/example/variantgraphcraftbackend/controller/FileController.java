@@ -70,8 +70,6 @@ public class FileController {
         System.out.println("FILECONTROLLER METHOD ADDFILE CALLED.");
         System.out.println("ALL FILES:");
         System.out.println(this.fileRepository.findAll());
-//        System.out.println("Files in repository: ");
-//        System.out.println(this.fileRepository.findAll());
         System.out.println("Phenotype file: " + file.getPhenotypePath());
         System.out.println("VCF file: " + file.getPath());
         System.out.println("Size: " + file.getSize());
@@ -123,14 +121,3 @@ public class FileController {
         return titles;
     }
 }
-
-//    /**
-//     * Informs the backend when the user selects gridview. When a file is
-//     * selected, the default view is gridView.
-//     * @param file
-//     * @return
-//     */
-//    @PostMapping("gridview")
-//    public GridView selectGridView(@RequestBody UploadedFile file) {
-//        return this.handler.displayGridView(file.getPath());
-//    }

@@ -1,6 +1,5 @@
 package com.example.variantgraphcraftbackend;
 
-//import com.example.variantgraphcraftbackend.model.UploadedFile;
 import com.example.variantgraphcraftbackend.repository.FileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,7 +19,6 @@ public class VGCApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        this.fileRepository.save(new UploadedFile("booya"));
     }
 
 }

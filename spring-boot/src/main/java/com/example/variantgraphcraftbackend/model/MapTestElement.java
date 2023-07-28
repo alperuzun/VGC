@@ -39,10 +39,6 @@ public class MapTestElement {
 
     }
 
-//    public void addGenotype(String newGT) {
-//        this.genotypes.add(newGT);
-//    }
-
     public void addMatrixRow(HashMap<String, Integer> groupGTMap) {
         HashSet<String> groupGTs = new HashSet<String>(groupGTMap.keySet());
         String newRowSpaceSeparated = "";

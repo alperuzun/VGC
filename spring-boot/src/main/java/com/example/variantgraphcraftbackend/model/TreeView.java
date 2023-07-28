@@ -54,9 +54,6 @@ public class TreeView {
         this.title = title;
         this.chr = chr;
         this.omimInformation = new ArrayList<String>();
-//        this.goTermsBP = new ArrayList<String>();
-//        this.goTermsCC = new ArrayList<String>();
-//        this.goTermsMF = new ArrayList<String>();
         this.goTermsBP = new HashMap<String, String>();
         this.goTermsCC = new HashMap<String, String>();
         this.goTermsMF = new HashMap<String, String>();

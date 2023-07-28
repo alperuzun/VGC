@@ -202,17 +202,6 @@ public class MapView {
         System.out.println(this.sortedSampleList);
     }
 
-
-
-//    public int getSliceIndex(String[] var) {
-//        for (int i = 0; i < var.length; i++) {
-//            if (var[i].equals("FORMAT")) {
-//                return i + 1;
-//            }
-//        }
-//        return 0;
-//    }
-
     public Long getId() {
         return this.id;
     }
@@ -301,77 +290,3 @@ public class MapView {
         this.yAxisLabels = yAxisLabels;
     }
 }
-
-//SAVING
-
-//    public void populateHeatMap(List<String[]> varData, ArrayList<String> samples, ArrayList<String> chr,
-//                                ArrayList<String> gene) {
-//
-//        HashMap<String, HashMap<String, Integer>> sampleToSampleMap = new HashMap<String, HashMap<String, Integer>>();
-//        HashMap<String, Integer> compareTemplate = new HashMap<String, Integer>();
-//        samples.forEach(s -> compareTemplate.put(s, 0));
-//        samples.forEach(s -> sampleToSampleMap.put(s, new HashMap<String, Integer>(compareTemplate)));
-//
-////        int sliceIndex = this.getSliceIndex(varData.get(0));
-//        int index = 0;
-//        for (String[] var : varData) {
-////            System.out.println("VARIANT --------------------------------------------------------");
-//            int ceiling = this.getInitCeiling();
-//            System.out.println("Ceiling is: " + ceiling);
-//
-//            HashMap<String, Integer> groupGTMap = new HashMap<String, Integer>();
-//            groupGTMap.put("0/0", 0);
-//            groupGTMap.put("0/1", 0);
-//            groupGTMap.put("1/1", 0);
-//
-//            MapTestElement currTestElement;
-//            if (gene.size() > 0) {
-//                currTestElement = new MapTestElement(var[1], chr.get(index), gene.get(index));
-//            } else {
-//                currTestElement = new MapTestElement(var[1], chr.get(index), null);
-//            }
-//            String[] samplesGT = this.getGT(var, samples.size());
-//
-//            for (int i = 0; i < samples.size(); i++) {
-////                System.out.println("SAMPLE: " + samples.get(i));
-//                if (i <= ceiling) {
-//                    this.updateGroupGTMap(groupGTMap, samplesGT[i]);
-//                } else {
-//                    if (this.handleRowGTReset(groupGTMap, ceiling, i, currTestElement)) {
-//                        ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
-//                        groupGTMap = new HashMap<String, Integer>();
-//                        groupGTMap.put("0/0", 0);
-//                        groupGTMap.put("0/1", 0);
-//                        groupGTMap.put("1/1", 0);
-//                        System.out.println("Ceiling updated. Ceiling is: " + ceiling);
-//                    }
-//                }
-//                HashMap<String, Integer> currSampleMap = sampleToSampleMap.get(samples.get(i));
-//                for (int j = 0; j < samples.size(); j++) {
-//                    if (this.isEquivalent(samplesGT[i], samplesGT[j])) {
-//                        String toCompare = samples.get(j);
-//                        sampleToSampleMap.get(samples.get(i)).put(toCompare, currSampleMap.get(toCompare) + 1);
-//                    }
-//                }
-//            }
-//            //Adds the last matrix row as a MapTestElement
-//            if (this.endList.size() > 0) {
-//                currTestElement.addMatrixRow(groupGTMap);
-//                currTestElement.handleStatisticalAnalysis();
-//                this.varInfoList.add(currTestElement);
-//                System.out.println("MATRIX ROW ADDED");
-//            }
-//            System.out.println("Matrix for variant: " + var[1]);
-//            System.out.println(currTestElement.getRowsAsList());
-//            System.out.println(currTestElement.getTestResult());
-//        }
-//
-//        for (String s : samples) {
-//            MapColumn col = new MapColumn(s);
-//            col.populateColumn(sampleToSampleMap.get(s), samples, varData.size());
-//            this.mapData.add(col);
-////            System.out.println("KEY: " + s);
-////            System.out.println(col.getCompareTo());
-//        }
-//        index++;
-//    }

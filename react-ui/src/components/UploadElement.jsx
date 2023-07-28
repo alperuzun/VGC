@@ -5,20 +5,6 @@ import { BiCaretRight, BiCaretDown } from 'react-icons/bi'
 import { AiOutlinePlus, AiTwotoneCheckCircle, AiOutlineClose } from 'react-icons/ai'
 import { useStateContext } from '../contexts/ContextProvider';
 import { useDisplayContext } from '../contexts/DisplayContext';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import FileService from '../services/FileService';
-
-const getLink = (barType) => {
-  if (barType['variantGraph'] == true) {
-    console.log(true);
-    return `/bargraph/view-varients`
-  } else {
-    console.log(barType['variantGraph']);
-    return `/bargraph/view-varients`
-  }
-}
-//`/bargraph/view-dp`
-
 
 const getFileSize = (size) => {
   var fSExt = new Array('Bytes', 'KB', 'MB', 'GB');
@@ -29,13 +15,12 @@ const getFileSize = (size) => {
     i++;
   }
   var exactSize = (Math.round(size * 100) / 100) + ' ' + fSExt[i];
-  // console.log('FILE SIZE = ' + exactSize);
   return 'VCF File Size: ' + exactSize;
 }
 
 const UploadElement = ({ path, fileDeleterToggle, size }) => {
   const { selected, setSelected, phenotypeList, pathList, setPathList, setPhenotypeList, sizeList, setSizeList, handlePhenotypeFileChange, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, refresh, setRefresh } = useStateContext();
-  const { isViewing, handleChangeView, handleClick, handleVisData, barType, setBarType } = useDisplayContext();
+  const { isViewing, handleChangeView, handleClick, handleVisData} = useDisplayContext();
 
   const filename = path.replace(/^.*[\\\/]/, '')
   const fileSize = getFileSize(size);
@@ -50,7 +35,7 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
               <BiCaretDown /> :
               <BiCaretRight />}
           </button>
-          <button className="flex grow"
+          <button className="flex grow max-w-[312px]"
             onClick={() => {
               setSearchGeneTerm("");
               setSearchRangeTerm("");
@@ -61,7 +46,7 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
               }
             }
             }>
-            <span className="font-bold"> {filename} </span>
+            <span className="font-bold overflow-clip"> {filename} </span>
           </button>
 
           {
@@ -146,225 +131,3 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
 
 export default UploadElement
 
-
-// if (selected == path && !fileDeleterToggle) {
-//   return (
-//     <div>
-//       <div className="flex hover:bg-[#E9F0F2] bg-[#E9F0F2] w-full" >
-//         <div className="flex items-center p-1 ml-2 text-sm truncate w-full">
-//           <button className="flex hover:text-slate-500 mr-1" onClick={() => setShowPhenotype(!showPhenotype)}>
-//             {showPhenotype ?
-//               <BiCaretDown /> :
-//               <BiCaretRight />}
-//           </button>
-//           <button className="flex grow"
-//             onClick={() => {
-//               if (selected === path) {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setRefresh(!refresh);
-//               } else {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setSelected(path);
-//                 // setRefresh(!refresh);
-//               }
-//             }
-//             }>
-//             <span> {filename} </span>
-//           </button>
-//         </div>
-
-//         <label className="flex items-center">
-//           <TooltipComponent content="Add Phenotype File" openDelay={1000} showTipPointer={false} offsetY={6} position="RightCenter">
-//             <div className="hidden">
-//               <input
-//                 type="file"
-//                 id="myfile"
-//                 onChange={e => {
-//                   handlePhenotypeFileChange(e.target.files[0], selected);
-//                   setRefresh(!refresh);
-//                 }}
-//                 name="myfile"
-//                 accept=".txt"
-//                 multiple />
-//             </div>
-//             <div className="flex items-center pr-2 text-slate-400 hover:text-slate-600 text-lg cursor-pointer">
-//               <RiPlayListAddLine />
-//             </div>
-//           </TooltipComponent>
-//         </label>
-//       </div>
-//       {showPhenotype == true && phenotypeList[pathList.indexOf(path)] != null &&
-//         <div className="flex w-full mt-1 bg-[#f4f8f9]">
-//           <div className="flex p-1 ml-10 text-sm truncate w-full ">
-//             {phenotypeList[pathList.indexOf(path)].replace(/^.*[\\\/]/, '')}
-//           </div>
-//         </div>
-//       }
-//     </div>
-//   )
-// } else if (selected != path && !fileDeleterToggle) {
-//   return (
-//     <div>
-//       <div className="flex hover:bg-slate-100 w-full" >
-//         <div className="flex items-center p-1 ml-2 text-sm truncate w-full">
-//           <button className="flex hover:text-slate-500 mr-1" onClick={() => setShowPhenotype(!showPhenotype)}>
-//             {showPhenotype ?
-//               <BiCaretDown /> :
-//               <BiCaretRight />}
-//           </button>
-//           <button className="flex grow"
-//             onClick={() => {
-//               if (selected === path) {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setRefresh(!refresh);
-//               } else {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setSelected(path);
-//                 // setRefresh(!refresh);
-
-//               }
-//             }
-//             }>
-//             <span> {filename} </span>
-//           </button>
-//         </div>
-
-//         <label className="flex items-center">
-//           <TooltipComponent content="Add Phenotype File" openDelay={1000} showTipPointer={false} offsetY={6} position="RightCenter">
-//             <div className="hidden">
-//               <input
-//                 type="file"
-//                 id="myfile"
-//                 onChange={e => {
-//                   handlePhenotypeFileChange(e.target.files[0], selected);
-//                   setRefresh(!refresh);
-//                 }}
-//                 name="myfile"
-//                 accept=".txt"
-//                 multiple />
-//             </div>
-//             <div className="flex items-center pr-2 text-slate-400 hover:text-slate-600 text-lg cursor-pointer">
-//               <RiPlayListAddLine />
-//             </div>
-//           </TooltipComponent>
-//         </label>
-//       </div>
-//       {showPhenotype == true && phenotypeList[pathList.indexOf(path)] != null &&
-//         <div className="flex w-full mt-1 bg-[#f4f8f9]">
-//           <div className="flex p-1 ml-10 text-sm truncate w-full ">
-//             {phenotypeList[pathList.indexOf(path)].replace(/^.*[\\\/]/, '')}
-//           </div>
-//         </div>
-//       }
-//     </div>
-//   )
-// } else if (selected == path && fileDeleterToggle) {
-//   return (
-//     <div>
-//       <div className="flex hover:bg-[#E9F0F2] bg-[#E9F0F2] w-full" >
-//         <div className="flex items-center p-1 ml-2 text-sm truncate w-full">
-//           <button className="flex hover:text-slate-500 mr-1" onClick={() => setShowPhenotype(!showPhenotype)}>
-//             {showPhenotype ?
-//               <BiCaretDown /> :
-//               <BiCaretRight />}
-//           </button>
-//           <button className="flex grow"
-//             onClick={() => {
-//               if (selected === path) {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setRefresh(!refresh);
-//               } else {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setSelected(path);
-//                 // setRefresh(!refresh);
-//               }
-//             }
-//             }>
-//             <span> {filename} </span>
-//           </button>
-//         </div>
-
-//         <button
-//           className="flex items-center pr-2 text-slate-400 hover:text-slate-600"
-//           onClick={() => {
-//             var pathCopy = [...pathList];
-//             pathCopy.splice(pathList.indexOf(path), 1)
-//             var phenotypeCopy = [...phenotypeList];
-//             phenotypeCopy.splice(pathList.indexOf(path), 1);
-//             setPathList(pathCopy);
-//             setPhenotypeList(phenotypeCopy);
-//             setSelected(undefined);
-//           }}>
-//           <AiOutlineClose />
-//         </button>
-
-//       </div>
-
-//       {showPhenotype == true && phenotypeList[pathList.indexOf(path)] != null &&
-//         <div className="flex mt-1 w-full">
-//           <div className="flex p-1 ml-10 text-sm truncate w-full ">
-//             {phenotypeList[pathList.indexOf(path)].replace(/^.*[\\\/]/, '')}
-//           </div>
-//         </div>
-//       }
-//     </div>
-//   )
-// } else if (selected != path && fileDeleterToggle) {
-//   return (
-//     <div>
-//       <div className="flex hover:bg-slate-100 w-full" >
-//         <div className="flex items-center p-1 ml-2 text-sm truncate w-full">
-//           <button className="flex hover:text-slate-500 mr-1" onClick={() => setShowPhenotype(!showPhenotype)}>
-//             {showPhenotype ?
-//               <BiCaretDown /> :
-//               <BiCaretRight />}
-//           </button>
-//           <button className="flex grow"
-//             onClick={() => {
-//               if (selected === path) {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setRefresh(!refresh);
-//               } else {
-//                 setSearchGeneTerm("");
-//                 setSearchRangeTerm("");
-//                 setSelected(path);
-//                 // setRefresh(!refresh);
-//               }
-//             }
-//             }>
-//             <span> {filename} </span>
-//           </button>
-//         </div>
-
-//         <button
-//           className="flex items-center pr-2 text-slate-400 hover:text-slate-600"
-//           onClick={() => {
-//             var pathCopy = [...pathList];
-//             pathCopy.splice(pathList.indexOf(path), 1)
-//             var phenotypeCopy = [...phenotypeList];
-//             phenotypeCopy.splice(pathList.indexOf(path), 1);
-//             setPathList(pathCopy);
-//             setPhenotypeList(phenotypeCopy);
-//             setSelected(undefined);
-//           }}>
-//           <AiOutlineClose />
-//         </button>
-
-//       </div>
-
-//       {showPhenotype == true && phenotypeList[pathList.indexOf(path)] != null &&
-//         <div className="flex mt-1 w-full">
-//           <div className="flex p-1 ml-10 text-sm truncate w-full ">
-//             {phenotypeList[pathList.indexOf(path)].replace(/^.*[\\\/]/, '')}
-//           </div>
-//         </div>
-//       }
-//     </div>
-//   )

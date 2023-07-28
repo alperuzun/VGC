@@ -1,10 +1,7 @@
 package com.example.variantgraphcraftbackend.model;
 
 import com.example.variantgraphcraftbackend.service.PathogenicParser;
-// import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
-
 import javax.persistence.*;
-// import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -216,53 +213,3 @@ public class SingleVariantPathogenicity {
     }
 }
 
-
-                /*
-                  Here, we know that the pathogenic variant is a deletion. ->
-                    Need to check if ANY alternate is pathogenic ->
-                        For each ALT:
-                            - Mut[1] represents the benign GT, mut[2] represents the pathogenic GT
-                            - If mut[2] = ""
-                                1. Split REF from 1 to REF.length. This returns the deleted portion for the ALT.
-                                2. Check if this deleted portion equals mut[1], then this patient has a
-                                   pathogenic GT.
-                            - If mut[2] != "" (indicating symmetry or a repeating component)
-                                1. Split REF from 1 to REF.length. This returns the deleted portion for the ALT.
-                                2. Split mut[1] from 0 to (mut[1].length - mut[2].length).
-                                   This assumes the deletion occurs on the RIGHT.
-                                3. Split mut[1] from (mut[2].length - 1) to mut[1].length.
-                                   This assumes the deletion occurs on the LEFT.
-                                4. Check if the sample deleted portion equals either of the above pathogenic
-                                   deleted portions obtained by split. If yes, then this ALT is a pathogenic
-                                   deletion --> add the index of this ALT to the set of pathogenic indices.
-                        Find the index of GT under FORMAT.
-                        Loop through all samples, checking for any GT index which exists in the set of pathogenic indices.
-                            -> Add these patients to pathogenic samples, benign samples, and unknown samples.
-
-                        If not, we can put all patients under benign or unknown.
-                 */
-
-
-                /*
-                  Here, we know that the PATHOGENIC variant is a deletion ->
-                    Need to check if ANY alteration is pathogenic ->
-                        If yes, then there are patients with pathogenic variants ->
-                            Check the GT of each patient against the pathogenic GT. To do this,
-                            some analysis will need to be done with mut[].
-                                - Mut[1] represents the benign GT, mut[2] represents the pathogenic GT
-                                - If mut[2] = ""
-                                    1. Split REF from 1 to REF.length. This returns the deleted portion for a sample.
-                                    2. Check if this deleted portion equals mut[1], then this patient has a
-                                       pathogenic GT.
-                                - If mut[2] != "" (indicating symmetry or a repeating component)
-                                    1. Split mut[1] from 0 to (mut[1].length - mut[2].length).
-                                       This assumes the deletion occurs on the RIGHT.
-                                    2. Split mut[1] from (mut[2].length - 1) to mut[1].length.
-                                       This assumes the deletion occurs on the LEFT.
-                                    3. Split REF from 1 to REF.length. This returns the deleted portion for a sample.
-                                    4. Check if the sample deleted portion equals either of the above pathogenic
-                                       deleted portions obtained by split. If yes, then this patient has a pathogenic
-                                       GT.
-
-                        If not, we can put all patients under benign or unknown.
-                 */

@@ -65,11 +65,11 @@ const Sidebar = () => {
       const pathArray = []
       const phenotypeArray = []
       const sizeArray = []
-      for (let i = 0; i < items.data.length; i++) {
-        pathArray[i] = items.data[i].path
-        phenotypeArray[i] = items.data[i].phenotypePath
-        sizeArray[i] = items.data[i].size;
-      }
+      // for (let i = 0; i < items.data.length; i++) {
+      //   pathArray[i] = items.data[i].path
+      //   phenotypeArray[i] = items.data[i].phenotypePath
+      //   sizeArray[i] = items.data[i].size;
+      // }
       setPathList(pathArray)
       setPhenotypeList(phenotypeArray);
       setSizeList(sizeArray);

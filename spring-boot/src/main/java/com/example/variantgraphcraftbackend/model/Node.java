@@ -74,9 +74,9 @@ public class Node {
     public void generateGroupToNumSamplesString() {
         Set<String> keys = this.groupToNumSamples.keySet();
         for (String group : keys) {
-            this.groupToNumSamplesString = this.groupToNumSamplesString.concat("Sample Group " + group + ": " + this.groupToNumSamples.get(group) + " Variants, \n");
+            this.groupToNumSamplesString = this.groupToNumSamplesString.concat("Group " + group + ": n=" + this.groupToNumSamples.get(group) + ", \n");
         }
-
+        this.groupToNumSamplesString = this.groupToNumSamplesString.substring(0, this.groupToNumSamplesString.length() - 1);
     }
 
     public Long getId() {

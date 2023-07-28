@@ -51,10 +51,6 @@ public class BarView {
         for (int i : sortedList) {
             this.data.add(new BarGraphData(String.valueOf(i), chromHistogramData.get(i), subBarMap.get(i)));
         }
-//        For testing:
-//        for (BarGraphData b : this.data) {
-//            System.out.println(b.toString());
-//        }
     }
 
     public void setSvpData(HashMap<Integer, ArrayList<String[]>> posMap, ArrayList<String> header) throws IOException {
@@ -93,6 +89,7 @@ public class BarView {
     public void populateGraph(HashMap<String, Integer> chromToVarData, ArrayList<String> chromNum) {
 
         //Process chromosome list; handle X and Y
+        System.out.println(chromToVarData);
         String x = "";
         String y = "";
         if(chromNum.contains("X")) {
@@ -117,15 +114,10 @@ public class BarView {
             sortedChrom.add(y);
         }
 
-        //Populates the ArrayList of BarGraphData
         this.data = new ArrayList<BarGraphData>();
         for (String s : sortedChrom) {
             this.data.add(new BarGraphData(s, Integer.valueOf(chromToVarData.get(s)), null));
         }
-
-//        for (BarGraphData b : data) {
-//            System.out.println(b.toString());
-//        }
     }
 
     public String getZoomFactor() {
@@ -200,10 +192,3 @@ public class BarView {
         this.xMarkToVarMap = xMarkToVarMap;
     }
 }
-
-//    public void populateDPGraph(HashMap<String, Integer> rawData) {
-//        this.data = new ArrayList<BarGraphData>();
-//        for (String s : rawData.keySet()) {
-//            this.data.add(new BarGraphData(s, rawData.get(s), null));
-//        }
-//    }

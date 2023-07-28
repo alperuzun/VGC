@@ -1,13 +1,9 @@
 package com.example.variantgraphcraftbackend.service;
 import com.example.variantgraphcraftbackend.model.UploadedFile;
 import com.example.variantgraphcraftbackend.model.filemanager.*;
-import org.jboss.jandex.Index;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,7 +19,6 @@ public class VCFParser {
     }
 
     public void processSelectedFile(UploadedFile file) throws IOException {
-//        System.out.println("Creating support files...");
         String storePath = this.makeGeneratedFilesDirectory();
 
         File vcf = new File(file.getPath());
@@ -43,11 +38,6 @@ public class VCFParser {
 
             InfoWriter infoWriter = new InfoWriter(info);
             IndexWriter indexWriter = new IndexWriter(index);
-
-//            System.out.println("The name is " + name + ". The new paths are: ");
-//            System.out.println(info.getAbsolutePath());
-//            System.out.println(index.getAbsolutePath());
-
             this.read(file, infoWriter, indexWriter);
             infoWriter.addChrom(indexWriter.getNumChrom(), indexWriter.getChromList());
             infoWriter.writeInfo();
@@ -60,7 +50,6 @@ public class VCFParser {
         indexReader.readIndex();
         this.infoMap.put(file, infoReader);
         this.indexMap.put(file, indexReader);
-//        System.out.println("Files retrieved and read.");
     }
 
     private String makeGeneratedFilesDirectory() {
@@ -96,15 +85,15 @@ public class VCFParser {
         PathogenicParser pathogenicParser = new PathogenicParser();
         pathogenicParser.loadMapping();
 
-        //Updates version in InfoFile through UploadedFile.
+        // Updates version in InfoFile through UploadedFile.
         currLine = input.readLine();
         infoWriter.addVersion(currLine);
 
-        //Reads rest of file + updates info/index accordingly.
+        // Reads rest of file + updates info/index accordingly.
         while(currLine != null) {
             lineNumber++;
             if (currLine.startsWith("##")) {
-                //Analyze metadata
+                // Is metadata
             } else if (currLine.startsWith("#CHROM")) {
                 infoWriter.addHeader(currLine);
             } else {
@@ -115,7 +104,6 @@ public class VCFParser {
         }
         input.close();
         indexWriter.addLastChrom(prevLine, lineNumber);
-//        System.out.println("Finished reading. We are at line " + lineNumber + ".");
     }
 
     public List<String[]> getLinesByTotal(int total, int startLine, int endLine, String vcf) throws IOException{
@@ -127,7 +115,6 @@ public class VCFParser {
         while(currLine != null) {
             if(counter >= startLine) {
                 if(counter > endLine || counter >= (startLine + total)) {
-//                    System.out.println("Done in vcfParser.");
                     input.close();
                     return varList;
                 }
@@ -139,23 +126,19 @@ public class VCFParser {
             counter++;
         }
         input.close();
-//        System.out.println("Done in vcfParser.");
         return varList;
     }
 
     public List<String[]> getLines(int startLine, int endLine, String passFilter, String vcf) throws IOException {
-//        System.out.println("In getLines...");
         List<String[]> varList = new ArrayList<String[]>();
 
         BufferedReader input = new BufferedReader(new FileReader(vcf));
         String currLine = input.readLine();
         int counter = 1;
         if (passFilter.equals("ALL")) {
-//            System.out.println("Passfilter is: " + passFilter);
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("Done in vcfParser.");
                         input.close();
                         return varList;
                     }
@@ -166,11 +149,9 @@ public class VCFParser {
                 counter++;
             }
         } else {
-//            System.out.println("Passfilter is: " + passFilter);
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("Done in vcfParser.");
                         input.close();
                         return varList;
                     }
@@ -184,23 +165,19 @@ public class VCFParser {
             }
         }
         input.close();
-//        System.out.println("Done in vcfParser.");
         return varList;
     }
 
     public List<String[]> getLinesByPos(String chr, int startLine, int endLine, int startPos, int endPos, String passFilter, String vcf) throws IOException {
-//        System.out.println("In getLinesByPos...");
         List<String[]> varList = new ArrayList<String[]>();
         int counter = 0;
         BufferedReader input = new BufferedReader(new FileReader(vcf));
         String currLine = input.readLine();
         counter++;
         if (passFilter.equals("ALL")) {
-//            System.out.println("Passfilter is: " + passFilter);
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("Done in vcfParser.");
                         input.close();
                         return varList;
                     }
@@ -214,11 +191,9 @@ public class VCFParser {
                 counter++;
             }
         } else if (passFilter.equals("PASS")){
-//            System.out.println("Passfilter is: " + passFilter);
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("Done in vcfParser.");
                         input.close();
                         return varList;
                     }
@@ -226,8 +201,6 @@ public class VCFParser {
                     int currPos = Integer.valueOf(split[1]);
                     if (currPos >= startPos && currPos <= endPos && split[6].equals(passFilter)) {
                         varList.add(split);
-//                        System.out.println("LINE ADDED. LINE NUMBER IS: " + counter);
-////                        System.out.println(currLine);
                     }
                 }
                 currLine = input.readLine();
@@ -236,11 +209,9 @@ public class VCFParser {
         } else {
             PathogenicParser pathogenicParser = new PathogenicParser();
             pathogenicParser.loadMapping();
-//            System.out.println("Passfilter is: " + passFilter);
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("Done in vcfParser.");
                         input.close();
                         return varList;
                     }
@@ -248,8 +219,6 @@ public class VCFParser {
                     int currPos = Integer.valueOf(split[1]);
                     if (currPos >= startPos && currPos <= endPos && pathogenicParser.isPathogenic(chr, split[1])) {
                         varList.add(split);
-//                        System.out.println("LINE ADDED. LINE NUMBER IS: " + counter);
-////                        System.out.println(currLine);
                     }
                 }
                 currLine = input.readLine();
@@ -257,7 +226,6 @@ public class VCFParser {
             }
         }
         input.close();
-//        System.out.println("Done in vcfParser.");
         return varList;
     }
 
@@ -279,7 +247,6 @@ public class VCFParser {
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("ChromHistogramData retrieved.");
                         input.close();
                         return posMap;
                     }
@@ -289,7 +256,6 @@ public class VCFParser {
                         int rounded = pos / range;
                         rounded = rounded * range;
                         histogramData.put(rounded, histogramData.get(rounded) + 1);
-//                        posMap.get(rounded).add(pos);
                         posMap.get(rounded).add(variantArray);
                     }
                 }
@@ -300,7 +266,6 @@ public class VCFParser {
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("ChromHistogramData retrieved.");
                         input.close();
                         return posMap;
                     }
@@ -311,7 +276,6 @@ public class VCFParser {
                         int rounded = pos / range;
                         rounded = rounded * range;
                         histogramData.put(rounded, histogramData.get(rounded) + 1);
-//                        posMap.get(rounded).add(pos);
                         posMap.get(rounded).add(variantArray);
                     }
                 }
@@ -324,18 +288,15 @@ public class VCFParser {
             while(currLine != null) {
                 if(counter >= startLine) {
                     if(counter > endLine) {
-//                        System.out.println("ChromHistogramData retrieved.");
                         input.close();
                         return posMap;
                     }
                     String[] variantArray = currLine.split("\t");
                     int pos = Integer.valueOf(variantArray[1]);
-//                    String filter = variantArray[6];
                     if (pos >= start && pos <= end && pathogenicParser.isPathogenic(chr, variantArray[1])) {
                         int rounded = pos / range;
                         rounded = rounded * range;
                         histogramData.put(rounded, histogramData.get(rounded) + 1);
-//                        posMap.get(rounded).add(pos);
                         posMap.get(rounded).add(variantArray);
                     }
                 }
@@ -358,7 +319,6 @@ public class VCFParser {
         while(currLine != null) {
             if(counter >= startLine) {
                 if(counter > endLine) {
-//                    System.out.println("ChromHistogramData retrieved.");
                     input.close();
                     return histogramData;
                 }
@@ -394,8 +354,6 @@ public class VCFParser {
         saveMap.put(chr, var);
     }
 
-
-
     public String getVersion(UploadedFile file) {
         return this.infoMap.get(file).getVersion();
     }
@@ -408,28 +366,3 @@ public class VCFParser {
         return this.infoMap.get(file).getNumChrom();
     }
 }
-
-
-//    public HashMap<String, Integer> getLineByPosDP(int startLine, int endLine, int patientNum, String vcf) throws IOException{
-//        int counter = 0;
-//        HashMap<String, Integer> dpData = new HashMap<String, Integer>();
-//        BufferedReader input = new BufferedReader(new FileReader(vcf));
-//        String currLine = input.readLine();
-//        counter++;
-//        while(currLine != null) {
-//            if(counter >= startLine) {
-//                if(counter > endLine) {
-////                    System.out.println("done");
-//                    input.close();
-//                    return dpData;
-//                }
-//                String[] variant = currLine.split("\t");
-//                String[] patientEntry = variant[8 + patientNum].split(":");
-//                dpData.put(variant[1], Integer.valueOf(patientEntry[2]));
-//            }
-//            currLine = input.readLine();
-//            counter++;
-//        }
-//        input.close();
-//        return dpData;
-//    }

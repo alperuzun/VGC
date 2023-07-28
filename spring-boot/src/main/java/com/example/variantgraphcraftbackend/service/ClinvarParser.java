@@ -46,44 +46,6 @@ public class ClinvarParser {
         this.clinvarNav.put("", new int[] {98664, 98778});
         this.clinvarNav.put("MT", new int[] {98779, 98897});
     }
-//    public String[] findVariantNode(String geneName, String startPos, String chr) throws IOException {
-//        System.out.println("In parseClinvar. ");
-//        this.input = new BufferedReader(new FileReader("src/main/resources/clinvar_data.txt"));
-//        this.currLine = this.input.readLine();
-//        this.currLine = this.input.readLine();
-//
-//        while (this.currLine != null) {
-//            String[] variantInfo = this.currLine.split("\t");
-//            if(variantInfo[7].equals(chr.substring(3,4)) && startPos.equals(variantInfo[8])) {
-//                System.out.println("Variant found!");
-//                return new String[] {variantInfo[0], variantInfo[3], variantInfo[4], variantInfo[7], variantInfo[8], variantInfo[13]};
-//            }
-//            this.currLine = this.input.readLine();
-//        }
-//        this.input.close();
-//        System.out.println("Variant does not exist in Clinvar.");
-//        return null;
-//    }
-//
-//    public String[] findVariantBar(String geneName, String startPos, String chr) throws IOException {
-//        System.out.println("In parseClinvar. ");
-//        this.input = new BufferedReader(new FileReader("src/main/resources/clinvar_data.txt"));
-//        this.currLine = this.input.readLine();
-//        this.currLine = this.input.readLine();
-//
-//        while (this.currLine != null) {
-//            String[] variantInfo = this.currLine.split("\t");
-//            if(variantInfo[7].equals(chr) && startPos.equals(variantInfo[8])) {
-//                System.out.println("Variant found!");
-//                return new String[] {variantInfo[0], variantInfo[3], variantInfo[4], variantInfo[7], variantInfo[8], variantInfo[13]};
-//            }
-//            this.currLine = this.input.readLine();
-//        }
-//        this.input.close();
-//        System.out.println("Variant does not exist in Clinvar.");
-//        return null;
-//    }
-
     public String[] findVariant(int startPos, String chr, boolean onlyPathogenic) throws IOException {
         String chrJustLabel;
         if(chr.startsWith("chr")) {
@@ -144,45 +106,4 @@ public class ClinvarParser {
             }
         }
     }
-
-//    public static void main(String[] args) throws IOException {
-//        BufferedReader input = new BufferedReader(new FileReader("src/main/resources/clinvar_data.txt"));
-//        PriorityQueue<String> lines = new PriorityQueue<String>(100000, new lineCompare());
-//        String currLine = input.readLine();
-//        currLine = input.readLine();
-//
-//        while (currLine != null) {
-//            lines.add(currLine);
-//            currLine = input.readLine();
-//        }
-//        input.close();
-//
-//        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/clinvarSORTED.txt"));
-//
-//        System.out.println(lines.size());
-//
-//        while (lines.peek() != null) {
-//            writer.write(lines.poll());
-//            writer.newLine();
-//        }
-//        writer.close();
-//
-//        BufferedReader input1 = new BufferedReader(new FileReader("src/main/resources/clinvarSORTED.txt"));
-//        int index = 1;
-//        String currentChr = "";
-//        String currLine1 = "";
-//        currLine1 = input1.readLine();
-//        currLine1 = input1.readLine();
-//
-//        while (currLine1 != null) {
-//            String[] variantInfo = currLine1.split("\t");
-//            if (!variantInfo[7].equals(currentChr)) {
-//                currentChr = variantInfo[7];
-//                System.out.println(currentChr + " " + index);
-//            }
-//            currLine1 = input1.readLine();
-//            index++;
-//        }
-//        System.out.println(index);
-//    }
 }

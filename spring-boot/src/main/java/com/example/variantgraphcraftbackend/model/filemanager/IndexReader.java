@@ -42,9 +42,9 @@ public class IndexReader {
             this.chromMap.put(lineArr[0], Integer.valueOf(lineArr[3]) - Integer.valueOf(lineArr[1]) + 1);
             // this.passFilterMap.put(lineArr[0], Integer.valueOf(lineArr[5]));
             if (!lineArr[5].equals("null")) {
-                this.pathFilterMap.put(lineArr[0], Integer.valueOf(lineArr[5]));
+                this.passFilterMap.put(lineArr[0], Integer.valueOf(lineArr[5]));
             } else {
-                this.pathFilterMap.put(lineArr[0], 0);
+                this.passFilterMap.put(lineArr[0], 0);
             }
             if (!lineArr[6].equals("null")) {
                 this.pathFilterMap.put(lineArr[0], Integer.valueOf(lineArr[6]));
@@ -56,6 +56,7 @@ public class IndexReader {
         }
         this.input.close();
         System.out.println("Index retrieved and read.");
+        System.out.println(this.passFilterMap);
         return this.indexArr;
     }
 

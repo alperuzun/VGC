@@ -10,18 +10,9 @@ const initialState = {
   geneData: false
 }
 
-const initialBarType = {
-  variantGraph: false,
-  DPGraph: false,
-  QUALGraph: false
-}
-
 
 export const DisplayContext = ({ children }) => {
   const [isClicked, setIsClicked] = useState(initialState);
-  const [barType, setBarType] = useState(initialBarType);
-  const [mouseOver, setMouseOver] = useState(false);
-  const [dropdown, setDropdown] = useState(false);
   const [errorPopup, setErrorPopup] = useState(false);
   const [browserQuery, setBrowserQuery] = useState(undefined);
 
@@ -45,12 +36,6 @@ export const DisplayContext = ({ children }) => {
         handleClick,
         checkClicked,
         initialState,
-        barType,
-        setBarType,
-        mouseOver,
-        setMouseOver, 
-        dropdown,
-        setDropdown,
         errorPopup,
         setErrorPopup,
         browserQuery,

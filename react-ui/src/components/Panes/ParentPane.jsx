@@ -38,16 +38,16 @@ const ParentPane = ({ children }) => {
 
   if (activeMenu) {
     return (
-      <div className="grow mt-[75px] ml-96 z-10 justify-center p-2 ">
-        <div className="w-full h-full p-2 z-40 overflow-scroll">
+      <div className="grow mt-[88px] ml-96 z-10 justify-center p-2">
+        <div className="w-full h-full p-2 z-40">
           {children}
         </div>
       </div>
     )
   } else {
     return (
-      <div className="grow mt-[75px] ml-0 z-10 justify-center p-2">
-        <div className="w-full h-full p-2 z-40 overflow-scroll">{children}</div>
+      <div className="grow mt-[88px] ml-0 z-10 justify-center p-2">
+        <div className="w-full h-full p-2 z-40">{children}</div>
       </div>
     )
   }

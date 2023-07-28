@@ -58,22 +58,11 @@ public class PathogenicParser {
                     this.loadMap.put(chr, new HashSet<String>());
                 }
                 this.loadMap.get(chr).add(variants[0]);
-
-//                for (String var : variants) {
-//                    if (!var.equals("-")) {
-//                        this.loadMap.get(chr).add(var);
-//                    }
-//                }
             }
             currLine = this.input.readLine();
         }
         this.input.close();
 
-//        for (String chr : this.loadMap.keySet()) {
-//            System.out.println(chr + "--------------------------------->");
-//            System.out.println(this.loadMap.get(chr));
-//
-//        }
     }
 
     public boolean isPathogenic(String chr, String var) {
@@ -83,8 +72,6 @@ public class PathogenicParser {
             }
             return false;
         } catch (NullPointerException e) { //Y chr not in pathogenic data.
-//            System.out.println("Input not consistent with pathogenic data. Chr is: " + chr + ", Var is: " + var);
-//            e.printStackTrace();
             return false;
         }
     }
@@ -106,6 +93,5 @@ public class PathogenicParser {
             }
         }
         return mutInfo;
-//        return this.mutMap.get(chr).get(var).split(":");
     }
 }

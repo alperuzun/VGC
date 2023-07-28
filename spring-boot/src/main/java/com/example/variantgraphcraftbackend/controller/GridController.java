@@ -122,29 +122,3 @@ public class GridController {
     }
 
 }
-
-//    @GetMapping("init-table")
-//    public GridView getInitialTable(String chr, String total) {
-//        System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
-//        try {
-//            return this.handler.displayInitialView(chr, Integer.valueOf(total));
-//        } catch (IOException e) {
-//            System.out.println("IOException in queryByRange of GridController.");
-//            return null;
-//        } catch (NumberFormatException n) {
-//            return null;
-//        }
-//    }
-
-//    @GetMapping("variant-view")
-//    public GridView queryByRange(String chr, String start, String end) {
-//        System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
-//        try {
-//            return this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
-//        } catch (IOException e) {
-//            System.out.println("IOException in queryByRange of GridController.");
-//            return null;
-//        } catch (NumberFormatException n) {
-//            return null;
-//        }
-//    }

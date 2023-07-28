@@ -90,7 +90,7 @@ app.on('ready', function () {
   findPort(8080, function(err, port) {
     console.log(`Starting server at port ${port}`)
     createWindow(port);
-    startServer(port);
+    // startServer(port);
     // loadHomePage(`http://localhost:${port}/#/`)
   });
 });

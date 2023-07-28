@@ -3,6 +3,8 @@ import {useNavigate} from 'react-router-dom'
 import vgc_final from './Images/vgc_final.png';
 import welcome_logo from './Images/welcome_logo.png';
 import legorreta_cancer_center_logo from './Images/legorreta_cancer_center_logo.png';
+import warren_alpert_medical_school_logo from './Images/warren_alpert_medical_school_logo.png'
+import department_pathology_logo from './Images/department_pathology_logo.png'
 
 import icon1 from './Images/icon1.png';
 import icon2 from './Images/icon2.png';
@@ -106,7 +108,7 @@ const Welcome = () => {
 
 
   return (
-    <div className="flex h-full overflow-y-scroll z-50 bg-[#457b9d]">
+    <div className="flex h-full overflow-y-scroll z-50 bg-[#457b9d] overflow-x-clip">
       <div className="p-2 ">
         <div className={`flex ${activeMenu ? 'xl:w-[64rem] lg:w-[52rem] md:w-[46rem] sm:w-[36rem] ' : 'xl:w-[88rem] lg:w-[76rem] md:w-[72rem] sm:w-[60rem] w-[40rem]'}`}>
           <div className="flex w-full p-12 justify-center items-center flex-col">
@@ -114,7 +116,7 @@ const Welcome = () => {
               <img className="" src={welcome_logo}></img>
             </div>
 
-            <div className="flex flex-row w-full mt-16 justify-evenly text-white text-sm">
+            <div className={`flex flex-row w-full mt-16 justify-evenly text-white text-sm ${activeMenu ? 'lg:text-[15px] md:text-[13.5px] sm:text-[11px]' : ''}`}>
               <div className="flex flex-col justify-center items-center w-1/4 ">
               <img className="w-12 h-12" src={icon1}></img>
                 <div className="text-center px-3 py-6 "> Rapid VCF file browsing with Histogram, Grid View, and Node Graph support</div>
@@ -129,14 +131,16 @@ const Welcome = () => {
               </div>
               <div className="flex flex-col justify-center items-center w-1/4">
               <img className="w-12 h-12" src={icon4}></img>
-                <div className="text-center px-3 py-6">Display variant-to-sample genotype relations of user-defined groups</div>
+                <div className="text-center px-3 py-6">Displays variant-to-sample genotype relations of user-defined groups</div>
               </div>
 
             </div>
-            <div className="flex flex-row items-center justify-evenly">
-              <div className="w-56 h-0.5 bg-[#000000] mx-10 mt-2"></div>
-              <img className="mt-2 w-48 h-16" src={legorreta_cancer_center_logo}></img>
-              <div className="w-56 h-0.5 bg-[#000000] mx-10 mt-2"></div>
+            <div className="flex flex-row items-center justify-center w-full">
+              <div className="w-24 h-0.5 bg-[#000000] mx-10 mt-2"></div>
+              <img className="mt-2 w-52 h-16" src={department_pathology_logo}></img>
+              <img className="mt-2 w-48 h-14 ml-10 mr-10" src={legorreta_cancer_center_logo}></img>
+              <img className="mt-2 w-48 h-16" src={warren_alpert_medical_school_logo}></img>
+              <div className="w-24 h-0.5 bg-[#000000] mx-10 mt-2"></div>
             </div>
           </div>
 

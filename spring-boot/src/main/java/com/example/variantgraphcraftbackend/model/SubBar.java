@@ -13,8 +13,10 @@ public class SubBar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type; //intron vs exon
-    private int val; //number of variants
+    // Indicates intron vs. exon
+    private String type; 
+    // Indicates number of variants
+    private int val; 
     private String gene;
     private int num;
     private String name;
@@ -131,7 +133,6 @@ public class SubBar {
 
     public void setVariantInfo(String chr, ClinvarParser parser) throws IOException {
         String[] variantInfo = parser.findVariant(this.location, chr, true);
-//        String[] variantInfo = parser.findVariant("B3GALT6", "1167659", "1");
         if(variantInfo != null) {
             this.setName(variantInfo[0]);
             this.setConditions(variantInfo[1]);
@@ -143,7 +144,6 @@ public class SubBar {
             for (int i = 0; i < variantInfo.length; i++) {
                 System.out.println(variantInfo[i]);
             }
-//            System.out.println(variantInfo);
         }
     }
 }

@@ -126,19 +126,3 @@ public class BarController {
         }
     }
 }
-
-//    /**
-//     * Returns DP graph. CURRENTLY UNUSED.
-//     * @return
-//     */
-//    @GetMapping("dp")
-//    public BarView getDPGraph(String chrom) {
-//        System.out.println("BARCONTROLLER METHOD GETDPGRAPH CALLED.");
-//
-//        try {
-//            return this.handler.displayDPGraph("X");
-//        } catch (IOException e) {
-//            System.out.println("IOException in BarController, getDPGraph");
-//        }
-//        return null;
-//    }

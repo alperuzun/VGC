@@ -31,6 +31,10 @@ public class ParseHelper {
         }
     }
 
+    public boolean rangeValid(int start, int end, String chrom) {
+        return true;
+    }
+
 
     public ArrayList<String> processGeneFile(String path) throws IOException {
         ArrayList<String> processedArray = new ArrayList<String>();

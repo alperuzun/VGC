@@ -20,8 +20,6 @@ rules.push({
 
 
 module.exports = {
-  // Put your normal webpack config below here
-  // entry: './src/index.js',
   module: {
     rules,
   },
