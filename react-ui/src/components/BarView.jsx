@@ -8,7 +8,7 @@ import FileService from '../services/FileService';
 const BarView = () => {
   const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, GSError, setGSError, RSError, setRSError, selectedBarEntry, setSelectedBarEntry } = useBarContext();
   const { isClicked, browserQuery, setBrowserQuery } = useDisplayContext();
-  const { selected, setSelected, pathList, phenotypeList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
+  const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
 
   const initialRender = useRef(true);
   const prevVals = useRef({ selected, refresh, isClicked });
@@ -116,8 +116,6 @@ const BarView = () => {
                       {subBar.gene}, {subBar.type.charAt(0).toUpperCase() + subBar.type.slice(1)} {subBar.num}: {subBar.val} variants
                     </div>
                   )}
-
-
                   {subBar.inClinvar ?
                     <div>
                       <div><strong>Clinvar information: </strong> GRCh37 chromosome: {subBar.chromosome}, GRCh37 location: {subBar.location}, dbSNP ID: {subBar.snpId} </div>
@@ -335,8 +333,46 @@ const BarView = () => {
     }
   }
 
+  const getChartWidth = () => {
+    if (activeMenu) {
+      if (window.innerWidth >= 1200) {
+        return 850; // Fallback width for screens larger than 'xl'
+      } else if (window.innerWidth >= 992) {
+        return 700; // Width for 'lg' screens
+      } else if (window.innerWidth >= 768) {
+        return 600; // Width for 'md' screens
+      } else {
+        return 400; // Fallback width for 'sm' and smaller screens
+      }
+    } else {
+      if (window.innerWidth >= 1400) {
+        return 1200;
+      } else if (window.innerWidth >= 1200) {
+        return 1000; // Fallback width for screens larger than 'xl'
+      } else if (window.innerWidth >= 992) {
+        return 850; // Width for 'lg' screens
+      } else if (window.innerWidth >= 768) {
+        return 750; // Width for 'md' screens
+      } else if (window.innerWidth >= 650){
+        return 550; // Fallback width for 'sm' and smaller screens
+      } else {
+        return 450;
+      }
+    }
+  };
+
+  const getChartHeight = () => {
+    // Define your logic here to calculate the height based on screen size
+    // Similar to getChartWidth, you can set breakpoints and return different values
+    if (window.innerHeight >= 800) {
+      return 450; // Fallback height for screens larger than 'xl'
+    } else {
+      return 350; // Fallback height for 'lg', 'md', 'sm', and smaller screens
+    }
+  };
+
   return (
-    <div className="flex p-2 w-full h-full justify-center">
+    <div className="flex-1 p-2 h-full w-full justify-center ">
         <BarChart
           data={histogramData.data.data}
           margin={{
@@ -345,8 +381,8 @@ const BarView = () => {
             left: 0,
             bottom: 10,
           }}
-          width={850}
-          height={400}
+          width={getChartWidth()}
+          height={getChartHeight()}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="x" />

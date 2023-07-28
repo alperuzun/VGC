@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react'
 // import { useD3 } from '../hooks/useD3';
 import { useDisplayContext } from '../contexts/DisplayContext';
 import { BsChevronDown, BsChevronRight, BsCheck2Circle, BsCircle } from 'react-icons/bs';
-import {AiOutlineCheck} from 'react-icons/ai';
+import { AiOutlineCheck } from 'react-icons/ai';
 import { useStateContext } from '../contexts/ContextProvider';
 import FileService from '../services/FileService';
 import GeneService from '../services/GeneService';
@@ -19,7 +19,7 @@ import '../css/TreeView.css';
 
 const TreeView = () => {
 
-  const { selected, setSelected, phenotypeList, pathList, sizeList, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, refresh } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, refresh } = useStateContext();
 
   const { browserQuery, setBrowserQuery, isClicked } = useDisplayContext();
 
@@ -43,7 +43,7 @@ const TreeView = () => {
   const [activePID, setActivePID] = useState(true);
   const [activeReactome, setActiveReactome] = useState(true);
 
-  const prevVals = useRef({selected, refresh, isClicked});
+  const prevVals = useRef({ selected, refresh, isClicked });
 
 
 
@@ -52,22 +52,11 @@ const TreeView = () => {
       console.log("Searching gene file from TreeView...");
       let retrievedData = await GeneService.getTreeForGeneFile(geneFileUpload, passFilter)
       if (retrievedData.data !== "") {
-        // const tempProcessedTreeList = [];
         const tempTreeObjList = retrievedData.data.treeViewList;
-        // for (var i = 0; i < tempTreeObjList.length; i++) {
-        //   var data = processData(tempTreeObjList[i]);
-        //   tempProcessedTreeList.push(data);
-        // }
         setTreeObjList(tempTreeObjList);
-        // setProcessedTreeList(tempProcessedTreeList);
         setQueryList(retrievedData.data.queries);
-
         setTreeObj(tempTreeObjList[0]);
-        // setProcessedTree(tempProcessedTreeList[0]);
-
         console.log(retrievedData);
-        // drawGraph(processedTree);
-
       }
 
     }
@@ -97,12 +86,6 @@ const TreeView = () => {
         setQueryList([searchGeneTerm]);
         setTreeObj(retrievedData.data);
         setTreeObjList([retrievedData.data]);
-        // var data = processData(retrievedData.data);
-        // setProcessedTree(data);
-        // setProcessedTreeList([data]);
-
-        // console.log(data);
-        // drawGraph(data);
 
       }
     }
@@ -111,9 +94,13 @@ const TreeView = () => {
 
 
   const handleFileChosen = async (filePath) => {
-    await FileService.addFile({ path: filePath, 
-      phenotypePath: phenotypeList[pathList.indexOf(filePath)], 
-      size: sizeList[sizeList.indexOf(filePath)]});
+    await FileService.addFile({
+      path: filePath,
+      phenotypePath: phenotypeList[pathList.indexOf(filePath)],
+      size: sizeList[sizeList.indexOf(filePath)]
+    });
+    const fileInfo = await FileService.getFileInfo();
+    setCurrentlyViewing(fileInfo.data);
   }
 
   useEffect(() => {
@@ -125,9 +112,9 @@ const TreeView = () => {
       setSelectedTab(0);
       setActiveFilterSelect(false);
       if (selected != null) {
-        handleFileChosen(selected); 
+        handleFileChosen(selected);
       }
-      prevVals.current = {selected, refresh, isClicked}
+      prevVals.current = { selected, refresh, isClicked }
     } else {
       if (geneFileUpload != null && selected != null && toggleGS === true) {
         console.log("On refresh, searching gene FILE...");
@@ -152,10 +139,8 @@ const TreeView = () => {
     return (
       <div className="flex h-8 items-center ">
         <div className={`flex h-6 w-[` + width + `rem] text-white text-sm px-3 rounded-t-lg justify-center cursor-pointer ${queryList.indexOf(name) == selectedTab ? "bg-[#3f89c7]" : "bg-slate-400 "}`} onClick={() => {
-          // setProcessedTree(processedTreeList[queryList.indexOf(name)]);
           setSelectedTab(queryList.indexOf(name));
           setTreeObj(treeObjList[queryList.indexOf(name)])
-          // drawGraph(processedTree);
 
           console.log("Printing selected tab index...");
           console.log(selectedTab);
@@ -228,19 +213,19 @@ const TreeView = () => {
     )
   }
 
-  const MsigdbData = ({itemsToMap, viewState, setViewState, title}) => {
+  const MsigdbData = ({ itemsToMap, viewState, setViewState, title }) => {
     return (
       <div className="flex flex-col h-[11rem] w-full mb-2">
         <span className="flex w-full bg-slate-300 border-y-1 px-2 items-center">
-          <div className="flex px-2 hover:text-slate-400 cursor-pointer" onClick={() => setViewState(!viewState)}>{viewState ? <BsChevronDown /> : <BsChevronRight/>}</div>
+          <div className="flex px-2 hover:text-slate-400 cursor-pointer" onClick={() => setViewState(!viewState)}>{viewState ? <BsChevronDown /> : <BsChevronRight />}</div>
           {title}
         </span>
-        {viewState && 
-        <div className={`flex flex-col overflow-auto bg-slate-50 px-2`}>
-          {itemsToMap.map((item) => (
-            <span className="text-sm break-words border-b-1 border-slate-300 px-2">{item}</span>
-          ))}
-        </div>
+        {viewState &&
+          <div className={`flex flex-col overflow-auto bg-slate-50 px-2`}>
+            {itemsToMap.map((item) => (
+              <span className="text-xs break-words border-b-1 border-slate-300 px-2 py-0.5">{item}</span>
+            ))}
+          </div>
         }
       </div>
     )
@@ -249,9 +234,9 @@ const TreeView = () => {
 
 
 
-
   return (
-    <div className="w-full h-[42rem]">
+    <div className="flex w-full h-full flex-col items-center">
+      
       <div className="flex flex-row h-8 w-full bg-slate-200">
         {queryList.map((item) => (
           <TabButton
@@ -260,136 +245,122 @@ const TreeView = () => {
           />
         ))}
       </div>
-      <div className="flex flex-row">
-        {/* {treeObj !== undefined ? treeObj.title : "Enter your query above."} */}
-        {treeObj == undefined && "Enter your query above."}
 
-      </div>
-      <div className="flex ml-2">
-        <div className="flex  flex-col w-full h-[8rem] rounded ">
-          {treeObj !== undefined &&
-            <div>
+      {treeObj !== undefined &&
+        <div className="flex flex-row h-full w-full ">
 
-              <div className="flex flex-row w-full">
+          <div className="flex h-full flex-col w-1/2 p-2">
 
-                <div className="flex flex-col w-1/2 px-2">
+            <div className="flex h-1/8 flex-col">
 
-                  <div className="flex items-center">
-                    <div className="text-lg font-bold">Gene: </div>
-                    <div className="py-1 px-2">{treeObj.gene}</div>
-                    <FilterButton />
-                  </div>
-                  {treeObj.omimInformation.map((item) => (
-                    <div className="flex flex-row">
-                      <div className="flex font-bold">OMIM Information: </div>
-                      <div className="font-normal flex px-2">{item}</div>
-                    </div>
-                  ))}
-                  <span className="flex text-lg font-bold">Variants: </span>
-                  <div className="flex flex-row pt-0 w-full items-center ">
-                  </div>
-                  <div className="flex flex-row w-full">
-                    <div className={`flex flex-col p-1 w-1/3`}>
-                      <span className={`flex items-center w-full text-gray-50 bg-[#ac6161] justify-center`}>Pathogenic</span>
-                      <div className="flex flex-col overflow-auto bg-slate-50 h-[28rem] w-full items-center">
-                        {treeObj.pathogenicVariants.map((item) => (
-                          <button className="flex w-full items-center " onClick={() => setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item)}>
-                            <span className="flex w-full justify-center text-sm break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">Position: {item}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className={`flex flex-col p-1 w-1/3`}>
-                      <span className={`flex items-center w-full text-gray-50 bg-[#83b48a] justify-center`}>Benign</span>
-                      <div className="flex flex-col overflow-auto bg-slate-50 h-[28rem] w-full items-center">
-                        {treeObj.benignVariants.map((item) => (
-                          <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
-                            {/* <div className="flex w-4 h-7 border-slate-500 hover:bg-slate-300 bg-slate-200">                     
-                            </div> */}
-                            <span className="flex flex-row text-sm break-normal items-center p-1 border-t-1 border-slate-300  hover:bg-slate-100 w-full">  
-                               
-                            Position: {item}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className={`flex flex-col p-1 w-1/3`}>
-                      <span className={`flex items-center w-full text-gray-50 bg-[#919191] justify-center`}>No Consensus</span>
-                      <div className="flex flex-col overflow-auto bg-slate-50 h-[28rem] w-full items-center">
-                        {treeObj.noConsensus.map((item) => (
-                          <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
-                            <span className="text-sm break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100 w-full">Position: {item}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+              <div className="flex items-center flex-row">
+                <div className="font-bold">Gene: </div>
+                <div className="py-1 px-2">{treeObj.gene}</div>
+                <FilterButton />
+              </div>
+
+              {treeObj.omimInformation.map((item) => (
+                <div className="flex flex-row">
+                  <div className="flex font-bold">OMIM Information: </div>
+                  <div className="font-normal flex px-2">{item}</div>
                 </div>
-
-                <div className="flex flex-col h-[39rem] w-1/2 px-2 bg-white rounded-xl overflow-scroll">
-                  <div className="flex flex-row p-1 w-full items-center ">
-                    <div className="flex w-1/3 bg-[#3f89c7] h-0.5 "></div>
-                    <span className="flex w-1/3 p-1 text-lg justify-center text-[#3f89c7] font-bold">MSigdb Data</span>
-                    <div className="flex w-1/3 bg-[#3f89c7] h-0.5 "></div>
-                  </div>
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.goTermsBP)}
-                  viewState={activeBP}
-                  setViewState={setActiveBP}
-                  title="Biological Process"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.goTermsCC)}
-                  viewState={activeCC}
-                  setViewState={setActiveCC}
-                  title="Cellular Component"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.goTermsMF)}
-                  viewState={activeMF}
-                  setViewState={setActiveMF}
-                  title="Molecular Function"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.biocarta)}
-                  viewState={activeBioCarta}
-                  setViewState={setActiveBioCarta}
-                  title="BioCarta Pathway"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.kegg)}
-                  viewState={activeKEGG}
-                  setViewState={setActiveKEGG}
-                  title="KEGG Pathway"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.pid)}
-                  viewState={activePID}
-                  setViewState={setActivePID}
-                  title="PID Pathway"
-                  />
-
-                  <MsigdbData 
-                  itemsToMap={Object.keys(treeObj.reactome)}
-                  viewState={activeReactome}
-                  setViewState={setActiveReactome}
-                  title="Reactome Pathway"
-                  />
-
+              ))}
+              <span className="flex font-bold">Variants: </span>
+            </div>
+            <div className="flex flex-row w-full h-5/6 p-2 ">
+              <div className={`flex flex-col p-1 h-full w-1/3`}>
+                <span className={`flex items-center w-full text-gray-50 bg-[#ac6161] justify-center`}>Pathogenic</span>
+                <div className="flex-col overflow-y-scroll bg-slate-50 flex-grow w-full items-center">
+                  {treeObj.pathogenicVariants.map((item) => (
+                    <button className="flex w-full items-center " onClick={() => setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item)}>
+                      <span className="flex w-full justify-center text-xs break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">Position: {item}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className={`flex flex-col p-1 h-full w-1/3`}>
+                <span className={`flex items-center w-full text-gray-50 bg-[#83b48a] justify-center`}>Benign</span>
+                <div className="flex-col overflow-y-scroll bg-slate-50 flex-grow w-full items-center">
+                  {treeObj.benignVariants.map((item) => (
+                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
+                      <span className="flex w-full justify-center text-xs break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">
+                        Position: {item}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className={`flex flex-col p-1 h-full w-1/3 `}>
+                <span className={`flex items-center w-full text-gray-50 bg-[#919191] justify-center`}>No Consensus</span>
+                <div className="flex flex-col overflow-y-scroll bg-slate-50 flex-grow w-full items-center">
+                  {treeObj.noConsensus.map((item) => (
+                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
+                      <span className="flex w-full justify-center text-xs break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">Position: {item}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-          }
+          </div>
 
+          <div className="flex flex-col max-h-min mx-2 mt-2 mb-10 p-4 w-1/2  bg-white rounded-xl overflow-y-scroll shadow-md">
+            <div className="flex flex-row p-1 w-full items-center ">
+              <div className="flex w-1/3 bg-[#3f89c7] h-0.5 "></div>
+              <span className="flex w-1/3 p-1 text-lg justify-center text-[#3f89c7] font-bold">MSigdb Data</span>
+              <div className="flex w-1/3 bg-[#3f89c7] h-0.5 "></div>
+            </div>
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.goTermsBP)}
+              viewState={activeBP}
+              setViewState={setActiveBP}
+              title="Biological Process"
+            />
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.goTermsCC)}
+              viewState={activeCC}
+              setViewState={setActiveCC}
+              title="Cellular Component"
+            />
+ 
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.goTermsMF)}
+              viewState={activeMF}
+              setViewState={setActiveMF}
+              title="Molecular Function"
+            />
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.biocarta)}
+              viewState={activeBioCarta}
+              setViewState={setActiveBioCarta}
+              title="BioCarta Pathway"
+            />
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.kegg)}
+              viewState={activeKEGG}
+              setViewState={setActiveKEGG}
+              title="KEGG Pathway"
+            />
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.pid)}
+              viewState={activePID}
+              setViewState={setActivePID}
+              title="PID Pathway"
+            />
+
+            <MsigdbData
+              itemsToMap={Object.keys(treeObj.reactome)}
+              viewState={activeReactome}
+              setViewState={setActiveReactome}
+              title="Reactome Pathway"
+            /> 
+
+          </div>
         </div>
-
-      </div>
+      }
     </div>
   )
 }

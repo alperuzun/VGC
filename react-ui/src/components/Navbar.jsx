@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { link, useNavigate, NavLink } from 'react-router-dom';
 import { AiOutlineMenu } from 'react-icons/ai';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
 import { GoGraph, GoTriangleRight } from 'react-icons/go';
 import { GrGraphQl } from 'react-icons/gr'
-import { CgViewGrid } from 'react-icons/cg';
+import { CgOpenCollective, CgViewGrid } from 'react-icons/cg';
 
 import { BiGitCompare } from 'react-icons/bi';
 import { HiLightBulb } from 'react-icons/hi';
@@ -16,34 +16,27 @@ import { useDisplayContext } from '../contexts/DisplayContext';
 
 const Navbar = ({ handleHelpClick }) => {
 
-  const { activeMenu, setActiveMenu, screenSize, setScreenSize, selected, pathList, currentlyViewing } = useStateContext();
-  const { isClicked, setIsClicked, handleClick, checkClicked, mouseOver, setMouseOver, dropdown, setDropdown } = useDisplayContext();
+  const { activeMenu, setActiveMenu, screenSize, setScreenSize, selected, pathList, currentlyViewing, setSearchRangeTerm, setPosFileUpload} = useStateContext();
+  const { isClicked, setIsClicked, handleClick, checkClicked} = useDisplayContext();
 
-  const NavButton = ({ title, keyName, customFunc, icon, color, path, onMouseEnterFunc, onMouseLeaveFunc }) => {
-
-    // ${isClicked[keyName] ? ' text-slate-100 hover:text-slate-100' : 'hover:bg-light-gray '}
-    // ${activeMenu ? 'xl:px-5 lg:px-2' : ''}
-    // {isClicked[keyName] ? ' text-slate-100 hover:text-slate-200' : 'hover:bg-light-gray'}
+  const NavButton = ({ title, keyName, customFunc, icon, color, path}) => {
     return (
-      <div className="flex flex-row items-center h-6">
-        <NavLink
-          to={`/${path}`}>
-          <button
-            type="button"
-            onClick={customFunc}
-            style={{ color }}
-            className={`text-xl rounded-t-lg ${activeMenu ? '2xl:px-8 xl:px-5 lg:px-3 md:px-2 sm:px-1 ' : 'xl:px-10 lg:px-10 md:px-6 sm:px-4 px-2'} ${isClicked[keyName] ? 'bg-[#3f89c7] hover:text-slate-50' : 'hover:bg-slate-100'}`}
-            onMouseEnter={onMouseEnterFunc}
-            onMouseLeave={onMouseLeaveFunc}>
-            <div className={`flex flex-row items-center ${isClicked[keyName] ? ' text-slate-100 hover:text-slate-200' : ''}`}>
-              {icon}
-                <span className={`${activeMenu ? 'text-[16px]' : 'xl:text-[16px] lg:text-[16px] md:text-[16px] sm:text-[14px] text-sm'}  ml-2`}>{title}</span>
-            </div>
-          </button>
-        </NavLink>
-      </div>
+        <div className="flex flex-row items-center h-7 m-1">
+          <NavLink to={`/${path}`}>
+            <button
+              type="button"
+              onClick={customFunc}
+              style={{ color }}
+              className={`text-lg overflow-clip h-full rounded-full border-1 border-slate-300 ${activeMenu ? '2xl:px-8 xl:px-5 lg:px-3 md:px-2 sm:px-1' : 'xl:px-10 lg:px-10 md:px-6 sm:px-4 px-2'} hover:border-slate-500 transition-transform transform hover:scale-[1.02] active:scale-100 font-normal ${isClicked[keyName] ? 'bg-slate-100 shadow-sm border-slate-500' : 'hover:bg-slate-100'}`}
+            >
+              <div className={`flex flex-row p-0.25 items-center group-hover:scale-100 ${isClicked[keyName] ? ' font-bold' : ''}`}>
+                {icon}
+                <span className={`${window.innerWidth < 700 ? 'hidden px-4' : ''} xl:text-[14px] lg:text-[14px] md:text-[13px] sm:text-[12px] text-[12px] ml-2`}>{title}</span>
+              </div>
+            </button>
+          </NavLink>
+        </div>
     )
-
   }
 
   useEffect(() => {
@@ -56,21 +49,24 @@ const Navbar = ({ handleHelpClick }) => {
   useEffect(() => {
     if (screenSize <= 700) {
       setActiveMenu(false);
-    } 
+    }
   }, [screenSize]);
 
   useEffect(() => {
-    if (currentlyViewing === undefined) {
-      console.log(true);
-      // handleClick('barGraph');
-      setDropdown(false);
+    if (checkClicked && selected !== null && selected !== undefined) {
+      handleClick('barGraph')
     }
+    // if (currentlyViewing === undefined) {
+    //   console.log(true);
+    //   // handleClick('barGraph');
+    //   setDropdown(false);
+    // }
 
   }, [selected])
 
   return (
 
-    <div class="navbar" className="flex flex-col p-1 justify-between relative ">
+    <div class="navbar" className="flex flex-col p-1 justify-between relative z-60">
 
       <div class="menubutton" className="flex flex-row ">
         <button
@@ -99,7 +95,9 @@ const Navbar = ({ handleHelpClick }) => {
         <NavButton
           title="Variant Data"
           keyName='variantData'
-          customFunc={() => handleClick('variantData')}
+          customFunc={() => {
+            handleClick('variantData');
+          }}
           color="#3b3b3b"
           icon={<CgViewGrid />}
           path="variant_data"
@@ -107,7 +105,10 @@ const Navbar = ({ handleHelpClick }) => {
         <NavButton
           title="Node Graph"
           keyName='nodeGraph'
-          customFunc={() => handleClick('nodeGraph')}
+          customFunc={() => {
+            handleClick('nodeGraph');
+
+          }}
           color="#3b3b3b"
           icon={<GrGraphQl />}
           path="node_graph"
@@ -115,7 +116,9 @@ const Navbar = ({ handleHelpClick }) => {
         <NavButton
           title="Compare Samples"
           keyName='compareSamples'
-          customFunc={() => handleClick('compareSamples')}
+          customFunc={() => {
+            handleClick('compareSamples');
+          }}
           color="#3b3b3b"
           icon={<BiGitCompare />}
           path="compare_samples"
@@ -123,33 +126,47 @@ const Navbar = ({ handleHelpClick }) => {
         <NavButton
           title="Gene Data"
           keyName='geneData'
-          customFunc={() => handleClick('geneData')}
+          customFunc={() => {
+            handleClick('geneData');
+            setSearchRangeTerm('');
+            setPosFileUpload(undefined);
+          }}
           color="#3b3b3b"
           icon={< HiLightBulb />}
           path="gene_data"
         />
-        {/* <div className="flex grow items-center justify-end px-2">
-          <button onClick={handleHelpClick}><IoMdHelpCircle /></button>
-        </div> */}
 
-        {/* <div className="flex items-center ml-20">
-        <button
-          type="button"
-          onClick={() => {}}
-          className={`relative text-sm text-white h-8 bg-[#3f89c7] p-2`}
-        >
-          <div className="flex h-full items-center">
-          Download
-          </div>
-        </button>
-        </div> */}
 
       </div>
-    
-      <div className="flex bg-[#3f89c7] w-full h-0.5">
-      </div>
+      {/* <div className="flex bg-[#3f89c7] w-full h-0.5">
+      </div> */}
     </div>
   )
 }
 
 export default Navbar
+
+
+// const AnimatedLine = () => {
+//   const lineRef = useRef(null);
+
+
+//   useEffect(() => {
+//     const newPosition = activeButtonIndex * 40;
+//     setLinePosition(newPosition);
+//   }, [activeButtonIndex]);
+
+//   return (
+//     <div
+//       className="h-2 bg-blue-500 transition-transform duration-300 ease-in-out"
+//       style={{
+//         width: '40px', 
+//         transform: `translateX(${linePosition}px)`,
+//       }}
+//       ref={lineRef}
+//     />
+//   );
+// };
+
+// const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+// const [linePosition, setLinePosition] = useState(0);

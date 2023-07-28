@@ -10,13 +10,16 @@ import ForceGraph3D from "react-force-graph-3d";
 import { useDisplayContext } from '../contexts/DisplayContext';
 
 const NodeView = ({ w, h, setData }) => {
-  const { selected, phenotypeList, pathList, sizeList, searchRangeTerm, searchGeneTerm, geneFileUpload, posFileUpload, toggleRS, toggleGS, refresh } = useStateContext();
+  const { activeMenu, selected, currentlyViewing, setCurrentlyViewing, phenotypeList, pathList, sizeList, searchRangeTerm, searchGeneTerm, geneFileUpload, posFileUpload, toggleRS, toggleGS, refresh } = useStateContext();
   const { isClicked } = useDisplayContext();
 
   const { setNLData, setDataObj, view2D, nodeSize, gtList, passFilter, highlightFormat, settingsVisible, sampleColors, setSampleColors, variantColor, setQueryList, currView, setCurrView, currDataObj, setCurrDataObj } = useNodeContext();
 
   const fgRef = useRef();
   const prevVals = useRef({ selected, refresh, isClicked });
+  const [windowSize, setWindowSize] = useState({ height: window.innerHeight });
+  const [graphObj, setGraphObj] = useState(undefined);
+
 
 
   // const { nlData, setNLData, checkEmpty, dataObj, setDataObj, view2D, setView2D, view3D, setView3D, nodeSize, setNodeSize, gtList, setGtList, passFilter, setPassFilter, highlightFormat, setHighlightFormat, settingsVisible, setSettingsVisible, sampleColors, setSampleColors, variantColor, setVariantColor, queryList, setQueryList, currView, setCurrView, currDataObj, setCurrDataObj } = useNodeContext();
@@ -140,14 +143,13 @@ const NodeView = ({ w, h, setData }) => {
   }
 
   const handleFileChosen = async (filePath) => {
-    // console.log({ filePath });
-    // const phenPath = phenotypeList[pathList.indexOf(filePath)];
-    // console.log(phenPath);
     await FileService.addFile({
       path: filePath,
       phenotypePath: phenotypeList[pathList.indexOf(filePath)],
       size: sizeList[sizeList.indexOf(filePath)]
-    });
+    }); 
+    const fileInfo = await FileService.getFileInfo();
+    setCurrentlyViewing(fileInfo.data);
   }
 
   const getSampleColor = (node) => {
@@ -365,6 +367,8 @@ const NodeView = ({ w, h, setData }) => {
   }
 
   const handleNodeClick = (node, event, setData) => {
+    console.log("here?")
+
     if (clickedNode == node || node.type == "sample") {
       setClickedNode(null);
     } else {
@@ -388,29 +392,29 @@ const NodeView = ({ w, h, setData }) => {
       handleFileChosen(selected);
       prevVals.current = { selected, refresh, isClicked }
     } else {
-      handleFileChosen(selected);
-
-      if (geneFileUpload != null && selected != null && toggleGS === true) {
-        console.log("On refresh, searching gene FILE...");
-        searchGeneFile();
-      } else if (posFileUpload != null && selected != null && toggleRS === true) {
-        console.log("On refresh, searching pos FILE...");
-        searchPosFile();
-      } else if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
-        console.log("On refresh, searching gene...");
-        searchGene();
-      } else if (searchRangeTerm != '' && searchRangeTerm != null && selected != null && toggleRS === true) {
-        console.log("On refresh, searching range...");
-        searchRange();
-      } else if (selected != null) {
-        console.log("On refresh, no existing query.");
-        setDataObj(undefined);
-        setCurrView(undefined);
-        setCurrDataObj(undefined);
-        setNLData([]);
+      if (selected !== null && selected !== undefined) {
         handleFileChosen(selected);
-      }
-
+        // A file has been selected; process file and return for user queries.
+        if (geneFileUpload != null && selected != null && toggleGS === true) {
+          console.log("On refresh, searching gene FILE...");
+          searchGeneFile();
+        } else if (posFileUpload != null && toggleRS === true) {
+          console.log("On refresh, searching pos FILE...");
+          searchPosFile();
+        } else if (searchGeneTerm != '' && searchGeneTerm != null && toggleGS === true) {
+          console.log("On refresh, searching gene...");
+          searchGene();
+        } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
+          console.log("On refresh, searching range...");
+          searchRange();
+        } else {
+          console.log("On refresh, no existing query.");
+          setDataObj(undefined);
+          setCurrView(undefined);
+          setCurrDataObj(undefined);
+          setNLData([]);
+        }
+      } 
     }
 
   }, [refresh, selected, isClicked])
@@ -419,13 +423,12 @@ const NodeView = ({ w, h, setData }) => {
     const fg = fgRef.current;
     if (fg != undefined) {
       fg.d3Force('charge').strength(-100);
-
     }
   })
 
   if (currView == undefined || ((searchGeneTerm == undefined || searchGeneTerm == "") && (searchRangeTerm == undefined || searchRangeTerm == "") && geneFileUpload == undefined && posFileUpload == undefined)) {
     return (
-      <div className={`h-[612px]`}>
+      <div className="flex w-full h-full bg-blue-300">
       </div>
     )
   }
@@ -451,9 +454,8 @@ const NodeView = ({ w, h, setData }) => {
             node.fy = node.y;
             node.fz = node.z;
           }}
-          // nodeVal={(node) => getNodeSize(node)}
-          width={`${settingsVisible ? '740' : '980'}`}
-          height="612"
+          width={`${activeMenu ? window.innerWidth - 430 : window.innerWidth - 48}`}
+          height={window.innerHeight - 200}
         />
       </div>
     )
@@ -487,14 +489,15 @@ const NodeView = ({ w, h, setData }) => {
         nodeId="name"
         graphData={currView}
         nodeColor={(node) => getNodeColor(node)}
+        nodeResolution={16}
         onNodeClick={(node, event) => handleNodeClick(node, event, setData)}
         nodeLabel={(node) => getNodeTooltip3D(node)}
         nodeVal={(node) => getNodeSize(node)}
         nodeOpacity={1}
         linkColor={(link) => handleLinkColor(link, true)}
         backgroundColor="#f1f5f9"
-        width={`${settingsVisible ? '740' : '980'}`}
-        height="612"
+        width={`${activeMenu ? window.innerWidth - 430 : window.innerWidth - 48}`}
+        height={window.innerHeight - 200}
       />
     </div>
   )

@@ -13,7 +13,6 @@ const AboutData = () => {
   const [benignList, setBenignList] = useState([]);
   const [unknownList, setUnknownList] = useState([]);
   const [potentialPathVar, setPotentialPathVar] = useState([]);
-  const [inputVariant, setInputVariant] = useState("No variant selected.");
   const [POS, setPOS] = useState("N/A");
   const [REF, setREF] = useState("N/A");
   const [ALT, setALT] = useState("N/A");
@@ -45,6 +44,7 @@ const AboutData = () => {
   }, [selectedBarEntry])
 
   if (currentlyViewing == null) {
+    console.log("AHHHHHHHHH")
     return null;
   }
 
@@ -63,7 +63,7 @@ const AboutData = () => {
   }
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <div className="flex text-sm w-full px-4 bg-white border-1 border-black">
         File Information
       </div>

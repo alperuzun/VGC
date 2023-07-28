@@ -1,11 +1,10 @@
 import React from 'react'
 import { useStateContext } from '../contexts/ContextProvider';
 import { SimplePane } from './Panes';
-import  HeatMap  from './HeatMap';
+import HeatMap from './HeatMap';
 import { useCompareContext } from '../contexts/CompareContext';
 import { useDisplayContext } from '../contexts/DisplayContext';
-
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import NoFileUploaded from './NoFileUploaded';
 
 
 
@@ -33,26 +32,39 @@ const Compare = () => {
     return phenotypeList[pathList.indexOf(selected)];
   }
 
+  if (selected === null || selected === undefined) {
+    return (
+      <div className="flex w-full h-full overflow-x-clip">
+        <div className="flex w-full h-full">
+          <NoFileUploaded noVCF={true} />
+        </div>
+      </div>
+
+    )
+  }
+
   return (
-    <div>
-      <SimplePane>
-        {mapObj == null && <div className="fixed p-2">Enter a query above and upload a phenotype file to view sample read depth comparisons.</div> }
+    // <div>
+    //   <SimplePane>
+    <div className="flex flex-col w-full h-full">
+      <div className={`flex px-2 py-1.5 bg-slate-100 w-full h-full drop-shadow-md`}>
+        {mapObj == null && <div className="fixed p-2">Enter a query above and upload a phenotype file to view sample read depth comparisons.</div>}
         <div className="flex flex-row text-sm w-full">
-          <div className="flex w-[40rem] h-full p-2 ">
+          <div className="flex h-full w-[40rem] p-2 ">
             <HeatMap />
           </div>
-          <div className={`flex flex-col w-full h-min mt-2 mr-2 ${mapObj != null ?"bg-white ": ""}p-1`}>
+          <div className={`flex grow z-50 flex-col mt-2 mr-2 ${mapObj != null ? "bg-white " : ""} p-1 text-sm`}>
             <div className="flex h-4 ml-1.5 mt-2 justify-center">
               {mapObj != null &&
-              <text className="flex items-center">Statistical Analysis</text>
-              } 
+                <text className="flex text-clip items-center">Statistical Analysis</text>
+              }
             </div>
             {mapObj != null && mapObj.data != null && mapObj.data.geneList != null ?
 
-              <div className="flex flex-col w-full h-[35.5rem] overflow-y-scroll " onClick={() => { }}>
+              <div className="flex-1 flex-col overflow-y-scroll " onClick={() => { }}>
                 {mapObj.data.geneList.map((item) => (
                   <div className="flex flex-col items-center">
-                    <div className="flex w-full mt-2 bg-[#d3dee1] hover:bg-[#e3ebed] border-slate-400 py-1 cursor-pointer px-2" onClick={() => {setBrowserQuery("gene/" + item.ensembleID); console.log(item.ensembleID)}}>GENE: {item.gene} CHR: {item.chr}</div>
+                    <div className="flex w-full mt-2 bg-[#d3dee1] hover:bg-[#e3ebed] border-slate-400 py-1 cursor-pointer px-2" onClick={() => { setBrowserQuery("gene/" + item.ensembleID); console.log(item.ensembleID) }}>GENE: {item.gene} CHR: {item.chr}</div>
                     {item.variants.map((variant) => (
                       <div className="flex flex-col w-11/12 mt-2">
                         <div className="flex px-2 py-1 justify-between bg-[#ebebeb] hover:bg-[#f2f2f2] cursor-pointer" onClick={() => setBrowserQuery("region/" + variant.varChr + "-" + variant.varPos + "-" + variant.varPos)}>Variant: {variant.varPos}</div>
@@ -74,9 +86,9 @@ const Compare = () => {
           </div>
 
         </div>
-
-      </SimplePane>
+      </div>
     </div>
+
   )
 }
 

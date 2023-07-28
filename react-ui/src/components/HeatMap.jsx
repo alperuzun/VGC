@@ -9,7 +9,7 @@ import { useDisplayContext } from '../contexts/DisplayContext';
 
 
 const HeatMap = () => {
-  const { selected, searchGeneTerm, searchRangeTerm, geneFileUpload, setGeneFileUpload,
+  const { selected, currentlyViewing, setCurrentlyViewing, searchGeneTerm, searchRangeTerm, geneFileUpload, setGeneFileUpload,
     posFileUpload, setPosFileUpload, toggleRS, toggleGS, refresh, phenotypeList, pathList, sizeList } = useStateContext();
   const {isClicked} = useDisplayContext();
 
@@ -51,10 +51,12 @@ const HeatMap = () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
       let retrievedData = await SampleService.getHeatMapForGene("PASS", searchGeneTerm);
       console.log(retrievedData);
-      processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
-      processData(retrievedData.data.mapData);
-      setVerticalAxisLabels(retrievedData.data.yAxisLabels);
-      setMapObj(retrievedData);
+      if (retrievedData !== undefined) {
+        processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
+        processData(retrievedData.data.mapData);
+        setVerticalAxisLabels(retrievedData.data.yAxisLabels);
+        setMapObj(retrievedData);
+      }
     }
   }
 
@@ -62,10 +64,12 @@ const HeatMap = () => {
     if (searchRangeTerm !== undefined && searchRangeTerm != "") {
       let retrievedData = await SampleService.getHeatMapForRange("PASS", searchRangeTerm);
       console.log(retrievedData);
-      processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
-      processData(retrievedData.data.mapData);
-      setVerticalAxisLabels(retrievedData.data.yAxisLabels);
-      setMapObj(retrievedData);
+      if (retrievedData !== undefined) {
+        processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
+        processData(retrievedData.data.mapData);
+        setVerticalAxisLabels(retrievedData.data.yAxisLabels);
+        setMapObj(retrievedData);
+      }
     }
   }
 
@@ -73,10 +77,12 @@ const HeatMap = () => {
     if (geneFileUpload !== undefined) {
       let retrievedData = await SampleService.getHeatMapForGeneFile(geneFileUpload, "PASS");
       console.log(retrievedData);
-      processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
-      processData(retrievedData.data.mapData);
-      setVerticalAxisLabels(retrievedData.data.yAxisLabels);
-      setMapObj(retrievedData);
+      if (retrievedData !== undefined) {
+        processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
+        processData(retrievedData.data.mapData);
+        setVerticalAxisLabels(retrievedData.data.yAxisLabels);
+        setMapObj(retrievedData);
+      }
     }
   }
 
@@ -84,10 +90,12 @@ const HeatMap = () => {
     if (posFileUpload !== undefined) {
       let retrievedData = await SampleService.getHeatMapForPosFile(posFileUpload, "PASS");
       console.log(retrievedData);
-      processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
-      processData(retrievedData.data.mapData);
-      setVerticalAxisLabels(retrievedData.data.yAxisLabels);
-      setMapObj(retrievedData);
+      if (retrievedData !== undefined) {
+        processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
+        processData(retrievedData.data.mapData);
+        setVerticalAxisLabels(retrievedData.data.yAxisLabels);
+        setMapObj(retrievedData);
+      }
     }
   }
 
@@ -95,6 +103,8 @@ const HeatMap = () => {
     await FileService.addFile({ path: filePath, 
       phenotypePath: phenotypeList[pathList.indexOf(filePath)], 
       size: sizeList[pathList.indexOf(filePath)]  });
+    const fileInfo = await FileService.getFileInfo();
+    setCurrentlyViewing(fileInfo.data);
   }
 
   useEffect(() => {
@@ -159,15 +169,14 @@ const HeatMap = () => {
     }]
   }
 
-  return (
-    <div>
-      {mapData != null && mapObj != null ?
-        <div>
-          {(horizontalBrackets.length < 1) ?
-            (<HeatMapComponent
+  if (mapData != null && mapObj != null) {
+    if (horizontalBrackets.length < 1) {
+      return (
+        <HeatMapComponent
               id="container"
               fontFamily="Open Sans"
-              height='660'
+              height={'100%'}
+              width={'100%'}
               titleSettings={{
                 text: mapObj.data.title,
                 textStyle: { size: "15px", fontStyle: "Normal", fontFamily: "Open Sans" }
@@ -185,12 +194,16 @@ const HeatMap = () => {
             >
               <Inject services={[Legend]} />
 
-            </HeatMapComponent>)
-            :
-            (<HeatMapComponent
+            </HeatMapComponent>
+      )
+    } 
+    return (
+    
+      <HeatMapComponent
               id="container"
               fontFamily="Open Sans"
-              height='660'
+              height={'100%'}
+              width={'100%'}
               titleSettings={{
                 text: mapObj.data.title,
                 textStyle: { size: "15px", fontStyle: "Normal", fontFamily: "Open Sans" }
@@ -207,14 +220,74 @@ const HeatMap = () => {
               renderingMode={'Auto'}
             >
               <Inject services={[Legend]} />
-            </HeatMapComponent>)
-          }
-        </div>
-      :
-      <div className="flex h-[42rem]">
-      </div>}
-    </div>
+            </HeatMapComponent>
+
+    )
+  }
+
+  return (
+    <div className="flex-1">
+      </div>
   )
 }
 
 export default HeatMap
+
+
+// return (
+//   <div className="flex overflow-hidden">
+//     {mapData != null && mapObj != null ?
+//       <div className="flex overflow-hidden">
+//         {(horizontalBrackets.length < 1) ?
+//           (<HeatMapComponent
+//             id="container"
+//             fontFamily="Open Sans"
+//             height={'100%'}
+//             width={'100%'}
+//             titleSettings={{
+//               text: mapObj.data.title,
+//               textStyle: { size: "15px", fontStyle: "Normal", fontFamily: "Open Sans" }
+//             }}
+//             xAxis={plainAxisLabelHorizontal}
+//             yAxis={plainAxisLabelVertical}
+//             cellSettings={{
+//               border: {
+//                 width: 0,
+//               }
+//             }}
+//             dataSource={mapData}
+//             legendSettings={{ position: 'Right' }}
+//             renderingMode={'Auto'}
+//           >
+//             <Inject services={[Legend]} />
+
+//           </HeatMapComponent>)
+//           :
+//           (<HeatMapComponent
+//             id="container"
+//             fontFamily="Open Sans"
+//             height='660'
+//             titleSettings={{
+//               text: mapObj.data.title,
+//               textStyle: { size: "15px", fontStyle: "Normal", fontFamily: "Open Sans" }
+//             }}
+//             xAxis={phenotypeLabelsHorizontal}
+//             yAxis={plainAxisLabelVertical}
+//             dataSource={mapData}
+//             cellSettings={{
+//               border: {
+//                 width: 0,
+//               }
+//             }}
+//             legendSettings={{ position: 'Right' }}
+//             renderingMode={'Auto'}
+//           >
+//             <Inject services={[Legend]} />
+//           </HeatMapComponent>)
+//         }
+//       </div>
+//     :
+//     <div className="flex h-[42rem]">
+//     </div>}
+//   </div>
+// )
