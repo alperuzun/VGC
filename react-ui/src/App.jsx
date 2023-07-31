@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import { Sidebar, Navbar, Display, Table, Graph, Gene, Compare, Welcome } from './components';
+import { Sidebar, Navbar, Display, Table, Graph, Gene, Compare, Welcome, LoadingOverlay } from './components';
 import { useStateContext } from './contexts/ContextProvider';
-import { DisplayContext } from './contexts/DisplayContext';
+import { DisplayContext, useDisplayContext } from './contexts/DisplayContext';
 import { CompareContext } from './contexts/CompareContext';
 import { GeneContext } from './contexts/GeneContext';
+
 import { AboutPane, DisplayPane, ParentPane, SimplePane } from './components/Panes';
 import { BarContext, useBarContext } from './contexts/BarContext';
 import { NodeContext } from './contexts/NodeContext';
 import { TableContext } from './contexts/TableContext';
+
 import './App.css';
 
 const App = () => {
@@ -20,8 +22,9 @@ const App = () => {
   return (
     <DisplayContext >
       <div className="fixed">
-        
         <HashRouter>
+          {/* <LoadingOverlay/> */}
+
           <div className="flex relative dark:bg-main-dark-bg h-screen w-screen">
             <div className="flex flex-col w-full fixed z-10">
               <div className={`dark:bg-main-dark-bg flex flex-row bg-main-bg shadow-sm min-h ${activeMenu ? 'ml-96' : 'flex-2'}`

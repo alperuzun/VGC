@@ -15,6 +15,7 @@ export const DisplayContext = ({ children }) => {
   const [isClicked, setIsClicked] = useState(initialState);
   const [errorPopup, setErrorPopup] = useState(false);
   const [browserQuery, setBrowserQuery] = useState(undefined);
+  const [loading, setLoading] = useState(false);
 
 
   const checkClicked = () => {
@@ -40,6 +41,8 @@ export const DisplayContext = ({ children }) => {
         setErrorPopup,
         browserQuery,
         setBrowserQuery,
+        loading, 
+        setLoading,
       }}
     >
       { children }

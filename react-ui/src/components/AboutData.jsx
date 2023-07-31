@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useStateContext } from '../contexts/ContextProvider'
 import { useBarContext } from '../contexts/BarContext';
+import LoadingOverlay from './LoadingOverlay';
 
 
 
@@ -44,8 +45,17 @@ const AboutData = () => {
   }, [selectedBarEntry])
 
   if (currentlyViewing == null) {
-    console.log("AHHHHHHHHH")
     return null;
+  }
+
+  if (histogramData === undefined || histogramData === null) {
+    return (
+      // <div> Loading, please wait... </div>
+      <div>
+        <LoadingOverlay/>
+      </div>
+
+    );
   }
 
   const MappedList = ({ title, list }) => {

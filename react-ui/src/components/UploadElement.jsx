@@ -19,7 +19,7 @@ const getFileSize = (size) => {
 }
 
 const UploadElement = ({ path, fileDeleterToggle, size }) => {
-  const { selected, setSelected, phenotypeList, pathList, setPathList, setPhenotypeList, sizeList, setSizeList, handlePhenotypeFileChange, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, refresh, setRefresh } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, setPathList, setPhenotypeList, sizeList, setSizeList, handlePhenotypeFileChange, handleRemovePath, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, refresh, setRefresh } = useStateContext();
   const { isViewing, handleChangeView, handleClick, handleVisData} = useDisplayContext();
 
   const filename = path.replace(/^.*[\\\/]/, '')
@@ -55,25 +55,26 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
               <button
                 className="flex items-center pr-2 text-slate-400 hover:text-slate-600"
                 onClick={() => {
-                  var indexOfDeleted = pathList.indexOf(path);
-                  var pathCopy = [...pathList];
-                  pathCopy.splice(indexOfDeleted, 1)
-                  var phenotypeCopy = [...phenotypeList];
-                  phenotypeCopy.splice(indexOfDeleted, 1);
-                  var sizeCopy = [...sizeList];
-                  sizeCopy.splice(indexOfDeleted, 1);
+                  handleRemovePath(path);
+                  // var indexOfDeleted = pathList.indexOf(path);
+                  // var pathCopy = [...pathList];
+                  // pathCopy.splice(indexOfDeleted, 1)
+                  // var phenotypeCopy = [...phenotypeList];
+                  // phenotypeCopy.splice(indexOfDeleted, 1);
+                  // var sizeCopy = [...sizeList];
+                  // sizeCopy.splice(indexOfDeleted, 1);
 
-                  setPathList(pathCopy);
-                  setPhenotypeList(phenotypeCopy);
-                  setSizeList(sizeCopy);
+                  // setPathList(pathCopy);
+                  // setPhenotypeList(phenotypeCopy);
+                  // setSizeList(sizeCopy);
 
-                  if (pathCopy.length === 0) {
-                    setSelected(undefined);
-                  } else if (indexOfDeleted === pathCopy.length) {
-                    setSelected(pathCopy[indexOfDeleted - 1]);
-                  } else {
-                    setSelected(pathCopy[indexOfDeleted]);
-                  }
+                  // if (pathCopy.length === 0) {
+                  //   setSelected(undefined);
+                  // } else if (indexOfDeleted === pathCopy.length) {
+                  //   setSelected(pathCopy[indexOfDeleted - 1]);
+                  // } else {
+                  //   setSelected(pathCopy[indexOfDeleted]);
+                  // }
                 }}>
                 <AiOutlineClose />
               </button>

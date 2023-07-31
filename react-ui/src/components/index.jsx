@@ -19,3 +19,4 @@ export { default as TreeView } from './TreeView';
 export { default as TabBar } from './TabBar';
 export { default as Welcome } from './Welcome';
 export { default as NoFileUploaded } from './NoFileUploaded';
+export { default as LoadingOverlay } from './LoadingOverlay';

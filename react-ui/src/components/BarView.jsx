@@ -1,17 +1,21 @@
+
+
 import React, { useRef, useEffect, useState } from 'react'
 import { BarChart, Bar, LabelList, Cell, Label, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useStateContext } from '../contexts/ContextProvider'
-import { useBGContext, useDisplayContext } from '../contexts/DisplayContext'
+import { useDisplayContext } from '../contexts/DisplayContext'
 import { useBarContext } from '../contexts/BarContext';
 import FileService from '../services/FileService';
+import LoadingOverlay from './LoadingOverlay';
 
 const BarView = () => {
   const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, GSError, setGSError, RSError, setRSError, selectedBarEntry, setSelectedBarEntry } = useBarContext();
-  const { isClicked, browserQuery, setBrowserQuery } = useDisplayContext();
-  const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
+  const { isClicked, browserQuery, setBrowserQuery} = useDisplayContext();
+  const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, handleRemovePath, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
 
   const initialRender = useRef(true);
   const prevVals = useRef({ selected, refresh, isClicked });
+  const [processing, setProcessing] = useState(false);
 
 
   const tool_tip_outer_flex = `flex flex-col w-60 h-16 bg-white items-center shadow rounded-sm border-slate-400`
@@ -183,47 +187,65 @@ const BarView = () => {
   const handleGeneQuery = async () => {
     console.log("Calling handleGeneQuery with: ")
     console.log("HistoryIndex: " + historyIndex)
-    const newData = await FileService.getHistogramByGene(searchGeneTerm.trim(), passFilter);
-    console.log(newData);
-    if (newData.data === '') {
-      setGSError(true);
-    } else if (newData.data.zoomFactor <= 10000) {
-      const { sorted, map } = processData(newData.data.data)
-      console.log("Processed data:")
-      console.log(sorted);
-      console.log("Map:")
-      console.log(map);
-      handleBarAction(newData, sorted, map);
-      setHistogramData(newData);
-    } else {
-      handleBarAction(newData, undefined, undefined);
-      setHistogramData(newData);
+    setProcessing(true);
+    try {
+      const newData = await FileService.getHistogramByGene(searchGeneTerm.trim(), passFilter);
+      console.log(newData);
+      if (newData.data === '') {
+        setGSError(true);
+      } else if (newData.data.zoomFactor <= 10000) {
+        const { sorted, map } = processData(newData.data.data)
+        console.log("Processed data:")
+        console.log(sorted);
+        console.log("Map:")
+        console.log(map);
+        handleBarAction(newData, sorted, map);
+        setHistogramData(newData);
+      } else {
+        handleBarAction(newData, undefined, undefined);
+        setHistogramData(newData);
+      }
+      setProcessing(false);
+    } catch (error) {
+      setProcessing(false);
+      throw error;
     }
+
   }
 
   const handleRangeQuery = async (chr, start, end) => {
     console.log("Calling handleRangeQuery with: ")
     console.log("HistoryIndex: " + historyIndex)
-    const newData = await FileService.getHistogramByRange(chr, start, end, passFilter);
-    if (newData.data === '') {
-      setRSError(true);
-    } else if (newData.data.zoomFactor <= 10000) {
-      const { sorted, map } = processData(newData.data.data)
-      console.log("Processed data:")
-      console.log(sorted);
-      console.log("Map:")
-      console.log(map);
-      handleBarAction(newData, sorted, map);
-      setHistogramData(newData);
-      setBrowserQuery("region/" + chr + "-" + start + "-" + end);
-    } else {
-      handleBarAction(newData, undefined, undefined);
-      setHistogramData(newData);
-      setBrowserQuery("region/" + chr + "-" + start + "-" + end);
+    setProcessing(true);
+    try {
+      const newData = await FileService.getHistogramByRange(chr, start, end, passFilter);
+      if (newData.data === '') {
+        setRSError(true);
+      } else if (newData.data.zoomFactor <= 10000) {
+        const { sorted, map } = processData(newData.data.data)
+        console.log("Processed data:")
+        console.log(sorted);
+        console.log("Map:")
+        console.log(map);
+        handleBarAction(newData, sorted, map);
+        setHistogramData(newData);
+        setBrowserQuery("region/" + chr + "-" + start + "-" + end);
+      } else {
+        handleBarAction(newData, undefined, undefined);
+        setHistogramData(newData);
+        setBrowserQuery("region/" + chr + "-" + start + "-" + end);
+      }
+      setProcessing(false);
+    } catch (error) {
+      setProcessing(false);
+      throw error;
     }
+
   }
 
   const handleFileChosen = async (filePath) => {
+    console.log("In handleFileChosen...");
+
     await FileService.addFile({
       path: filePath,
       phenotypePath: phenotypeList[pathList.indexOf(filePath)],
@@ -231,14 +253,19 @@ const BarView = () => {
     });
     const genericGraph = await FileService.getVarToChromGraph(passFilter);
     const fileInfo = await FileService.getFileInfo();
+
+    if (genericGraph === undefined || fileInfo === undefined) {
+      alert("An error occurred processing your selected file. Please check your file formatting and try again.");
+      handleRemovePath(filePath);
+      return;
+    }
     setHistogramData(genericGraph);
     setCurrentlyViewing(fileInfo.data);
     handleBarAction(genericGraph, undefined, undefined);
-    console.log(barHistory);
-    console.log("Index:" + historyIndex);
   }
 
   const handleReset = async (filePath) => {
+    console.log("In handleReset...");
     await FileService.addFile({
       path: filePath,
       phenotypePath: phenotypeList[pathList.indexOf(filePath)],
@@ -246,6 +273,11 @@ const BarView = () => {
     });
     const genericGraph = await FileService.getVarToChromGraph(passFilter);
     const fileInfo = await FileService.getFileInfo();
+    if (genericGraph === undefined || fileInfo === undefined) {
+      alert("An error occurred processing your selected file. Please check your file formatting and try again.");
+      handleRemovePath(filePath);    
+      return;
+    }
     setHistogramData(genericGraph);
     setCurrentlyViewing(fileInfo.data);
     setBarHistory([genericGraph]);
@@ -254,30 +286,40 @@ const BarView = () => {
     setHistoryIndex(0);
     console.log(barHistory);
     console.log("Index:" + historyIndex);
+
   }
 
   useEffect(() => {
-    if (prevVals.current.selected != selected) {
+    console.log("in useeffect")
+    if (prevVals.current.selected !== selected) {
       setHistoryIndex(undefined);
       setHistogramData(undefined);
       if (selected !== undefined) {
-        handleReset(selected);
+        try {
+          handleReset(selected);
+          prevVals.current = { selected, refresh, isClicked }
+        } catch (error) {
+          alert("An error occurred processing your selected file. Please check your file formatting and try again.")
+        }
       }
-      prevVals.current = { selected, refresh, isClicked }
     } else {
       if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
-        console.log("In start...handling gene query...selected file is: ");
-        console.log(selected);
-        handleGeneQuery();
+        try {
+          handleGeneQuery();
+        } catch (error) {
+          alert("An error occurred processing your query.")
+        }
       } else if (searchRangeTerm != '' && searchRangeTerm != null && selected != null && toggleRS === true) {
-        console.log("In start...handling range query...");
-        let trimmedQuery = searchRangeTerm.trim();
-        let chr = trimmedQuery.substring(0, trimmedQuery.indexOf(":"));
-        let startPos = trimmedQuery.substring(trimmedQuery.indexOf(":") + 1, trimmedQuery.indexOf("-"));
-        let endPos = trimmedQuery.substring(trimmedQuery.indexOf("-") + 1);
-        handleRangeQuery(chr, startPos, endPos)
+        try {
+          let trimmedQuery = searchRangeTerm.trim();
+          let chr = trimmedQuery.substring(0, trimmedQuery.indexOf(":"));
+          let startPos = trimmedQuery.substring(trimmedQuery.indexOf(":") + 1, trimmedQuery.indexOf("-"));
+          let endPos = trimmedQuery.substring(trimmedQuery.indexOf("-") + 1);
+          handleRangeQuery(chr, startPos, endPos)
+        } catch (error) {
+          alert("An error occurred processing your query.")
+        }
       } else if (selected != null) {
-        console.log("Creating generic graph...");
         handleFileChosen(selected);
       }
     }
@@ -285,9 +327,9 @@ const BarView = () => {
   }, [refresh, selected, isClicked])
 
 
-  if (histogramData === undefined) {
+  if (histogramData === undefined || histogramData === null) {
     return (
-      <div>
+      <div className="flex-1 p-2 h-full w-full justify-center">
         Displaying your graph...
       </div>
     );
@@ -295,6 +337,7 @@ const BarView = () => {
 
   const handleClick = async (index, entry) => {
     console.log("click!");
+    setProcessing(true);
     if (histogramData.data.chr === undefined || histogramData.data.zoomFactor === null) {
       const newData = await FileService.getZoomedgraph(index, passFilter);
       handleBarAction(newData, undefined, undefined);
@@ -331,6 +374,8 @@ const BarView = () => {
         console.log("Pos is: " + histogramData.data.xMarkToVarMap[entry.x]);
       }
     }
+    setProcessing(false);
+
   }
 
   const getChartWidth = () => {
@@ -362,8 +407,6 @@ const BarView = () => {
   };
 
   const getChartHeight = () => {
-    // Define your logic here to calculate the height based on screen size
-    // Similar to getChartWidth, you can set breakpoints and return different values
     if (window.innerHeight >= 800) {
       return 450; // Fallback height for screens larger than 'xl'
     } else {
@@ -372,7 +415,13 @@ const BarView = () => {
   };
 
   return (
+
     <div className="flex-1 p-2 h-full w-full justify-center ">
+      {processing && 
+      <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+        <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>
+      </div>
+      }
         <BarChart
           data={histogramData.data.data}
           margin={{

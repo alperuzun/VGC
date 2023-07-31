@@ -52,18 +52,6 @@ const Navbar = ({ handleHelpClick }) => {
     }
   }, [screenSize]);
 
-  useEffect(() => {
-    if (checkClicked && selected !== null && selected !== undefined) {
-      handleClick('barGraph')
-    }
-    // if (currentlyViewing === undefined) {
-    //   console.log(true);
-    //   // handleClick('barGraph');
-    //   setDropdown(false);
-    // }
-
-  }, [selected])
-
   return (
 
     <div class="navbar" className="flex flex-col p-1 justify-between relative z-60">

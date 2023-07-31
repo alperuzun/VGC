@@ -79,9 +79,9 @@ public class FileController {
                 System.out.println("To be added path is: " + file.getPath());
                 System.out.println("Current paths in fileRepository: " + this.getAllPaths());
 //                    this.handler.setCurrFile(file);
-                    this.handler.handleSelected(file);
-                    System.out.println("REQUEST LOGIC DONE");
-                    return this.fileRepository.save(file);
+                this.handler.handleSelected(file);
+                System.out.println("REQUEST LOGIC DONE");
+                return this.fileRepository.save(file);
             } else {
                 UploadedFile existingFile = this.fileRepository.findUploadedFileByPath(file.getPath());
                 if (existingFile.getPhenotypePath() != null && file.getPhenotypePath() == null) {

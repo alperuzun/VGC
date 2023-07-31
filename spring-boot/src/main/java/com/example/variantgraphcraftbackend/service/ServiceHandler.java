@@ -53,8 +53,10 @@ public class ServiceHandler {
 
     public void handleSelected(UploadedFile file) throws IOException {
         this.currFile = file;
-        this.pathMap.put(file.getPath(), file);
+        // this.pathMap.put(file.getPath(), file);
         this.vcfParser.processSelectedFile(file);
+        this.pathMap.put(file.getPath(), file);
+
     }
 
     public void selectByPath(String vcfPath, String phenotypePath, boolean updatePhenotype) throws IOException {

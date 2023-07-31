@@ -18,6 +18,27 @@ export const ContextProvider = ({ children }) => {
       setSizeList([...sizeList, newFile.size]);
     }
   }
+  const handleRemovePath = (removeFilePath) => {
+    var indexOfDeleted = pathList.indexOf(removeFilePath);
+    var pathCopy = [...pathList];
+    pathCopy.splice(indexOfDeleted, 1)
+    var phenotypeCopy = [...phenotypeList];
+    phenotypeCopy.splice(indexOfDeleted, 1);
+    var sizeCopy = [...sizeList];
+    sizeCopy.splice(indexOfDeleted, 1);
+
+    setPathList(pathCopy);
+    setPhenotypeList(phenotypeCopy);
+    setSizeList(sizeCopy);
+
+    if (pathCopy.length === 0) {
+      setSelected(undefined);
+    } else if (indexOfDeleted === pathCopy.length) {
+      setSelected(pathCopy[indexOfDeleted - 1]);
+    } else {
+      setSelected(pathCopy[indexOfDeleted]);
+    }
+  }
   const handlePhenotypeFileChange = (phenotypeFile, vcfPath) => {
     phenotypeList[pathList.indexOf(vcfPath)] = phenotypeFile.path;
   }
@@ -42,7 +63,7 @@ export const ContextProvider = ({ children }) => {
         selected, setSelected,
         graphData, setGraphData,
         currentlyViewing, setCurrentlyViewing,
-        pathList, setPathList, handleNewPath,
+        pathList, setPathList, handleNewPath, handleRemovePath,
         phenotypeList, setPhenotypeList,handlePhenotypeFileChange,
         sizeList, setSizeList,
         searchRangeTerm, setSearchRangeTerm,

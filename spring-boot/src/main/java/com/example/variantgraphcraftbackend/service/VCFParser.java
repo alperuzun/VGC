@@ -30,6 +30,7 @@ public class VCFParser {
         File index = new File(directoryPath + "/index_" + name + ".txt");
 
         if(!info.exists() && !index.exists()) {
+            System.out.println("Neither info nor index exists...creating now...");
             File directory = new File(directoryPath);
 
             if (!directory.exists()) {
@@ -84,6 +85,8 @@ public class VCFParser {
         BufferedReader input = new BufferedReader(new FileReader(vcf));
         PathogenicParser pathogenicParser = new PathogenicParser();
         pathogenicParser.loadMapping();
+
+        System.out.println("VCF file being read...");
 
         // Updates version in InfoFile through UploadedFile.
         currLine = input.readLine();

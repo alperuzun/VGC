@@ -9,6 +9,7 @@ import { SimplePane } from './Panes';
 import { CgUndo, CgRedo } from 'react-icons/cg';
 import { IoMdHelpCircle } from 'react-icons/io';
 import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import LoadingOverlay from './LoadingOverlay';
 
 
 const Display = () => {
@@ -55,6 +56,7 @@ const Display = () => {
   }
 
 
+
   return (
     <div className="flex w-full h-full overflow-x-clip">
       <div className="flex w-full flex-col">
@@ -64,7 +66,6 @@ const Display = () => {
 
         <div className="flex grow px-2 py-1.5">
           <div className={`flex flex-col bg-slate-100 w-full h-full drop-shadow-md `}>
-
             <div className="flex flex-col mt-6">
               <div className="flex ml-5 text-2xl w-full">
                 <CgUndo className={`rounded ml-2  ${historyIndex == 0 || historyIndex == null ? "text-slate-400" : "hover:bg-slate-200"}`} onClick={() => handleUndo()} />
@@ -120,6 +121,10 @@ const Display = () => {
                 }
               </div>
             </div>
+
+
+
+            
             <div className="flex flex-row h-3/4 w-full">
               <div className="flex items-center w-1/12 justify-right">
                 <nobr className="flex rotate-[270deg] origin-top">
