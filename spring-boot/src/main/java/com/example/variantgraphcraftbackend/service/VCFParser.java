@@ -25,7 +25,7 @@ public class VCFParser {
         File vcf = new File(file.getPath());
         String name = vcf.getName();
         name = name.substring(0, name.length() - 4);
-        
+
         String directoryPath = storePath + "/VGC_" + name;
         File info = new File(directoryPath + "/info_" + name + ".txt");
         File index = new File(directoryPath + "/index_" + name + ".txt");
@@ -92,6 +92,7 @@ public class VCFParser {
         // Updates version in InfoFile through UploadedFile.
         currLine = input.readLine();
         infoWriter.addVersion(currLine);
+        int varCounter = 0;
 
         // Reads rest of file + updates info/index accordingly.
         while(currLine != null) {
@@ -102,12 +103,14 @@ public class VCFParser {
                 infoWriter.addHeader(currLine);
             } else {
                 indexWriter.buildChromData(prevLine, currLine, lineNumber, pathogenicParser);
+                varCounter++;
             }
             prevLine = currLine;
             currLine = input.readLine();
         }
         input.close();
         indexWriter.addLastChrom(prevLine, lineNumber);
+        infoWriter.addNumVar(varCounter);
     }
 
     public List<String[]> getLinesByTotal(int total, int startLine, int endLine, String vcf) throws IOException{

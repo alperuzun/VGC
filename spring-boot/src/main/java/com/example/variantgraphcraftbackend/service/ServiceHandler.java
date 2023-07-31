@@ -49,10 +49,12 @@ public class ServiceHandler {
      * @return
      */
     public AboutBox generateAbout() {
+        InfoReader infoReader = this.infoMap.get(this.currFile);
         AboutBox about = new AboutBox(this.currFile.getPath(),
-                this.infoMap.get(this.currFile).getVersion(),
-                this.infoMap.get(this.currFile).getPatients(),
-                this.infoMap.get(this.currFile).getNumChrom());
+                infoReader.getVersion(),
+                infoReader.getPatients(),
+                infoReader.getNumChrom(),
+                infoReader.getNumVar());
         return about;
     }
 

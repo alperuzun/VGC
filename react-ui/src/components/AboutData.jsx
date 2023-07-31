@@ -52,7 +52,7 @@ const AboutData = () => {
     return (
       // <div> Loading, please wait... </div>
       <div>
-        <LoadingOverlay/>
+        <LoadingOverlay />
       </div>
 
     );
@@ -63,9 +63,9 @@ const AboutData = () => {
       <div className="flex flex-col w-1/3 items-center">
         <text className="flex font-bold">{title}: </text>
         <div className="flex flex-col w-full h-10 overflow-auto items-center">
-        {list.map((item) => (
-          <div>{item}</div>
-        ))}
+          {list.map((item) => (
+            <div>{item}</div>
+          ))}
         </div>
 
       </div>
@@ -79,13 +79,13 @@ const AboutData = () => {
       </div>
       <div className="flex flex-col ml-2 mr-80 px-4 w-full text-sm">
         <div><text className="font-bold">Path: </text>{currentlyViewing.name} </div>
-        <div>Currently viewing VCF file <text className="font-bold">Version {currentlyViewing.version}</text> with <text className="font-bold">{currentlyViewing.numPatients} samples</text> and <text className="font-bold">{currentlyViewing.chromosomes} chromosomes</text> with data.</div>
+        <div>Currently viewing VCF file <text className="font-bold">Version {currentlyViewing.version}</text> with <text className="font-bold">{currentlyViewing.numPatients} samples</text>, <text className="font-bold">{currentlyViewing.chromosomes} chromosomes</text>, and <text className="font-bold">{currentlyViewing.numVariants} total variants.</text>  </div>
       </div>
       <div className="flex text-sm w-full px-4 bg-white border-1 border-black">
         Variant Identification
       </div>
       <div className={`flex w-full ${isPathogenic == undefined ? "bg-slate-300" : (isPathogenic ? "bg-red-300" : "bg-green-300")}`}>
-        
+
         <text className="flex ml-2 px-4 text-sm">{pathString}.</text>
       </div>
       <div className="flex flex-row px-4 w-full text-sm">

@@ -7,7 +7,6 @@ import { useDisplayContext } from '../contexts/DisplayContext'
 import { useBarContext } from '../contexts/BarContext';
 import FileService from '../services/FileService';
 import LoadingOverlay from './LoadingOverlay';
-import { toPng } from 'html-to-image';
 
 
 const BarView = () => {

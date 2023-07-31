@@ -58,6 +58,14 @@ public class InfoWriter {
     }
 
     /**
+     * Adds the total number of variant present in the file.
+     * @param numVar
+     */
+    public void addNumVar(int numVar) {
+        this.infoList.add(String.valueOf(numVar));
+    }
+
+    /**
      * Adds the total number of chromosomes & list of individual chromosomes to the
      * infoList as Strings. The individual chromosome numbers are sorted by their
      * String value.
@@ -65,7 +73,9 @@ public class InfoWriter {
      * @param chromList
      */
     public void addChrom(int chromNumber, ArrayList<String> chromList) {
-        this.infoList.add(String.valueOf(chromNumber));
+        if (chromList.contains("X") && chromList.contains("Y")) {
+            this.infoList.add(String.valueOf(chromNumber - 1));
+        }
         Collections.sort(chromList);
 
         for (String key : chromList) {

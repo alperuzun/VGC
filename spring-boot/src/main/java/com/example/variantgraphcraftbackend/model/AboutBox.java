@@ -15,16 +15,18 @@ public class AboutBox {
     private String version;
     private String numPatients;
     private int chromosomes;
+    private int numVariants;
 
     public AboutBox() {
 
     }
 
-    public AboutBox(String name, String version, String numPatients, int chromosomes) {
+    public AboutBox(String name, String version, String numPatients, int chromosomes, int numVariants) {
         this.name = name;
         this.version = version;
         this.numPatients = numPatients;
         this.chromosomes = chromosomes;
+        this.numVariants = numVariants;
     }
 
     public Long getId() {
@@ -65,5 +67,13 @@ public class AboutBox {
 
     public void setChromosomes(int chromosomes) {
         this.chromosomes = chromosomes;
+    }
+
+    public int getNumVariants() {
+        return this.numVariants;
+    }
+
+    public void setNumVariants(int numVariants) {
+        this.numVariants = numVariants;
     }
 }

@@ -73,12 +73,16 @@ public class InfoReader {
         return this.infoData.get(3);
     }
 
+    public int getNumVar() {
+        return Integer.valueOf(this.infoData.get(4));
+    }
+
     /**
      * Returns the total number of chromosomes.
      * @return
      */
     public int getNumChrom() {
-        return Integer.valueOf(this.infoData.get(4));
+        return Integer.valueOf(this.infoData.get(5));
     }
 
     /**
@@ -87,7 +91,7 @@ public class InfoReader {
      */
     public ArrayList<String> getChromosomes() {
         ArrayList<String> chromosomes = new ArrayList<String>();
-        for (int i = 5; i < this.infoData.size(); i++) {
+        for (int i = 6; i < this.infoData.size(); i++) {
             chromosomes.add(this.infoData.get(i));
         }
         return chromosomes;
