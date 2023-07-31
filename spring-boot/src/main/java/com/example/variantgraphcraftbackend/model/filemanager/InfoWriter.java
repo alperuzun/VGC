@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
+
 public class InfoWriter {
 
     private BufferedWriter writer;
@@ -28,8 +30,12 @@ public class InfoWriter {
      * Adds the VCF file version to the infoList.
      * @param currLine
      */
-    public void addVersion(String currLine) {
+    public void addVersion(String currLine) throws InvalidFileException, IndexOutOfBoundsException {
+        String label = currLine.substring(0, 17);
         String version = currLine.substring(17);
+        if (!label.equals("##fileformat=VCFv")) {
+            throw new InvalidFileException("Invalid file input.", 400);
+        }
         this.infoList.add(version);
     }
 
@@ -37,10 +43,13 @@ public class InfoWriter {
      * Adds the header fields & number of patients to the infoList.
      * @param currLine
      */
-    public void addHeader(String currLine) {
+    public void addHeader(String currLine) throws InvalidFileException, IndexOutOfBoundsException {
         String fieldVal = currLine.substring(0, currLine.indexOf("FORMAT") + 7);
+        if (!fieldVal.equals("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t")) {
+            System.out.println(fieldVal);
+            throw new InvalidFileException("Invalid file input.", 400);
+        }
         this.infoList.add(fieldVal);
-
         String sampleString = currLine.substring(currLine.indexOf("FORMAT") + 7);
         String[] sampleData = sampleString.split("\t");
         System.out.println(sampleData);

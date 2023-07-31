@@ -1,4 +1,5 @@
 package com.example.variantgraphcraftbackend.service;
+import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
 import com.example.variantgraphcraftbackend.model.UploadedFile;
 import com.example.variantgraphcraftbackend.model.filemanager.*;
 
@@ -18,13 +19,13 @@ public class VCFParser {
         this.indexMap = indexMap;
     }
 
-    public void processSelectedFile(UploadedFile file) throws IOException {
+    public void processSelectedFile(UploadedFile file) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         String storePath = this.makeGeneratedFilesDirectory();
 
         File vcf = new File(file.getPath());
         String name = vcf.getName();
         name = name.substring(0, name.length() - 4);
-
+        
         String directoryPath = storePath + "/VGC_" + name;
         File info = new File(directoryPath + "/info_" + name + ".txt");
         File index = new File(directoryPath + "/index_" + name + ".txt");
@@ -76,7 +77,7 @@ public class VCFParser {
      * Initial read of an added vcf file. Called once a new
      * UploadedFile is saved to the FileRepository.
      */
-    private void read(UploadedFile file, InfoWriter infoWriter, IndexWriter indexWriter) throws IOException {
+    private void read(UploadedFile file, InfoWriter infoWriter, IndexWriter indexWriter) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         String currLine = "";
         String prevLine = "";
         int lineNumber = 0;

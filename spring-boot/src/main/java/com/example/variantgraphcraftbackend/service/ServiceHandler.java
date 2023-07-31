@@ -1,11 +1,14 @@
 package com.example.variantgraphcraftbackend.service;
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
 import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.model.filemanager.IndexReader;
 import com.example.variantgraphcraftbackend.model.filemanager.InfoReader;
 import com.example.variantgraphcraftbackend.model.filemanager.PhenotypeReader;
+
+import org.hibernate.mapping.Index;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -53,15 +56,14 @@ public class ServiceHandler {
         return about;
     }
 
-    public void handleSelected(UploadedFile file) throws IOException {
+    public void handleSelected(UploadedFile file) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         this.currFile = file;
-        // this.pathMap.put(file.getPath(), file);
         this.vcfParser.processSelectedFile(file);
         this.pathMap.put(file.getPath(), file);
 
     }
 
-    public void selectByPath(String vcfPath, String phenotypePath, boolean updatePhenotype) throws IOException {
+    public void selectByPath(String vcfPath, String phenotypePath, boolean updatePhenotype) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         this.currFile = this.pathMap.get(vcfPath);
         this.vcfParser.processSelectedFile(this.currFile);
         if (phenotypePath == null && this.phenotypeMap.containsKey(this.currFile)) {

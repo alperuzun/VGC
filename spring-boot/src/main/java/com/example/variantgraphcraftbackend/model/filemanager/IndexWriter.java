@@ -40,7 +40,7 @@ public class IndexWriter {
     /**
      * Proccesses a given variant in the vcf file.
      */
-    public void buildChromData(String prevLine, String currLine, int lineNumber, PathogenicParser pathogenicParser) {
+    public void buildChromData(String prevLine, String currLine, int lineNumber, PathogenicParser pathogenicParser) throws IndexOutOfBoundsException {
         //Handles chromosome number
         String newChrom = currLine.substring(0, currLine.indexOf("\t"));
         newChrom = newChrom.toLowerCase();
@@ -61,7 +61,7 @@ public class IndexWriter {
                 this.chromCounter++;
             }
             this.handleFilter(currLine, pathogenicParser);
-        }
+        } 
     }
 
 

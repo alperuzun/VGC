@@ -7,6 +7,8 @@ import { useDisplayContext } from '../contexts/DisplayContext'
 import { useBarContext } from '../contexts/BarContext';
 import FileService from '../services/FileService';
 import LoadingOverlay from './LoadingOverlay';
+import { toPng } from 'html-to-image';
+
 
 const BarView = () => {
   const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, GSError, setGSError, RSError, setRSError, selectedBarEntry, setSelectedBarEntry } = useBarContext();
@@ -250,47 +252,46 @@ const BarView = () => {
   const handleFileChosen = async (filePath) => {
     console.log("In handleFileChosen...");
 
-    await FileService.addFile({
-      path: filePath,
-      phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-      size: sizeList[pathList.indexOf(filePath)]
-    });
-    const genericGraph = await FileService.getVarToChromGraph(passFilter);
-    const fileInfo = await FileService.getFileInfo();
-
-    if (genericGraph === undefined || fileInfo === undefined) {
-      alert("An error occurred processing your selected file. Please check your file formatting and try again.");
+    try {
+      await FileService.addFile({
+        path: filePath,
+        phenotypePath: phenotypeList[pathList.indexOf(filePath)],
+        size: sizeList[pathList.indexOf(filePath)]
+      });
+      const genericGraph = await FileService.getVarToChromGraph(passFilter);
+      const fileInfo = await FileService.getFileInfo();
+      setHistogramData(genericGraph);
+      setCurrentlyViewing(fileInfo.data);
+      handleBarAction(genericGraph, undefined, undefined);
+    } catch (error) {
       handleRemovePath(filePath);
-      return;
+      alert(error.response.data.message);
     }
-    setHistogramData(genericGraph);
-    setCurrentlyViewing(fileInfo.data);
-    handleBarAction(genericGraph, undefined, undefined);
   }
 
   const handleReset = async (filePath) => {
     console.log("In handleReset...");
-    await FileService.addFile({
-      path: filePath,
-      phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-      size: sizeList[pathList.indexOf(filePath)]
-    });
-    const genericGraph = await FileService.getVarToChromGraph(passFilter);
-    const fileInfo = await FileService.getFileInfo();
-    if (genericGraph === undefined || fileInfo === undefined) {
-      alert("An error occurred processing your selected file. Please check your file formatting and try again.");
+    try {
+      await FileService.addFile({
+        path: filePath,
+        phenotypePath: phenotypeList[pathList.indexOf(filePath)],
+        size: sizeList[pathList.indexOf(filePath)]
+      });
+      const genericGraph = await FileService.getVarToChromGraph(passFilter);
+      const fileInfo = await FileService.getFileInfo();
+      setHistogramData(genericGraph);
+      setCurrentlyViewing(fileInfo.data);
+      setBarHistory([genericGraph]);
+      setGeneHistory([undefined]);
+      setMapHistory([undefined]);
+      setHistoryIndex(0);
+      console.log(barHistory);
+      console.log("Index:" + historyIndex);
+    } catch (error) {
+      console.log(error)
       handleRemovePath(filePath);    
-      return;
+      alert(error.response.data.message);
     }
-    setHistogramData(genericGraph);
-    setCurrentlyViewing(fileInfo.data);
-    setBarHistory([genericGraph]);
-    setGeneHistory([undefined]);
-    setMapHistory([undefined]);
-    setHistoryIndex(0);
-    console.log(barHistory);
-    console.log("Index:" + historyIndex);
-
   }
 
   useEffect(() => {
@@ -299,26 +300,18 @@ const BarView = () => {
       setHistoryIndex(undefined);
       setHistogramData(undefined);
       if (selected !== undefined) {
-        try {
-          handleReset(selected);
-          prevVals.current = { selected, refresh, isClicked }
-        } catch (error) {
-          alert("An error occurred processing your selected file. Please check your file formatting and try again.")
-        }
+        handleReset(selected);
+        prevVals.current = { selected, refresh, isClicked }
       }
     } else {
       if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
         handleGeneQuery();
       } else if (searchRangeTerm != '' && searchRangeTerm != null && selected != null && toggleRS === true) {
-        try {
-          let trimmedQuery = searchRangeTerm.trim();
-          let chr = trimmedQuery.substring(0, trimmedQuery.indexOf(":"));
-          let startPos = trimmedQuery.substring(trimmedQuery.indexOf(":") + 1, trimmedQuery.indexOf("-"));
-          let endPos = trimmedQuery.substring(trimmedQuery.indexOf("-") + 1);
-          handleRangeQuery(chr, startPos, endPos)
-        } catch (error) {
-          alert("An error occurred processing your query.")
-        }
+        let trimmedQuery = searchRangeTerm.trim();
+        let chr = trimmedQuery.substring(0, trimmedQuery.indexOf(":"));
+        let startPos = trimmedQuery.substring(trimmedQuery.indexOf(":") + 1, trimmedQuery.indexOf("-"));
+        let endPos = trimmedQuery.substring(trimmedQuery.indexOf("-") + 1);
+        handleRangeQuery(chr, startPos, endPos)
       } else if (selected != null) {
         handleFileChosen(selected);
       }
