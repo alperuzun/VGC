@@ -1,5 +1,6 @@
 package com.example.variantgraphcraftbackend.controller;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ParseHelper;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
@@ -47,6 +48,8 @@ public class NodeController {
         } catch (IOException e) {
             System.out.println("IOException in getGeneFileNodeGraph of NodeController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
 
         return null;
@@ -108,6 +111,8 @@ public class NodeController {
         } catch(IOException e) {
             System.out.println("IOException in getGeneNodeGraph pf NodeController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }

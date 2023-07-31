@@ -1,6 +1,7 @@
 package com.example.variantgraphcraftbackend.controller;
 
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.model.MapState;
 import com.example.variantgraphcraftbackend.model.MapView;
 import com.example.variantgraphcraftbackend.model.NodeView;
@@ -76,6 +77,8 @@ public class SampleController {
         } catch (IOException e) {
             System.out.println("IOException in getHeatMapForGeneFile of SampleController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
 
         return null;
@@ -108,6 +111,8 @@ public class SampleController {
         } catch (IOException e) {
             System.out.println("IOException in getHeatMapForPosFile.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }
@@ -142,6 +147,8 @@ public class SampleController {
         } catch (IndexOutOfBoundsException e) {
             System.out.println("IndexOutOfBoundsException in getHeatMapForRange of SampleController");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }
@@ -161,6 +168,8 @@ public class SampleController {
         } catch(IOException e) {
             System.out.println("IOException in getheatmapall pf SampleController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }

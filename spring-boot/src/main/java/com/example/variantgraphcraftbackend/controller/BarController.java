@@ -1,9 +1,14 @@
 package com.example.variantgraphcraftbackend.controller;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.BarView;
+import com.example.variantgraphcraftbackend.model.ErrorResponse;
 import com.example.variantgraphcraftbackend.model.SingleVariantPathogenicity;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
@@ -66,42 +71,92 @@ public class BarController {
     }
 
     @GetMapping("gene-graph")
-    public BarView getHistogramByGene(String gene, String passFilter) {
+    public ResponseEntity<?> getHistogramByGene(String gene, String passFilter) {
         System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYGENE CALLED.");
         System.out.println("Gene: " + gene);
         try {
-            return this.handler.displayGeneHistogram(gene, passFilter);
+            BarView result = this.handler.displayGeneHistogram(gene, passFilter);
+            return ResponseEntity.ok(result);
         } catch (IOException e) {
             System.out.println("IOException in getHistogramByGene of BarController.");
             e.printStackTrace();
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NullPointerException n) {
             System.out.println("NullPointerException in getHistogramByGene of BarController.");
             n.printStackTrace();
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (GeneNotFoundException ex) {
+            System.out.println("GeneNotFoundException in getHistogramByGene of BarController.");
+            ex.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 
+    // @GetMapping("gene-graph")
+    // public BarView getHistogramByGene(String gene, String passFilter) {
+    //     System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYGENE CALLED.");
+    //     System.out.println("Gene: " + gene);
+    //     try {
+    //         return this.handler.displayGeneHistogram(gene, passFilter);
+    //     } catch (IOException e) {
+    //         System.out.println("IOException in getHistogramByGene of BarController.");
+    //         e.printStackTrace();
+    //         return null;
+    //     } catch (NullPointerException n) {
+    //         System.out.println("NullPointerException in getHistogramByGene of BarController.");
+    //         n.printStackTrace();
+    //         return null;
+    //     }
+    // }
+
     @GetMapping("range-graph")
-    public BarView getHistogramByRange(String chr, String start, String end, String passFilter) {
+    public ResponseEntity<?> getHistogramByRange(String chr, String start, String end, String passFilter) {
         System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYRANGE CALLED.");
         System.out.println("chrom: " + chr +  ", start: " + start + ", end: " + end);
         try {
-            if (this.chrExists(chr)) {
-                return this.handler.displayRangeHistogram(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter);
-            } else {
-                return null;
-            }
+            BarView result = this.handler.displayRangeHistogram(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter);
+            return ResponseEntity.ok(result);
         } catch (IOException e) {
             System.out.println("IOException in getHistogramByGene of BarController.");
             e.printStackTrace();
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
             System.out.println("NumberFormatException in getHistogramByGene of BarController.");
             n.printStackTrace();
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (RangeNotFoundException ex) {
+            System.out.println("RangeNotFoundException in getHistogramByGene of BarController.");
+            ex.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
+
+    // @GetMapping("range-graph")
+    // public BarView getHistogramByRange(String chr, String start, String end, String passFilter) {
+    //     System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYRANGE CALLED.");
+    //     System.out.println("chrom: " + chr +  ", start: " + start + ", end: " + end);
+    //     try {
+    //         if (this.chrExists(chr)) {
+    //             return this.handler.displayRangeHistogram(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter);
+    //         } else {
+    //             return null;
+    //         }
+    //     } catch (IOException e) {
+    //         System.out.println("IOException in getHistogramByGene of BarController.");
+    //         e.printStackTrace();
+    //         return null;
+    //     } catch (NumberFormatException n) {
+    //         System.out.println("NumberFormatException in getHistogramByGene of BarController.");
+    //         n.printStackTrace();
+    //         return null;
+    //     }
+    // }
 
     @GetMapping("single-variant-analysis")
     public SingleVariantPathogenicity getSingleVariantAnalysis(String chr, String pos) {
@@ -109,20 +164,20 @@ public class BarController {
         return null;
     }
 
-    private boolean chrExists(String chr) {
-        try {
-            int toInteger = Integer.valueOf(chr);
-            if (toInteger >= 1 && toInteger <=  22) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch(NumberFormatException e) {
-            if (chr.equals("X") || chr.equals("Y")) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
+    // private boolean chrExists(String chr) {
+    //     try {
+    //         int toInteger = Integer.valueOf(chr);
+    //         if (toInteger >= 1 && toInteger <=  22) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     } catch(NumberFormatException e) {
+    //         if (chr.equals("X") || chr.equals("Y")) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     }
+    // }
 }

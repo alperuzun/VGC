@@ -161,7 +161,6 @@ const BarView = () => {
               )}
             </div>
           </div>
-
         </div>
       );
     }
@@ -205,12 +204,14 @@ const BarView = () => {
         handleBarAction(newData, undefined, undefined);
         setHistogramData(newData);
       }
-      setProcessing(false);
     } catch (error) {
+      console.log("In gene query, error...")
+      console.log(error);
+      alert(error.response.data.message);
+    } finally {
+      console.log("In gene query, setting processing to false...")
       setProcessing(false);
-      throw error;
     }
-
   }
 
   const handleRangeQuery = async (chr, start, end) => {
@@ -235,10 +236,13 @@ const BarView = () => {
         setHistogramData(newData);
         setBrowserQuery("region/" + chr + "-" + start + "-" + end);
       }
-      setProcessing(false);
     } catch (error) {
+      console.log("In range query, error...")
+      console.log(error);
+      alert(error.response.data.message);    
+    } finally {
+      console.log("In range query, setting processing to false...")
       setProcessing(false);
-      throw error;
     }
 
   }
@@ -304,11 +308,7 @@ const BarView = () => {
       }
     } else {
       if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
-        try {
-          handleGeneQuery();
-        } catch (error) {
-          alert("An error occurred processing your query.")
-        }
+        handleGeneQuery();
       } else if (searchRangeTerm != '' && searchRangeTerm != null && selected != null && toggleRS === true) {
         try {
           let trimmedQuery = searchRangeTerm.trim();

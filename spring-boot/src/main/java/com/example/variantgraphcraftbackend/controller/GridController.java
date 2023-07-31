@@ -1,5 +1,6 @@
 package com.example.variantgraphcraftbackend.controller;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ParseHelper;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
@@ -63,6 +64,8 @@ public class GridController {
             return null;
         } catch (NumberFormatException n) {
             return null;
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
     }
 
@@ -117,6 +120,8 @@ public class GridController {
             System.out.println("IOException in queryByGene of GridController.");
             return null;
         } catch (NumberFormatException n) {
+            return null;
+        } catch (GeneNotFoundException ex) {
             return null;
         }
     }

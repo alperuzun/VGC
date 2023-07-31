@@ -1,5 +1,6 @@
 package com.example.variantgraphcraftbackend.service;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.model.SubBar;
 
 import java.io.*;
@@ -51,7 +52,7 @@ public class GenelistParser {
      * @param gene
      * @return
      */
-    public String[] getGeneLocation(String gene) throws IOException {
+    public String[] getGeneLocation(String gene) throws IOException, GeneNotFoundException {
 //        System.out.println("In getGeneLocation. ");
         this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
         this.currLine = this.input.readLine();
@@ -66,7 +67,9 @@ public class GenelistParser {
             this.currLine = this.input.readLine();
         }
         this.input.close();
-        return null;
+        throw new GeneNotFoundException("Unrecognized gene: " + gene, 404);
+
+        // return null;
     }
 
     public HashMap<Integer, ArrayList<SubBar>> getGeneInfoForVariants(HashMap<Integer, ArrayList<String[]>> keyToVarMap, String chr) throws IOException {

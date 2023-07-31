@@ -1,5 +1,7 @@
 package com.example.variantgraphcraftbackend.service;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.model.filemanager.IndexReader;
 import com.example.variantgraphcraftbackend.model.filemanager.InfoReader;
@@ -121,40 +123,45 @@ public class ServiceHandler {
         return zoomedGraph;
     }
 
-    public BarView displayGeneHistogram(String gene, String passFilter) throws IOException, NullPointerException {
+    public BarView displayGeneHistogram(String gene, String passFilter) throws IOException, NullPointerException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
-        if (geneInfo == null) {
-            return null;
-        } else {
-            Integer range = Integer.valueOf(geneInfo[2]) - Integer.valueOf(geneInfo[1]);
-            int zoom = range.toString().length() - 3;
-            int factor = (int) Math.pow(10, zoom);
-            String chr = geneInfo[0].substring(3);
-            HashMap<Integer, Integer> template = new HashMap<Integer, Integer>();
-            HashMap<Integer, ArrayList<String[]>> posMap = new HashMap<Integer, ArrayList<String[]>>();
-
-            int increment = this.zoomController.generateTemplateForGeneGraph(template, posMap, Integer.valueOf(geneInfo[1]),
-                    Integer.valueOf(geneInfo[2]), factor);
-            this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr),
-                    Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]),
-                    passFilter, this.currFile.getPath());
-            HashMap<Integer, ArrayList<SubBar>> subBarMap = new HashMap<Integer, ArrayList<SubBar>>();
-            if (increment <= 10000) {
-                subBarMap = this.geneParser.getGeneInfoForVariants(posMap, geneInfo[0].substring(3));
-                this.clinvarParser.populateVariantInfo(subBarMap, geneInfo[0]);
-            }
-            BarView zoomedGraph = new BarView("Variants Found on Gene " + gene + " on Chromosome " + chr +
-                    ", Range: " + geneInfo[1] + "-" + geneInfo[2] + ", FILTER: " + passFilter,
-                    "Position", "Number of Variants", String.valueOf(factor),
-                    geneInfo[0].substring(3));
-            zoomedGraph.populateZoomedGraph(template, subBarMap);
-            return zoomedGraph;
-        }
-    }
-
-    public BarView displayRangeHistogram(String chr, int start, int end, String passFilter) throws IOException {
+        // if (geneInfo == null) {
+        //     throw new GeneNotFoundException("Unrecognized gene: " + gene, 404);
+        // } else {
+        Integer range = Integer.valueOf(geneInfo[2]) - Integer.valueOf(geneInfo[1]);
+        int zoom = range.toString().length() - 3;
+        int factor = (int) Math.pow(10, zoom);
+        String chr = geneInfo[0].substring(3);
         HashMap<Integer, Integer> template = new HashMap<Integer, Integer>();
         HashMap<Integer, ArrayList<String[]>> posMap = new HashMap<Integer, ArrayList<String[]>>();
+
+        int increment = this.zoomController.generateTemplateForGeneGraph(template, posMap, Integer.valueOf(geneInfo[1]),
+                Integer.valueOf(geneInfo[2]), factor);
+        this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr),
+                Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]),
+                passFilter, this.currFile.getPath());
+        HashMap<Integer, ArrayList<SubBar>> subBarMap = new HashMap<Integer, ArrayList<SubBar>>();
+        if (increment <= 10000) {
+            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, geneInfo[0].substring(3));
+            this.clinvarParser.populateVariantInfo(subBarMap, geneInfo[0]);
+        }
+        BarView zoomedGraph = new BarView("Variants Found on Gene " + gene + " on Chromosome " + chr +
+                ", Range: " + geneInfo[1] + "-" + geneInfo[2] + ", FILTER: " + passFilter,
+                "Position", "Number of Variants", String.valueOf(factor),
+                geneInfo[0].substring(3));
+        zoomedGraph.populateZoomedGraph(template, subBarMap);
+        return zoomedGraph;
+        // }
+    }
+
+    public BarView displayRangeHistogram(String chr, int start, int end, String passFilter) throws IOException, RangeNotFoundException {
+        HashMap<Integer, Integer> template = new HashMap<Integer, Integer>();
+        HashMap<Integer, ArrayList<String[]>> posMap = new HashMap<Integer, ArrayList<String[]>>();
+
+        ParseHelper parseHelper = new ParseHelper();
+        if (!parseHelper.chrExists(chr) || !parseHelper.rangeValid(start, end, this.zoomController.getNumBP(chr))) {
+            throw new RangeNotFoundException("Invalid range: " + chr + ":" + start + "-" + end, 400);
+        }
 
         int increment = this.zoomController.generateTemplateForRangeGraph(template, posMap, start, end);
         this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr),
@@ -194,7 +201,7 @@ public class ServiceHandler {
     /**
      * Displays table view by gene. Calls method above.
      */
-    public GridView displayGeneView(String gene) throws IOException {
+    public GridView displayGeneView(String gene) throws IOException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
         if (geneInfo == null) {
             return null; 
@@ -216,7 +223,7 @@ public class ServiceHandler {
     }
 
     //NODE_GRAPH RELATED METHODS -------------------------------------------------------------------------
-    public NodeView displayGraphByGene(String gene, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException {
+    public NodeView displayGraphByGene(String gene, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
         if (geneInfo == null) {
             return null;
@@ -269,7 +276,7 @@ public class ServiceHandler {
     }
 
     public MapView generateHeatMap(MapState type, String passFilter, ArrayList<String> chr, ArrayList<String> gene,
-                                   ArrayList<Integer> start, ArrayList<Integer> end) throws IOException {
+                                   ArrayList<Integer> start, ArrayList<Integer> end) throws IOException, GeneNotFoundException {
         Map<String, Map<String, List<String[]>>> helperMap = new HashMap<String, Map<String, List<String[]>>>();
         List<String[]> data = new ArrayList<String[]>();
         String title = null;
@@ -314,7 +321,7 @@ public class ServiceHandler {
     }
 
     public TreeView generateTree(MapState type, String passFilter, String chr, String gene,
-                                 String start, String end) throws IOException {
+                                 String start, String end) throws IOException, GeneNotFoundException {
 
         List<String[]> data = new ArrayList<String[]>();
         String retrievedChr = null;

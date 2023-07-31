@@ -1,5 +1,6 @@
 package com.example.variantgraphcraftbackend.controller;
 
+import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class TreeController {
         } catch (IOException e) {
             System.out.println("IOException in getTreeForGeneFile of TreeController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }
@@ -57,6 +60,8 @@ public class TreeController {
         } catch(IOException e) {
             System.out.println("IOException in getheatmapall pf SampleController.");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }
@@ -92,6 +97,8 @@ public class TreeController {
         } catch (IndexOutOfBoundsException e) {
             System.out.println("IndexOutOfBoundsException in getHeatMapForRange of SampleController");
             e.printStackTrace();
+        } catch (GeneNotFoundException ex) {
+            return null;
         }
         return null;
     }

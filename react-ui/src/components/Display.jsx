@@ -101,11 +101,11 @@ const Display = () => {
                     </ul>
                   </div>
                 </div>
-                <div className="flex flex-row">
+                {/* <div className="flex flex-row">
                   <TooltipComponent content="Updates the graph after filter selection change." position="Right" showTipPointer={false}>
                     <div className="text-lg text-slate-700 flex h-full items-center ml-2"><IoMdHelpCircle /></div>
                   </TooltipComponent>
-                </div>
+                </div> */}
               </div>
               <div className="flex text-md justify-center">
                 {histogramData != null && histogramData.data.title}

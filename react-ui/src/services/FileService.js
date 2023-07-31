@@ -127,9 +127,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error with your gene query. Please check your file formats before trying again.");
-          // });
     }
 }
 

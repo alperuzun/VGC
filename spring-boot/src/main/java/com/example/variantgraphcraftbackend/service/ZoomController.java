@@ -31,6 +31,13 @@ public class ZoomController {
         this.read = true;
     }
 
+    public int getNumBP(String chr) throws IOException {
+        if (!this.read) {
+            this.readBPInfo();
+        }
+        return this.chromToBPMap.get(chr); 
+    }
+
     public HashMap<Integer, Integer> generateDataTemplate(String chr) {
         int numBP = this.chromToBPMap.get(chr);
         int initialIncrement = 1000000;

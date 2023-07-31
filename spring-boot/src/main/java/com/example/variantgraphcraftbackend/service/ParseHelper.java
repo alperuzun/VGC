@@ -31,8 +31,11 @@ public class ParseHelper {
         }
     }
 
-    public boolean rangeValid(int start, int end, String chrom) {
-        return true;
+    public boolean rangeValid(int start, int end, int numBP) {
+        if (start >= 0 && end <= numBP && start <= end) {
+            return true;
+        }
+        return false;
     }
 
 
