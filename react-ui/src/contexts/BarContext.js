@@ -29,7 +29,6 @@ export const BarContext = ({children}) => {
             setMapHistory([...mapHistory, newMap]);
             setHistoryIndex(historyIndex + 1);
         } else {
-            // console.log("here");
             setBarHistory(barHistory.splice(historyIndex + 1));
             setGeneHistory(geneHistory.splice(historyIndex + 1));
             setMapHistory(mapHistory.splice(historyIndex + 1));

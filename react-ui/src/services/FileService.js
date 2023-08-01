@@ -40,9 +40,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error occured while processing your file. Please check your file formats before trying again.");
-          // });
     }
 
     getVarToChromGraph(passFilter) {
@@ -50,10 +47,6 @@ class UserService {
           .then(response => {
             return response;
           })
-
-          // .catch(error => {
-          //   alert("An error occured while processing your file. Please check your file formats before trying again.");
-          // });
     }
 
     updateSelection(file) {
@@ -64,9 +57,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error occured while retrieving your file data.");
-          // });
     }
 
     getFileInfo() {
@@ -74,10 +64,6 @@ class UserService {
           .then(response => {
             return response;
           })
-
-          // .catch(error => {
-          //   alert("An error occured while retrieving your file data.");
-          // });
     }
 
     getZoomedgraph(chr, passFilter) {
@@ -88,9 +74,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error occured while retrieving the zoomed graph.");
-          // });
     }
 
     getFurtherZoom(chr, start, end, zoomFactor, passFilter) {
@@ -101,9 +84,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error occured while retrieving the zoomed graph.");
-          // });
     }
 
     getHistogramByRange(chr, start, end, passFilter) {
@@ -114,9 +94,6 @@ class UserService {
           .catch(error => {
             throw error;
           });
-          // .catch(error => {
-          //   alert("An error occured with your range query. Please check your file formats before trying again. ");
-          // });
     }
 
     getHistogramByGene(gene, passFilter) {
