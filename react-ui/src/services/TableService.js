@@ -18,18 +18,6 @@ class TableService {
           }});
     }
 
-    queryByGeneFile(path) {
-        return axios.get(VARIANT_VIEW_URL_GENE_FILE, {params : {
-            path
-          }});
-    }
-
-    queryByRangeFile(path) {
-        return axios.get(VARIANT_VIEW_URL_RANGE_FILE, {params : {
-            path
-          }});
-    }
-
 }
 
 export default new TableService();

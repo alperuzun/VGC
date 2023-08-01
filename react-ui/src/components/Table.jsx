@@ -8,18 +8,18 @@ import NoFileUploaded from './NoFileUploaded';
 import { useDisplayContext } from '../contexts/DisplayContext';
 
 const Table = () => {
-  const { selected, setSelected, phenotypeList, pathList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh, handleRemovePath } = useStateContext();
   const { isClicked } = useDisplayContext();
-  const [label, setlabel] = useState(undefined);
 
+  const [label, setlabel] = useState(undefined);
   const [testJsonData, setTestJsonData] = useState(undefined);
   const [spreadSheetObj, setSpreadSheetObj] = useState(undefined);
-  // const speadsheetRef = useRef(null)
-  const prevVals = useRef({ selected, refresh, isClicked });
-
   const [isOpen, setIsOpen] = useState(false);
   const [windowSize, setWindowSize] = useState({ height: window.innerHeight });
+  const [processing, setProcessing] = useState(false);
 
+
+  const prevVals = useRef({ selected, refresh, isClicked });
 
   const handleSave = (type) => {
     if (spreadSheetObj != undefined) {
@@ -62,41 +62,73 @@ const Table = () => {
   }
 
   const searchRange = async () => {
-    if (searchRangeTerm != null && searchRangeTerm != "") {
-      var dataObj = await TableService.queryByRange(searchRangeTerm)
-      if (dataObj.data === "") {
-        setlabel("No variants found.");
-      } else {
-        console.log(dataObj);
-        setlabel(dataObj.data.queryName);
-        generateJSON(dataObj.data.header, dataObj.data.rowData);
+    setProcessing(true);
+    try {
+      if (searchRangeTerm != null && searchRangeTerm != "") {
+        var dataObj = await TableService.queryByRange(searchRangeTerm)
+        if (dataObj.data === "") {
+          setlabel("No variants found.");
+        } else {
+          console.log(dataObj);
+          setlabel(dataObj.data.queryName);
+          generateJSON(dataObj.data.header, dataObj.data.rowData);
+        }
       }
+    } catch (error) {
+      alert(error.response.data.message);    
+    } finally {
+      setProcessing(false);
     }
+
   }
 
   const searchGene = async () => {
-    if (searchGeneTerm != null && searchGeneTerm != "") {
-      console.log("In searchGene.")
-      console.log(searchGeneTerm);
-      let test = searchGeneTerm
-      var dataObj = await TableService.queryByGene(test)
-      if (dataObj.data === "") {
-        setlabel("No variants found.");
-      } else {
+    setProcessing(true);
+    try {
+      if (searchGeneTerm != null && searchGeneTerm != "") {
+        console.log("In searchGene.")
+        console.log(searchGeneTerm);
+        let test = searchGeneTerm
+        var dataObj = await TableService.queryByGene(test)
         setlabel(dataObj.data.queryName);
         generateJSON(dataObj.data.header, dataObj.data.rowData);
       }
+    } catch (error) {
+      alert(error.response.data.message);    
+    } finally {
+      setProcessing(false);
     }
+
   }
 
+  // const searchGene = async () => {
+  //   if (searchGeneTerm != null && searchGeneTerm != "") {
+  //     console.log("In searchGene.")
+  //     console.log(searchGeneTerm);
+  //     let test = searchGeneTerm
+  //     var dataObj = await TableService.queryByGene(test)
+  //     if (dataObj.data === "") {
+  //       setlabel("No variants found.");
+  //     } else {
+  //       setlabel(dataObj.data.queryName);
+  //       generateJSON(dataObj.data.header, dataObj.data.rowData);
+  //     }
+  //   }
+  // }
+
   const handleFileChosen = async (filePath) => {
-    await FileService.addFile({
-      path: filePath,
-      phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-      size: sizeList[sizeList.indexOf(filePath)]
-    });
-    const fileInfo = await FileService.getFileInfo();
-    setCurrentlyViewing(fileInfo.data);
+    try {
+      await FileService.addFile({
+        path: filePath,
+        phenotypePath: phenotypeList[pathList.indexOf(filePath)],
+        size: sizeList[sizeList.indexOf(filePath)]
+      });
+      const fileInfo = await FileService.getFileInfo();
+      setCurrentlyViewing(fileInfo.data);
+    } catch (error) {
+      handleRemovePath(filePath);
+      alert(error.response.data.message);
+    }
   }
 
   useEffect(() => {

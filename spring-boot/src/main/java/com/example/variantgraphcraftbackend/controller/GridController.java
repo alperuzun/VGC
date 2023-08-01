@@ -1,10 +1,13 @@
 package com.example.variantgraphcraftbackend.controller;
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ParseHelper;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,10 +33,9 @@ public class GridController {
     }
 
     @GetMapping("variant-view")
-    public GridView queryByRange(String range) {
+    public ResponseEntity<?> queryByRange(String range) {
         System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
         try {
-            ParseHelper helper = new ParseHelper();
             range = range.trim();
             String chr = range.substring(0, range.indexOf(":"));
             chr = chr.trim();
@@ -41,89 +43,90 @@ public class GridController {
             start = start.trim();
             String end = range.substring(range.indexOf("-") + 1);
             end = end.trim();
-            if (helper.chrExists(chr)) {
-                return this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
-            } else {
-                return null;
-            }
+            GridView girdView = this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
+            return ResponseEntity.ok(girdView);
         } catch (IOException e) {
             System.out.println("IOException in queryByRange of GridController.");
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-            return null;
+            System.out.println("NumberFormatException in queryByRange of GridController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);        
+        } catch (IndexOutOfBoundsException in) {
+            System.out.println("IndexOutOfBoundsException in queryByRange of GridController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse); 
+        } catch (RangeNotFoundException ex) {
+            System.out.println("RangeNotFoundException in queryByRange of GridController.");
+            ex.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
+
+    // @GetMapping("variant-view")
+    // public GridView queryByRange(String range) {
+    //     System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
+    //     try {
+    //         ParseHelper helper = new ParseHelper();
+    //         range = range.trim();
+    //         String chr = range.substring(0, range.indexOf(":"));
+    //         chr = chr.trim();
+    //         String start = range.substring(range.indexOf(":") + 1, range.indexOf("-"));
+    //         start = start.trim();
+    //         String end = range.substring(range.indexOf("-") + 1);
+    //         end = end.trim();
+    //         if (helper.chrExists(chr)) {
+    //             return this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
+    //         } else {
+    //             return null;
+    //         }
+    //     } catch (IOException e) {
+    //         System.out.println("IOException in queryByRange of GridController.");
+    //         return null;
+    //     } catch (NumberFormatException n) {
+    //         return null;
+    //     }
+    // }
+
 
     @GetMapping("gene-view")
-    public GridView queryByGene(String gene) {
+    public ResponseEntity<?> queryByGene(String gene) {
         System.out.println("GRIDCONTROLLER METHOD QUERYBYGENE CALLED");
         try {
-            return this.handler.displayGeneView(gene);
+            GridView gridView = this.handler.displayGeneView(gene);
+            return ResponseEntity.ok(gridView);
         } catch (IOException e) {
             System.out.println("IOException in queryByGene of GridController.");
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-            return null;
+            System.out.println("NumberFormatException in queryByGene of GridController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            System.out.println("GeneNotFoundException in queryByGene of GridController.");
+            ex.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);        
         }
     }
 
-    @GetMapping("range-file-view")
-    public GridView queryByRangeFile(String path) {
-        System.out.println("GRIDCONTROLLER METHOD queryByRangeFile CALLED");
-        try {
-            ParseHelper helper = new ParseHelper();
-            HashMap<String, Set<Integer>> queryInfo = helper.processPosFile(path);
-            Set<String> chromosomes = new HashSet<String>(queryInfo.keySet());
+    // @GetMapping("gene-view")
+    // public GridView queryByGene(String gene) {
+    //     System.out.println("GRIDCONTROLLER METHOD QUERYBYGENE CALLED");
+    //     try {
+    //         return this.handler.displayGeneView(gene);
+    //     } catch (IOException e) {
+    //         System.out.println("IOException in queryByGene of GridController.");
+    //         return null;
+    //     } catch (NumberFormatException n) {
+    //         return null;
+    //     } catch (GeneNotFoundException ex) {
+    //         return null;
+    //     }
+    // }
 
-            int size = 0;
-            for (String c : chromosomes) {
-                Set<Integer> variants = new HashSet<Integer>(queryInfo.get(c));
-                for (int var : variants) {
-                    size = size + 1;
-                }
-            }
-
-            GridView table = new GridView(path);
-            table.setHeader(this.handler.getFileHeader());
-            for (String c : chromosomes) {
-                Set<Integer> variants = new HashSet<Integer>(queryInfo.get(c));
-                for (int var : variants) {
-                    table.addRow(this.handler.getLineForPos(c, var, var));
-                }
-            }
-            return table;
-        } catch (IOException e) {
-            System.out.println("IOException in queryByRange of GridController.");
-            return null;
-        } catch (NumberFormatException e) {
-            return null;
-        } catch (IndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
-    @GetMapping("gene-file-view")
-    public GridViewWrapper queryByGeneFile(String path) {
-        System.out.println("GRIDCONTROLLER METHOD queryByGeneFile CALLED");
-        try {
-            ParseHelper helper = new ParseHelper();
-            ArrayList<String> geneInfo = helper.processGeneFile(path);
-            GridViewWrapper wrapper = new GridViewWrapper(geneInfo.size());
-            for (String gene : geneInfo) {
-                GridView gridView = this.handler.displayGeneView(gene);
-                wrapper.addEntity(gene, gridView);
-            }
-            return wrapper;
-        } catch (IOException e) {
-            System.out.println("IOException in queryByGene of GridController.");
-            return null;
-        } catch (NumberFormatException n) {
-            return null;
-        } catch (GeneNotFoundException ex) {
-            return null;
-        }
-    }
 
 }

@@ -189,7 +189,12 @@ public class ServiceHandler {
     /**
      * Displays table view by range. 
      */
-    public GridView displayGridView(String chr, int startPos, int endPos) throws IOException {
+    public GridView displayGridView(String chr, int startPos, int endPos) throws IOException, RangeNotFoundException {
+        ParseHelper parseHelper = new ParseHelper();
+        if (!parseHelper.chrExists(chr) || !parseHelper.rangeValid(startPos, endPos, this.zoomController.getNumBP(chr))) {
+            throw new RangeNotFoundException("Invalid range: " + chr + ":" + startPos + "-" + endPos, 400);
+        }
+
         List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), startPos, endPos, "ALL", this.currFile.getPath());
 
         GridView table = new GridView("Table view of variants between " + startPos + " and " + endPos +
@@ -207,15 +212,17 @@ public class ServiceHandler {
      */
     public GridView displayGeneView(String gene) throws IOException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
-        if (geneInfo == null) {
-            return null; 
-        } else {
-            GridView table = this.displayGridView(geneInfo[0].substring(3), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]));
-            table.setQueryName("Table view of variants on gene " + gene + " on chromosome " + geneInfo[0] + ", between " +
-                    geneInfo[1] + " and " + geneInfo[2] + ".");
-            table.setId((long)1);
-            return table;
+        GridView table;
+        try {
+            table = this.displayGridView(geneInfo[0].substring(3), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]));
+        } catch (RangeNotFoundException ri) {
+            throw new GeneNotFoundException("Unrecognized gene: " + gene, 404);        
         }
+
+        table.setQueryName("Table view of variants on gene " + gene + " on chromosome " + geneInfo[0] + ", between " +
+                geneInfo[1] + " and " + geneInfo[2] + ".");
+        table.setId((long)1);
+        return table;
     }
 
     /**

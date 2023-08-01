@@ -14,7 +14,6 @@ const BarView = () => {
   const { isClicked, browserQuery, setBrowserQuery} = useDisplayContext();
   const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, handleRemovePath, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
 
-  const initialRender = useRef(true);
   const prevVals = useRef({ selected, refresh, isClicked });
   const [processing, setProcessing] = useState(false);
 
