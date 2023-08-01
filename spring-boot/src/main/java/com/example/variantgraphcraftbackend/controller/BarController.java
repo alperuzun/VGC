@@ -120,9 +120,4 @@ public class BarController {
         }
     }
 
-    @GetMapping("single-variant-analysis")
-    public SingleVariantPathogenicity getSingleVariantAnalysis(String chr, String pos) {
-        System.out.println("BARCONTROLLER METHOD getSingleVariantAnalysis CALLED.");
-        return null;
-    }
 }
