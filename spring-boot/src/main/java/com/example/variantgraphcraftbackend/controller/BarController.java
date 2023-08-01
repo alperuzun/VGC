@@ -95,23 +95,6 @@ public class BarController {
         }
     }
 
-    // @GetMapping("gene-graph")
-    // public BarView getHistogramByGene(String gene, String passFilter) {
-    //     System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYGENE CALLED.");
-    //     System.out.println("Gene: " + gene);
-    //     try {
-    //         return this.handler.displayGeneHistogram(gene, passFilter);
-    //     } catch (IOException e) {
-    //         System.out.println("IOException in getHistogramByGene of BarController.");
-    //         e.printStackTrace();
-    //         return null;
-    //     } catch (NullPointerException n) {
-    //         System.out.println("NullPointerException in getHistogramByGene of BarController.");
-    //         n.printStackTrace();
-    //         return null;
-    //     }
-    // }
-
     @GetMapping("range-graph")
     public ResponseEntity<?> getHistogramByRange(String chr, String start, String end, String passFilter) {
         System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYRANGE CALLED.");
@@ -137,47 +120,9 @@ public class BarController {
         }
     }
 
-    // @GetMapping("range-graph")
-    // public BarView getHistogramByRange(String chr, String start, String end, String passFilter) {
-    //     System.out.println("BARCONTROLLER METHOD GETHISTOGRAMBYRANGE CALLED.");
-    //     System.out.println("chrom: " + chr +  ", start: " + start + ", end: " + end);
-    //     try {
-    //         if (this.chrExists(chr)) {
-    //             return this.handler.displayRangeHistogram(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter);
-    //         } else {
-    //             return null;
-    //         }
-    //     } catch (IOException e) {
-    //         System.out.println("IOException in getHistogramByGene of BarController.");
-    //         e.printStackTrace();
-    //         return null;
-    //     } catch (NumberFormatException n) {
-    //         System.out.println("NumberFormatException in getHistogramByGene of BarController.");
-    //         n.printStackTrace();
-    //         return null;
-    //     }
-    // }
-
     @GetMapping("single-variant-analysis")
     public SingleVariantPathogenicity getSingleVariantAnalysis(String chr, String pos) {
         System.out.println("BARCONTROLLER METHOD getSingleVariantAnalysis CALLED.");
         return null;
     }
-
-    // private boolean chrExists(String chr) {
-    //     try {
-    //         int toInteger = Integer.valueOf(chr);
-    //         if (toInteger >= 1 && toInteger <=  22) {
-    //             return true;
-    //         } else {
-    //             return false;
-    //         }
-    //     } catch(NumberFormatException e) {
-    //         if (chr.equals("X") || chr.equals("Y")) {
-    //             return true;
-    //         } else {
-    //             return false;
-    //         }
-    //     }
-    // }
 }

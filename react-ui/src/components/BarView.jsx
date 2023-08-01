@@ -10,7 +10,7 @@ import LoadingOverlay from './LoadingOverlay';
 
 
 const BarView = () => {
-  const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, GSError, setGSError, RSError, setRSError, selectedBarEntry, setSelectedBarEntry } = useBarContext();
+  const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, selectedBarEntry, setSelectedBarEntry } = useBarContext();
   const { isClicked, browserQuery, setBrowserQuery} = useDisplayContext();
   const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, handleRemovePath, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
 
@@ -191,9 +191,7 @@ const BarView = () => {
     try {
       const newData = await FileService.getHistogramByGene(searchGeneTerm.trim(), passFilter);
       console.log(newData);
-      if (newData.data === '') {
-        setGSError(true);
-      } else if (newData.data.zoomFactor <= 10000) {
+      if (newData.data.zoomFactor <= 10000) {
         const { sorted, map } = processData(newData.data.data)
         console.log("Processed data:")
         console.log(sorted);
@@ -221,9 +219,7 @@ const BarView = () => {
     setProcessing(true);
     try {
       const newData = await FileService.getHistogramByRange(chr, start, end, passFilter);
-      if (newData.data === '') {
-        setRSError(true);
-      } else if (newData.data.zoomFactor <= 10000) {
+      if (newData.data.zoomFactor <= 10000) {
         const { sorted, map } = processData(newData.data.data)
         console.log("Processed data:")
         console.log(sorted);

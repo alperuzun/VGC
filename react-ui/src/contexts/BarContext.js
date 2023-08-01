@@ -13,8 +13,6 @@ export const BarContext = ({children}) => {
     const [geneHistory, setGeneHistory] = useState([]);
     const [mapHistory, setMapHistory] = useState([]);
     const [passFilter, setPassFilter] = useState("ALL");
-    const [GSError, setGSError] = useState(false);
-    const [RSError, setRSError] = useState(false);
     const [selectedBarEntry, setSelectedBarEntry] = useState(undefined);
 
 
@@ -63,8 +61,6 @@ export const BarContext = ({children}) => {
             setMapHistory,
             passFilter,
             setPassFilter,
-            GSError, setGSError,
-            RSError, setRSError,
             selectedBarEntry, setSelectedBarEntry
         }}>
             {children}
@@ -74,18 +70,3 @@ export const BarContext = ({children}) => {
 }
 
 export const useBarContext = () => useContext(StateContext);
-
-
-// const handleBarAction = (currDataObj, newDataObj) => {
-//     if (currDataObj === undefined) {
-//         setBarHistory([...barHistory, newDataObj]);
-//         setHistoryIndex(0);
-//     } else if (barHistory[barHistory.length - 1] == currDataObj) {
-//         setBarHistory([...barHistory, newDataObj]);
-//         setHistoryIndex(historyIndex + 1);
-//     } else {
-//         setBarHistory(barHistory.slice(0, barHistory.indexOf(currDataObj)));
-//         setBarHistory([...barHistory, newDataObj]);
-//         setHistoryIndex(barHistory.length - 1);
-//     }
-// }
