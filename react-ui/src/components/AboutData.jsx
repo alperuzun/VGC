@@ -20,6 +20,18 @@ const AboutData = () => {
   const [isPathogenic, setIsPathogenic] = useState(undefined);
   const [pathString, setPathString] = useState("Select a variant to view pathogenicity.")
 
+  useEffect(() => {
+    setPathogenicList([]);
+    setBenignList([]);
+    setUnknownList([]);
+    setPotentialPathVar([]);
+    setPOS("N/A");
+    setREF("N/A");
+    setALT("N/A");
+    setIsPathogenic(undefined);
+    setPathString("Select a variant to view pathogenicity.");
+  }, [selected])
+
 
   useEffect(() => {
     console.log("changed selection!");
@@ -50,7 +62,6 @@ const AboutData = () => {
 
   if (histogramData === undefined || histogramData === null) {
     return (
-      // <div> Loading, please wait... </div>
       <div>
         <LoadingOverlay />
       </div>
