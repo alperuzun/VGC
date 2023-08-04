@@ -1,12 +1,14 @@
 package com.example.variantgraphcraftbackend.controller;
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
 import com.example.variantgraphcraftbackend.controller.exceptions.NodeRangeOverflowException;
 import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ParseHelper;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 
+import org.apache.catalina.connector.Response;
 import org.renjin.repackaged.guava.collect.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,7 +40,7 @@ public class NodeController {
      * File format: 'gene,gene,gene...' OR with multiple lines.
      */
     @GetMapping("get-node-graph-gene-file")
-    public NodeViewWrapper getGeneFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
+    public ResponseEntity<?> getGeneFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
         System.out.println("NODECONTROLLER METHOD getGeneFileNodeGraph CALLED");
         System.out.println("Path: " + path);
         System.out.println("FILTER: " + passFilter);
@@ -50,15 +52,20 @@ public class NodeController {
                 NodeView nodeView = this.handler.displayGraphByGene(gene, passFilter, HR, HT, HA);
                 wrapper.addEntity(gene, nodeView);
             }
-            return wrapper;
+            return ResponseEntity.ok(wrapper);
         } catch (IOException e) {
             System.out.println("IOException in getGeneFileNodeGraph of NodeController.");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            System.out.println("GeneNotFoundException in getGeneFileNodeGraph of NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid genes in file upload.", ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);         
+        } catch (InvalidFileException fx) {
+            System.out.println("InvalidFileException in getGeneFileNodeGraph of NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse(fx.getMessage(), fx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-
-        return null;
     }
 
     /**
@@ -67,7 +74,7 @@ public class NodeController {
      * chr:pos,pos,...
      */
     @GetMapping("get-node-graph-pos-file")
-    public NodeViewWrapper getPosFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
+    public ResponseEntity<?> getPosFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
         System.out.println("NODECONTROLLER METHOD getPosFileNodeGraph CALLED");
         System.out.println("Path is: " + path);
 
@@ -93,19 +100,33 @@ public class NodeController {
                     wrapper.addEntity(query, nodeView);
                 }
             }
-            return wrapper;
+            return ResponseEntity.ok(wrapper);
 
         } catch (IOException e) {
-            System.out.println("IOException in getHeatMapForPosFile.");
-            e.printStackTrace();
+            System.out.println("IOException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-
+            System.out.println("NumberFormatException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (ArrayIndexOutOfBoundsException ax) {
+            System.out.println("ArrayIndexOutOfBoundsException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (RangeNotFoundException rx) {
-
+            System.out.println("RangeNotFoundException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", rx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (NodeRangeOverflowException ox) {
-
+            System.out.println("NodeRangeOverflowException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", ox.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (InvalidFileException fx) {
+            System.out.println("InvalidFileException in getPosFileNodeGraph.");
+            ErrorResponse errorResponse = new ErrorResponse(fx.getMessage(), fx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-        return null;
     }
 
     @GetMapping("gene-node-graph")
@@ -169,7 +190,7 @@ public class NodeController {
         }
     }
 
-    private ArrayList<String> processGeneFile(String path) throws IOException {
+    private ArrayList<String> processGeneFile(String path) throws IOException, InvalidFileException {
         ArrayList<String> processedArray = new ArrayList<String>();
         BufferedReader input = new BufferedReader(new FileReader(path));
         String currLine = input.readLine();
@@ -181,10 +202,13 @@ public class NodeController {
             currLine = input.readLine();
         }
         input.close();
+        if (processedArray.size() < 1) {
+            throw new InvalidFileException("Invalid gene file upload.", 400);
+        }
         return processedArray;
     }
 
-    private HashMap<String, Set<Integer>> processPosFile(String path) throws IOException {
+    private HashMap<String, Set<Integer>> processPosFile(String path) throws IOException, NumberFormatException, ArrayIndexOutOfBoundsException, InvalidFileException {
         HashMap<String, Set<Integer>> processedMap = new HashMap<String, Set<Integer>>();
         BufferedReader input = new BufferedReader(new FileReader(path));
         String currLine = input.readLine();
@@ -205,6 +229,9 @@ public class NodeController {
             currLine = input.readLine();
         }
         input.close();
+        if (processedMap.isEmpty()) {
+            throw new InvalidFileException("Invalid file upload.", 400);
+        }
         return processedMap;
     }
 }

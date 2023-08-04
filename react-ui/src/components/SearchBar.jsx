@@ -132,7 +132,9 @@ const SearchBar = () => {
                 setRefresh(!refresh);
                 e.target.value = null;
               }}
-              disabled={geneFileNotSupported || noFileSelected} />
+              disabled={geneFileNotSupported || noFileSelected} 
+              accept=".txt"
+              />
           </div>
           <div className={`flex p-1 bg-slate-200 w-24 text-sm justify-center text-no-wrap rounded-lg ${geneFileNotSupported || noFileSelected ? '' : 'hover:border-1 hover:border-slate-500 cursor-pointer'}`} onClick={() => {
             if (geneFileNotSupported) {
@@ -198,6 +200,7 @@ const SearchBar = () => {
                 setRefresh(!refresh);
                 e.target.value = null;
               }}
+              accept=".txt"
               disabled={rangeFileNotSupported || noFileSelected}
             />
           </div>

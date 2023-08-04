@@ -13,7 +13,7 @@ class GraphService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -23,7 +23,7 @@ class GraphService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -50,10 +50,3 @@ class GraphService {
 }
 
 export default new GraphService();
-
-// const GET_POS_GRAPH_URL = 'http://localhost:8080/nodeview/pos-node-graph';
-// getPosNodeGraph(chr, varPos, passFilter, HR, HT, HA) {
-//     return axios.get(GET_POS_GRAPH_URL, {params : {
-//         chr, varPos, passFilter, HR, HT, HA
-//       }});
-// }

@@ -62,8 +62,9 @@ const NodeView = ({ w, h, setData }) => {
   const searchGeneFile = async () => {
     if (geneFileUpload !== undefined) {
       console.log("Searching gene file from NodeView...")
-      let retrievedData = await GraphService.getGeneFileNodeGraph(geneFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
-      if (retrievedData.data !== "") {
+      setProcessing(true);
+      try {
+        let retrievedData = await GraphService.getGeneFileNodeGraph(geneFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
         const tempnlData = [];
         const tempNodeViews = retrievedData.data.nodeViewList;
         for (var i = 0; i < tempNodeViews.length; i++) {
@@ -74,18 +75,23 @@ const NodeView = ({ w, h, setData }) => {
         setCurrView(tempnlData[0]);
         setDataObj(tempNodeViews);
         setCurrDataObj(tempNodeViews[0]);
-
         console.log(retrievedData);
         handleColoring(tempNodeViews[0].patientGroups.length);
+      } catch (error) {
+        alert(error.response.data.message);
+      } finally {
+        setProcessing(false);
       }
+
     }
   }
 
   const searchPosFile = async () => {
     if (posFileUpload !== undefined) {
       console.log("Searching range file from NodeView...")
-      let retrievedData = await GraphService.getPosFileNodeGraph(posFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
-      if (retrievedData.data !== "") {
+      setProcessing(true);
+      try {
+        let retrievedData = await GraphService.getPosFileNodeGraph(posFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
         const tempnlData = [];
         const tempNodeViews = retrievedData.data.nodeViewList;
         for (var i = 0; i < tempNodeViews.length; i++) {
@@ -98,7 +104,12 @@ const NodeView = ({ w, h, setData }) => {
         setCurrDataObj(tempNodeViews[0]);
         console.log(retrievedData);
         handleColoring(tempNodeViews[0].patientGroups.length);
+      } catch (error) {
+        alert(error.response.data.message);
+      } finally {
+        setProcessing(false);
       }
+
     }
   }
 
@@ -439,7 +450,13 @@ const NodeView = ({ w, h, setData }) => {
     }
   })
 
-  if (currView == undefined || ((searchGeneTerm == undefined || searchGeneTerm == "") && (searchRangeTerm == undefined || searchRangeTerm == "") && geneFileUpload == undefined && posFileUpload == undefined)) {
+  // if (currView == undefined || ((searchGeneTerm == undefined || searchGeneTerm == "") && (searchRangeTerm == undefined || searchRangeTerm == "") && geneFileUpload == undefined && posFileUpload == undefined)) {
+  //   return (
+  //     <div className="flex w-full h-full bg-blue-300">
+  //     </div>
+  //   )
+  // }
+  if (currView == undefined || ((searchGeneTerm == undefined) && (searchRangeTerm == undefined) && geneFileUpload == undefined && posFileUpload == undefined)) {
     return (
       <div className="flex w-full h-full bg-blue-300">
       </div>

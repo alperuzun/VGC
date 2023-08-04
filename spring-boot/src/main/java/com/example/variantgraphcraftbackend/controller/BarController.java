@@ -85,7 +85,7 @@ public class BarController {
         } catch (NullPointerException n) {
             System.out.println("NullPointerException in getHistogramByGene of BarController.");
             n.printStackTrace();
-            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 400);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (GeneNotFoundException ex) {
             System.out.println("GeneNotFoundException in getHistogramByGene of BarController.");
@@ -110,7 +110,7 @@ public class BarController {
         } catch (NumberFormatException n) {
             System.out.println("NumberFormatException in getHistogramByGene of BarController.");
             n.printStackTrace();
-            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 400);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (RangeNotFoundException ex) {
             System.out.println("RangeNotFoundException in getHistogramByGene of BarController.");
