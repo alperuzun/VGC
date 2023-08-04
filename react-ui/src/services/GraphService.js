@@ -33,7 +33,7 @@ class GraphService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -43,7 +43,7 @@ class GraphService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 

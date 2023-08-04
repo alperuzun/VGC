@@ -66,13 +66,9 @@ const Table = () => {
     try {
       if (searchRangeTerm != null && searchRangeTerm != "") {
         var dataObj = await TableService.queryByRange(searchRangeTerm)
-        if (dataObj.data === "") {
-          setlabel("No variants found.");
-        } else {
-          console.log(dataObj);
-          setlabel(dataObj.data.queryName);
-          generateJSON(dataObj.data.header, dataObj.data.rowData);
-        }
+        console.log(dataObj);
+        setlabel(dataObj.data.queryName);
+        generateJSON(dataObj.data.header, dataObj.data.rowData);
       }
     } catch (error) {
       alert(error.response.data.message);    
@@ -100,21 +96,6 @@ const Table = () => {
     }
 
   }
-
-  // const searchGene = async () => {
-  //   if (searchGeneTerm != null && searchGeneTerm != "") {
-  //     console.log("In searchGene.")
-  //     console.log(searchGeneTerm);
-  //     let test = searchGeneTerm
-  //     var dataObj = await TableService.queryByGene(test)
-  //     if (dataObj.data === "") {
-  //       setlabel("No variants found.");
-  //     } else {
-  //       setlabel(dataObj.data.queryName);
-  //       generateJSON(dataObj.data.header, dataObj.data.rowData);
-  //     }
-  //   }
-  // }
 
   const handleFileChosen = async (filePath) => {
     try {
@@ -162,12 +143,8 @@ const Table = () => {
     const handleResize = () => {
       setWindowSize({ height: window.innerHeight });
     };
-
-    // Add event listener to window resize
     window.addEventListener('resize', handleResize);
-
     return () => {
-      // Clean up event listener on component unmount
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -217,7 +194,6 @@ const Table = () => {
 
   return (
     <div className="flex flex-col h-full w-full">
-
       <div className="px-2 py-1.5">
         <div className={`flex bg-slate-50 border-1 border-slate-300 w-full rounded-lg`}>
           <div className="w-full h-min">
@@ -230,6 +206,11 @@ const Table = () => {
       <Dropdown />
       <div className="flex grow px-2 py-1.5 h-full w-full">
         <div className={`flex bg-slate-100 w-full  drop-shadow-md `}>
+        {processing && 
+        <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+          <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>
+        </div>
+        }
           {testJsonData != undefined &&
             <SpreadsheetComponent showRibbon={false} allowSave={true} saveUrl='http://localhost:8080/gridview' ref={(ssObj) => { setSpreadSheetObj(ssObj); }} allowFiltering={true}>
               <SheetsDirective>

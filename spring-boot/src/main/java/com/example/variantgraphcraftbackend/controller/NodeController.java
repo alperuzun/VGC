@@ -1,10 +1,16 @@
 package com.example.variantgraphcraftbackend.controller;
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.NodeRangeOverflowException;
+import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.service.ParseHelper;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
+
+import org.renjin.repackaged.guava.collect.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,7 +72,7 @@ public class NodeController {
         System.out.println("Path is: " + path);
 
         try {
-        HashMap<String, Set<Integer>> queryInfo = this.processPosFile(path);
+            HashMap<String, Set<Integer>> queryInfo = this.processPosFile(path);
             Set<String> chromosomes = new HashSet<String>(queryInfo.keySet());
 
             //Count size:
@@ -92,12 +98,18 @@ public class NodeController {
         } catch (IOException e) {
             System.out.println("IOException in getHeatMapForPosFile.");
             e.printStackTrace();
+        } catch (NumberFormatException n) {
+
+        } catch (RangeNotFoundException rx) {
+
+        } catch (NodeRangeOverflowException ox) {
+
         }
         return null;
     }
 
     @GetMapping("gene-node-graph")
-    public NodeView getGeneNodeGraph(String gene, String passFilter, String HR, String HT, String HA) {
+    public ResponseEntity<?> getGeneNodeGraph(String gene, String passFilter, String HR, String HT, String HA) {
         System.out.println("NODECONTROLLER METHOD GETGENENODEGRAPH CALLED");
 
         System.out.println("Gene is: " + gene);
@@ -105,23 +117,27 @@ public class NodeController {
         System.out.println("BOOLEANS: " + Boolean.parseBoolean(HR));
 
         try {
-            return this.handler.displayGraphByGene(gene, passFilter, Boolean.parseBoolean(HR),
-                                                                        Boolean.parseBoolean(HT),
-                                                                        Boolean.parseBoolean(HA));
+            NodeView nodeView = this.handler.displayGraphByGene(gene, passFilter, Boolean.parseBoolean(HR), Boolean.parseBoolean(HT), Boolean.parseBoolean(HA));
+            return ResponseEntity.ok(nodeView);
         } catch(IOException e) {
             System.out.println("IOException in getGeneNodeGraph pf NodeController.");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (NullPointerException n) {
+            System.out.println("NullPointerException in getGeneNodeGraph pf NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            System.out.println("GeneNotFoundException in getGeneNodeGraph pf NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
-        return null;
     }
 
     @GetMapping("range-node-graph")
-    public NodeView getRangeNodeGraph(String range, String passFilter, boolean HR, boolean HT, boolean HA) {
+    public ResponseEntity<?> getRangeNodeGraph(String range, String passFilter, boolean HR, boolean HT, boolean HA) {
         System.out.println("NODECONTROLLER METHOD GETGENENODEGRAPH CALLED");
         try {
-            ParseHelper helper = new ParseHelper();
             range = range.trim();
             String chr = range.substring(0, range.indexOf(":"));
             chr = chr.trim();
@@ -129,17 +145,27 @@ public class NodeController {
             start = start.trim();
             String end = range.substring(range.indexOf("-") + 1);
             end = end.trim();
-            if (helper.chrExists(chr) && Integer.valueOf(end) - Integer.valueOf(start) <= 10000) {
-                return  this.handler.displayGraphByRange(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter, HR, HT, HA);
-            } else {
-                return null;
-            }
+            NodeView nodeView = this.handler.displayGraphByRange(chr, Integer.valueOf(start), Integer.valueOf(end), passFilter, HR, HT, HA);
+            return ResponseEntity.ok(nodeView);
         } catch(IOException e) {
             System.out.println("IOException in getGeneNodeGraph pf NodeController.");
-            e.printStackTrace();
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-            return null;
+            System.out.println("NumberFormatException in getGeneNodeGraph pf NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);   
+        } catch (IndexOutOfBoundsException in) {
+            System.out.println("IndexOutOfBoundsException in getGeneNodeGraph pf NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse); 
+        } catch (RangeNotFoundException rx) {
+            System.out.println("RangeNotFoundException in getGeneNodeGraph pf NodeController.");
+            ErrorResponse errorResponse = new ErrorResponse(rx.getMessage(), rx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (NodeRangeOverflowException ox) {
+            ErrorResponse errorResponse = new ErrorResponse(ox.getMessage(), ox.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
@@ -154,6 +180,7 @@ public class NodeController {
             }
             currLine = input.readLine();
         }
+        input.close();
         return processedArray;
     }
 
@@ -177,6 +204,7 @@ public class NodeController {
             }
             currLine = input.readLine();
         }
+        input.close();
         return processedMap;
     }
 }

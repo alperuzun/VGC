@@ -21,10 +21,3 @@ class TableService {
 }
 
 export default new TableService();
-
-// const INIT_VARIANT_VIEW_URL = 'http://localhost:8080/gridview/init-table';
-// getInitialTable(chr, total) {
-//     return axios.get(INIT_VARIANT_VIEW_URL, {params : {
-//         chr, total
-//       }});
-// }

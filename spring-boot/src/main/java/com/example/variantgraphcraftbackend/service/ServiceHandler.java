@@ -2,6 +2,7 @@ package com.example.variantgraphcraftbackend.service;
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
 import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
+import com.example.variantgraphcraftbackend.controller.exceptions.NodeRangeOverflowException;
 import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
 import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.model.filemanager.IndexReader;
@@ -9,6 +10,8 @@ import com.example.variantgraphcraftbackend.model.filemanager.InfoReader;
 import com.example.variantgraphcraftbackend.model.filemanager.PhenotypeReader;
 
 import org.hibernate.mapping.Index;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -236,27 +239,33 @@ public class ServiceHandler {
     //NODE_GRAPH RELATED METHODS -------------------------------------------------------------------------
     public NodeView displayGraphByGene(String gene, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
-        if (geneInfo == null) {
-            return null;
+        String chr = geneInfo[0].substring(3);
+        ArrayList<String> info = new ArrayList<String>(Arrays.asList(geneInfo));
+        info.add(0, gene);
+        NodeView nodeView = new NodeView("Node Graph for Gene " + gene, 1, "gene", "dp");
+        nodeView.setGraphInfo(info);
+        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath());
+        String[] sampleList = this.infoMap.get(this.currFile).getAllPatients().split("\t");
+        if (this.phenotypeMap.containsKey(this.currFile)) {
+            nodeView.populateSingleGeneGraph(varList, gene, sampleList, this.phenotypeMap.get(this.currFile), HR, HT, HA);
         } else {
-            String chr = geneInfo[0].substring(3);
-            ArrayList<String> info = new ArrayList<String>(Arrays.asList(geneInfo));
-            info.add(0, gene);
-            NodeView nodeView = new NodeView("Node Graph for Gene " + gene, 1, "gene", "dp");
-            nodeView.setGraphInfo(info);
-            List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath());
-            String[] sampleList = this.infoMap.get(this.currFile).getAllPatients().split("\t");
-            if (this.phenotypeMap.containsKey(this.currFile)) {
-                nodeView.populateSingleGeneGraph(varList, gene, sampleList, this.phenotypeMap.get(this.currFile), HR, HT, HA);
-            } else {
-                nodeView.populateSingleGeneGraph(varList, gene, sampleList, HR, HT, HA);
-            }
-            return nodeView;
+            nodeView.populateSingleGeneGraph(varList, gene, sampleList, HR, HT, HA);
         }
+        return nodeView;
     }
 
-    public NodeView displayGraphByRange(String chr, int start, int end, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException {
+    public NodeView displayGraphByRange(String chr, int start, int end, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException, RangeNotFoundException, NodeRangeOverflowException {
+        ParseHelper parseHelper = new ParseHelper();
+        if (!parseHelper.chrExists(chr) || !parseHelper.rangeValid(start, end, this.zoomController.getNumBP(chr))) {
+            throw new RangeNotFoundException("Invalid range: " + chr + ":" + start + "-" + end, 400);
+        }
+
         List<String[]> var = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), start, end, passFilter, this.currFile.getPath());
+
+        if (var.size() > 1000) {
+            throw new NodeRangeOverflowException("The indicated range contains over 1000 variants. Please select a smaller range for Node Graph visualization.", 400);
+        }
+
         HashMap<String, String> varToGeneMap = new HashMap<String, String>();
         HashMap<String, ArrayList<String>> geneToVarMap = new HashMap<String, ArrayList<String>>();
         for (String[] v : var) {

@@ -65,31 +65,6 @@ public class GridController {
         }
     }
 
-    // @GetMapping("variant-view")
-    // public GridView queryByRange(String range) {
-    //     System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
-    //     try {
-    //         ParseHelper helper = new ParseHelper();
-    //         range = range.trim();
-    //         String chr = range.substring(0, range.indexOf(":"));
-    //         chr = chr.trim();
-    //         String start = range.substring(range.indexOf(":") + 1, range.indexOf("-"));
-    //         start = start.trim();
-    //         String end = range.substring(range.indexOf("-") + 1);
-    //         end = end.trim();
-    //         if (helper.chrExists(chr)) {
-    //             return this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
-    //         } else {
-    //             return null;
-    //         }
-    //     } catch (IOException e) {
-    //         System.out.println("IOException in queryByRange of GridController.");
-    //         return null;
-    //     } catch (NumberFormatException n) {
-    //         return null;
-    //     }
-    // }
-
 
     @GetMapping("gene-view")
     public ResponseEntity<?> queryByGene(String gene) {
@@ -112,21 +87,5 @@ public class GridController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);        
         }
     }
-
-    // @GetMapping("gene-view")
-    // public GridView queryByGene(String gene) {
-    //     System.out.println("GRIDCONTROLLER METHOD QUERYBYGENE CALLED");
-    //     try {
-    //         return this.handler.displayGeneView(gene);
-    //     } catch (IOException e) {
-    //         System.out.println("IOException in queryByGene of GridController.");
-    //         return null;
-    //     } catch (NumberFormatException n) {
-    //         return null;
-    //     } catch (GeneNotFoundException ex) {
-    //         return null;
-    //     }
-    // }
-
 
 }

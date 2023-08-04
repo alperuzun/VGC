@@ -116,7 +116,7 @@ public class BarController {
             System.out.println("RangeNotFoundException in getHistogramByGene of BarController.");
             ex.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
