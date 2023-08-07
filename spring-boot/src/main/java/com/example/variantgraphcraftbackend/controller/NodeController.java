@@ -36,9 +36,6 @@ public class NodeController {
         this.handler = handler;
     }
 
-    /**
-     * File format: 'gene,gene,gene...' OR with multiple lines.
-     */
     @GetMapping("get-node-graph-gene-file")
     public ResponseEntity<?> getGeneFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
         System.out.println("NODECONTROLLER METHOD getGeneFileNodeGraph CALLED");
@@ -68,11 +65,7 @@ public class NodeController {
         }
     }
 
-    /**
-     * File format:
-     * chr:pos,pos,pos...
-     * chr:pos,pos,...
-     */
+
     @GetMapping("get-node-graph-pos-file")
     public ResponseEntity<?> getPosFileNodeGraph(String path, String passFilter, boolean HR, boolean HT, boolean HA) {
         System.out.println("NODECONTROLLER METHOD getPosFileNodeGraph CALLED");
@@ -82,14 +75,9 @@ public class NodeController {
             HashMap<String, Set<Integer>> queryInfo = this.processPosFile(path);
             Set<String> chromosomes = new HashSet<String>(queryInfo.keySet());
 
-            //Count size:
-            int size = 0;
-            for (String c : chromosomes) {
-                Set<Integer> variants = new HashSet<Integer>(queryInfo.get(c));
-                for (int var : variants) {
-                    size = size + 1;
-                }
-            }
+            int size = chromosomes.stream()
+                     .mapToInt(c -> queryInfo.get(c).size())
+                     .sum();
 
             NodeViewWrapper wrapper = new NodeViewWrapper(size);
             for (String c : chromosomes) {
@@ -230,7 +218,7 @@ public class NodeController {
         }
         input.close();
         if (processedMap.isEmpty()) {
-            throw new InvalidFileException("Invalid file upload.", 400);
+            throw new InvalidFileException("Invalid range file upload.", 400);
         }
         return processedMap;
     }
