@@ -433,10 +433,10 @@ const NodeView = ({ w, h, setData }) => {
           searchRange();
         } else {
           console.log("On refresh, no existing query.");
-          setDataObj(undefined);
-          setCurrView(undefined);
-          setCurrDataObj(undefined);
-          setNLData([]);
+          // setDataObj(undefined);
+          // setCurrView(undefined);
+          // setCurrDataObj(undefined);
+          // setNLData([]);
         }
       } 
     }
@@ -467,6 +467,11 @@ const NodeView = ({ w, h, setData }) => {
     return (
 
       <div className="flex">
+                {processing && 
+        <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+          <div className="bg-slate-300 px-6 text-xs">Loading, please wait...</div>
+        </div>
+        }
         <ForceGraph2D
           ref={fgRef}
           linkDirectionalParticleColor={() => "red"}
@@ -511,6 +516,11 @@ const NodeView = ({ w, h, setData }) => {
 
   return (
     <div className="flex items-center ml-2">
+        {processing && 
+        <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+          <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>
+        </div>
+        }
       <ForceGraph3D
         ref={fgRef}
         linkDirectionalParticleColor={() => "red"}

@@ -65,13 +65,15 @@ const Graph = () => {
           </div>
         </div>
       </div> */}
+
+      <TabBar />
       <div className={`flex px-2 py-1.5 bg-slate-100 w-full h-full drop-shadow-md `}>
         {/* <div className="w-full"> */}
           <div className="flex flex-row w-full h-full overflow-hidden">
             <div className="flex-1 flex-col">
-              <TabBar />
+              {/* <TabBar /> */}
 
-              <div className="flex flex-row h-8 p-1 mt-1 z-50 items-center">
+              <div className="flex flex-row h-8 p-1 mt-[8px] z-50 items-center">
 
                 <div className="flex grow items-center">
 
@@ -83,8 +85,6 @@ const Graph = () => {
                       statesArray={["ALL", "PASS", "PATHOGENIC"]}
                     />
                   </div>
-
-
                   <button
                     type="button"
                     className={`flex mr-[1rem] p-0.5 w-24 text-sm justify-center rounded-full border-1 border-slate-500 hover:bg-slate-200 ${view2D ? 'bg-slate-200' : 'bg-slate-100'}`}
