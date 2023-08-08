@@ -112,14 +112,14 @@ const Graph = () => {
 
             <div className={`${settingsVisible ? "" : "hidden"} fixed w-72 h-full right-[1px] items-center shadow-lg  p-2 bottom-[0px] bg-white`}>
               <div className="flex w-full bg-[#3f89c7] ">
-                <button className="flex items-center text-white hover:text-slate-200 hover:bg-[#278188] rounded-full p-1 z-50" onClick={() => setSettingsVisible(!settingsVisible)}>
+                <button className="absolute items-center text-white hover:text-slate-300 rounded-full p-1 z-50" onClick={() => setSettingsVisible(!settingsVisible)}>
                   <AiOutlineClose />
                 </button>
-                <text className="flex grow justify-center font-thin text-white ">Preferences</text>
+                <text className="flex grow justify-center font-thin text-white text-[15px] rounded-sm">Preferences</text>
               </div>
-              <div className="flex flex-col items-center mt-2 w-full ">
+              <div className="flex flex-col items-center mt-4 w-full gap-2">
                 <div className="flex text-sm  w-full h-0.5 justify-center bg-slate-500 items-center mt-4 mb-3">
-                  <text className="bg-white px-2">Graph Options</text>
+                  <text className="bg-white px-2 text-slate-600">Graph Options</text>
                 </div>
                 <SettingsOption
                   title="NODE SIZE:"
@@ -144,7 +144,6 @@ const Graph = () => {
                     <RiErrorWarningLine />
                     <text className="text-xs ml-1">No phenotype data was uploaded for this vcf file.</text>
                   </div>}
-
                 <div>
                   <div className="flex-row">
                     <text className="text-sm">Variant Color:</text>
@@ -195,28 +194,26 @@ const Graph = () => {
 
 
                 <div className="flex text-sm  w-full h-0.5 justify-center bg-slate-500 items-center mt-6 mb-3">
-                  <text className="bg-white px-2">Query Options</text>
+                  <text className="bg-white px-2 text-slate-600">Query Options</text>
                 </div>
               </div>
-              <div className="flex flex-col w-full mt-2 text-sm">
-                <div className="flex justify-center">
-                  GENOTYPE DATA
-                </div>
-                <div className="flex ml-2 items-center">
-                  <input className="" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[0]} onClick={() => setGtList([!gtList[0], gtList[1], gtList[2]])} />
+              <div className="flex flex-col w-full mt-2 text-sm gap-2">
+                <div className="flex ml-2 items-center gap-2">
+                  <input className="accent-[#3f89c7] focus:border-[#3f89c7]  border-2 border-gray-400 rounded-md" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[0]} onClick={() => setGtList([!gtList[0], gtList[1], gtList[2]])} />
                   Homozygous Reference (0/0)
                 </div>
-                <div className="flex ml-2 items-center">
-                  <input className="" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[1]} onClick={() => setGtList([gtList[0], !gtList[1], gtList[2]])} />
+                <div className="flex ml-2 items-center gap-2">
+                  <input className="accent-[#3f89c7] focus:border-[#3f89c7]  border-2 border-gray-400 rounded-md" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[1]} onClick={() => setGtList([gtList[0], !gtList[1], gtList[2]])} />
                   Heterozygous (0/1)
                 </div>
-                <div className="flex ml-2 items-center">
-                  <input className="" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[2]} onClick={() => setGtList([gtList[0], gtList[1], !gtList[2]])} />
+                <div className="flex ml-2 items-center gap-2">
+                  <input className="accent-[#3f89c7] focus:border-[#3f89c7]  border-2 border-gray-400 rounded-md" type="checkbox" id="topping" name="Homozygous Reference (0/0)" value="Paneer" checked={gtList[2]} onClick={() => setGtList([gtList[0], gtList[1], !gtList[2]])} />
                   Homozygous Alternative (1/1)
                 </div>
               </div>
+              
               <button
-                className="w-20 h-6 bg-[#3f89c7] text-white text-sm hover:shadow mt-6"
+                className="w-24 h-7 mt-6 flex mr-[1rem] p-0.5 text-sm justify-center text-center ml-[90px] rounded-full border-1 border-slate-500 hover:bg-slate-200"
                 onClick={() => {
                   setRefresh(!refresh)
                   if (passFilter == "PATHOGENIC") {

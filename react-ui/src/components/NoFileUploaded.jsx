@@ -32,7 +32,7 @@ const NoFileUploaded = ({ noVCF, noPhenotype }) => {
                             accept=".vcf"
                             multiple />
                     </div>
-                    <div className="flex p-1 m-4  w-56 text-sm justify-center text-no-wrap rounded-full cursor-pointer border-1 border-slate-500 hover:bg-slate-200 hover:scale-[1.02] transform transition-transform">
+                    <div className="flex p-1 m-4  w-56 text-sm justify-center text-no-wrap rounded-full cursor-pointer border-1 border-slate-500 hover:bg-slate-200 hover:scale-[1.02] transform transition-transform text-slate-500">
                         Upload a VCF File
                     </div>
                 </label>
