@@ -21,11 +21,11 @@ export const NodeContext = ({ children }) => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [sampleColors, setSampleColors] = useState([]);
   const [variantColor, setVariantColor] = useState("#3f89c7");
+  const [patientGroupings, setPatientGroupings] = useState("VISIBLE");
+
 
   //For multiples genes/file queries: 
   const [queryList, setQueryList] = useState([]);
-
-
   const [currView, setCurrView] = useState(undefined);
   const [currDataObj, setCurrDataObj] = useState(undefined);
 
@@ -70,7 +70,9 @@ export const NodeContext = ({ children }) => {
         currView, 
         setCurrView,
         currDataObj, 
-        setCurrDataObj
+        setCurrDataObj,
+        patientGroupings, 
+        setPatientGroupings
         // clickedNode, 
         // setClickedNode,
       }}

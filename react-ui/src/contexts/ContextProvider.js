@@ -30,7 +30,6 @@ export const ContextProvider = ({ children }) => {
     setPathList(pathCopy);
     setPhenotypeList(phenotypeCopy);
     setSizeList(sizeCopy);
-
     if (pathCopy.length === 0) {
       setSelected(undefined);
     } else if (indexOfDeleted === pathCopy.length) {
@@ -38,6 +37,10 @@ export const ContextProvider = ({ children }) => {
     } else {
       setSelected(pathCopy[indexOfDeleted]);
     }
+    setSearchGeneTerm("");
+    setSearchRangeTerm("");
+    setGeneFileUpload(undefined);
+    setPosFileUpload(undefined)
   }
   const handlePhenotypeFileChange = (phenotypeFile, vcfPath) => {
     phenotypeList[pathList.indexOf(vcfPath)] = phenotypeFile.path;

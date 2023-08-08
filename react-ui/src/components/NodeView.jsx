@@ -13,13 +13,15 @@ const NodeView = ({ w, h, setData }) => {
   const { activeMenu, selected, currentlyViewing, setCurrentlyViewing, phenotypeList, pathList, handleRemovePath, sizeList, searchRangeTerm, searchGeneTerm, geneFileUpload, posFileUpload, toggleRS, toggleGS, refresh } = useStateContext();
   const { isClicked } = useDisplayContext();
 
-  const { setNLData, setDataObj, view2D, nodeSize, gtList, passFilter, highlightFormat, settingsVisible, sampleColors, setSampleColors, variantColor, setQueryList, currView, setCurrView, currDataObj, setCurrDataObj } = useNodeContext();
+  const { setNLData, setDataObj, view2D, nodeSize, gtList, passFilter, highlightFormat, settingsVisible, sampleColors, setSampleColors, variantColor, setQueryList, currView, setCurrView, currDataObj, setCurrDataObj, patientGroupings, setPatientGroupings } = useNodeContext();
 
   const fgRef = useRef();
   const prevVals = useRef({ selected, refresh, isClicked });
   const { browserQuery, setBrowserQuery } = useDisplayContext();
   const [clickedNode, setClickedNode] = useState(undefined);
   const [processing, setProcessing] = useState(false);
+  const [singleColorFlag, setSingleColorFlag] = useState(false);
+  const [multiColorFlag, setMultiColorFlag] = useState(false);
 
   const incrementColor = (col, amt) => {
     col = col.slice(1);
@@ -45,19 +47,64 @@ const NodeView = ({ w, h, setData }) => {
   const handleColoring = (numGroups) => {
     console.log("In handlecoloring:")
     console.log(sampleColors);
-    if (numGroups > 0 && sampleColors.length === 0) {
-      console.log("Patient groupings exist.");
-      var colorArray = []
-      var currColor = "#BABABA"
-      var increment = 150 / numGroups;
-      for (var i = 0; i < numGroups; i++) {
-        colorArray[i] = currColor;
-        currColor = incrementColor(currColor, -1 * increment);
+    if (!singleColorFlag && !multiColorFlag) {
+      if (numGroups === 0) {
+        console.log("Patient groupings do no exist.");
+        var colorArray = ["#BABABA"]
+        setSampleColors(colorArray);
+      } else if (numGroups > 0) {
+        console.log("Patient groupings exist.");
+        var colorArray = []
+        var currColor = "#BABABA"
+        var increment = 150 / numGroups;
+        for (var i = 0; i < numGroups; i++) {
+          colorArray[i] = currColor;
+          currColor = incrementColor(currColor, -1 * increment);
+        }
+        setSampleColors(colorArray);
+        setMultiColorFlag(true);
       }
-      console.log(colorArray);
-      setSampleColors(colorArray);
+      setSingleColorFlag(true);
+    } else if (!multiColorFlag)  {
+      if (numGroups > 0) {
+        console.log("Patient groupings exist.");
+        var colorArray = []
+        var currColor = "#BABABA"
+        var increment = 150 / numGroups;
+        for (var i = 0; i < numGroups; i++) {
+          colorArray[i] = currColor;
+          currColor = incrementColor(currColor, -1 * increment);
+        }
+        setSampleColors(colorArray);
+        setMultiColorFlag(true);
+      }
     }
   }
+
+  // const handleColoring = (numGroups) => {
+  //   console.log("In handlecoloring:")
+  //   console.log(sampleColors);
+  //   if (sampleColors.length === 0) {
+  //     if (numGroups === 0) {
+  //       console.log("Patient groupings do no exist.");
+  //       var colorArray = ["#BABABA"]
+  //       console.log(colorArray);
+  //       setSampleColors(colorArray);
+  //     } else if (numGroups > 0) {
+  //       console.log("Patient groupings exist.");
+  //       var colorArray = []
+  //       var currColor = "#BABABA"
+  //       var increment = 150 / numGroups;
+  //       for (var i = 0; i < numGroups; i++) {
+  //         colorArray[i] = currColor;
+  //         currColor = incrementColor(currColor, -1 * increment);
+  //       }
+  //       console.log(colorArray);
+  //       setSampleColors(colorArray);
+  //     }
+  //   }
+  // }
+
 
   const searchGeneFile = async () => {
     if (geneFileUpload !== undefined) {
@@ -180,13 +227,25 @@ const NodeView = ({ w, h, setData }) => {
     if (node.type == 'variant') {
       return variantColor;
     } else {
-      if (node.group != null && sampleColors.length > 0) {
+      if (node.group != null && sampleColors.length > 0 && patientGroupings == "VISIBLE" && phenotypeList[pathList.indexOf(selected)] != null) {
         return sampleColors[Number(node.group)];
       } else {
-        return '#BABABA';
+        return sampleColors[0];
       }
     }
   }
+
+  // const getSampleColor = (node) => {
+  //   if (node.type == 'variant') {
+  //     return variantColor;
+  //   } else {
+  //     if (node.group != null && sampleColors.length > 0) {
+  //       return sampleColors[Number(node.group)];
+  //     } else {
+  //       return '#BABABA';
+  //     }
+  //   }
+  // }
 
   const getDefaultLink = (is3D) => {
     if (is3D) {
@@ -382,13 +441,28 @@ const NodeView = ({ w, h, setData }) => {
     if (node.type == 'variant') {
       return variantColor;
     } else {
-      if (node.group != null && sampleColors.length > 0) {
+      if (sampleColors.length === 0) {
+        return '#BABABA';
+      } 
+      else if (node.group != null) {
         return sampleColors[Number(node.group)];
       } else {
-        return '#BABABA';
+        return sampleColors[0];
       }
     }
   }
+
+  // const getNodeColor = (node) => {
+  //   if (node.type == 'variant') {
+  //     return variantColor;
+  //   } else {
+  //     if (node.group != null && sampleColors.length > 0) {
+  //       return sampleColors[Number(node.group)];
+  //     } else {
+  //       return '#BABABA';
+  //     }
+  //   }
+  // }
 
   const handleNodeClick = (node, event, setData) => {
     console.log("here?")
@@ -409,10 +483,12 @@ const NodeView = ({ w, h, setData }) => {
   useEffect(() => {
     console.log("In nodeview starting useeffect:");
     if (prevVals.current.selected != selected) {
+      console.log("New selected:");
       setDataObj(undefined);
       setCurrView(undefined);
       setCurrDataObj(undefined);
       setNLData([]);
+      setQueryList([]);
       handleFileChosen(selected);
       prevVals.current = { selected, refresh, isClicked }
     } else {
@@ -431,14 +507,15 @@ const NodeView = ({ w, h, setData }) => {
         } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
           console.log("On refresh, searching range...");
           searchRange();
-        } else {
-          console.log("On refresh, no existing query.");
+        } 
+      } else {
           // setDataObj(undefined);
           // setCurrView(undefined);
           // setCurrDataObj(undefined);
           // setNLData([]);
-        }
-      } 
+          // setQueryList([]);
+          
+      }
     }
 
   }, [refresh, selected, isClicked])
@@ -536,7 +613,7 @@ const NodeView = ({ w, h, setData }) => {
         nodeOpacity={1}
         linkColor={(link) => handleLinkColor(link, true)}
         backgroundColor="#f1f5f9"
-        width={`${activeMenu ? window.innerWidth - 430 : window.innerWidth - 48}`}
+        width={`${activeMenu ? window.innerWidth - 434 : window.innerWidth - 52}`}
         height={window.innerHeight - 200}
       />
     </div>

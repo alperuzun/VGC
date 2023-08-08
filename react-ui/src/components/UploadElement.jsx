@@ -37,8 +37,8 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
           </button>
           <button className="flex grow max-w-[312px]"
             onClick={() => {
-              setSearchGeneTerm("");
-              setSearchRangeTerm("");
+              // setSearchGeneTerm("");
+              // setSearchRangeTerm("");
               if (selected === path) {
                 setRefresh(!refresh);
               } else {
@@ -56,6 +56,10 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
                 className="flex items-center pr-2 text-slate-400 hover:text-slate-600"
                 onClick={() => {
                   handleRemovePath(path);
+                  console.log("Removed! Now Selected:" );
+                  console.log(selected);
+
+
                   // var indexOfDeleted = pathList.indexOf(path);
                   // var pathCopy = [...pathList];
                   // pathCopy.splice(indexOfDeleted, 1)

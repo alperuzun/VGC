@@ -4,9 +4,9 @@ import { useStateContext } from '../contexts/ContextProvider';
 import '../css/TabBar.css';
 
 const TabBar = () => {
-  const { nlData, dataObj, queryList, setCurrView, setCurrDataObj } = useNodeContext(); 
+  const { nlData, dataObj, queryList, setQueryList, setCurrView, setCurrDataObj } = useNodeContext(); 
 
-  const { activeMenu, refresh } = useStateContext();
+  const { activeMenu, refresh, selected, currentlyViewing } = useStateContext();
 
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -15,6 +15,7 @@ const TabBar = () => {
   }, [refresh])
 
   const TabButton = ({ name, width}) => {
+
 
     return (
       // <div className="flex h-7 items-center justify-center ">
