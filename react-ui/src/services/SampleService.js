@@ -5,33 +5,24 @@ const MAP_VIEW_GENE = 'http://localhost:8080/mapview/get-heat-map-gene';
 const MAP_VIEW_RANGE = 'http://localhost:8080/mapview/get-heat-map-range';
 
 
-class TableService {
-
-
-    // getHeatMapForGeneFile(path, passFilter) {
-    //     return axios.get(MAP_VIEW_GENE_FILE, {params : {
-    //         path, passFilter
-    //     }});
-    // }
+class SampleService {
     getHeatMapForGeneFile(path, passFilter) {
         return axios.get(MAP_VIEW_GENE_FILE, { params: { path, passFilter } })
           .then(response => {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error
           });
       }
       
-      
-
     getHeatMapForPosFile(path, passFilter) {
         return axios.get(MAP_VIEW_POS_FILE, {params : { path, passFilter }})
           .then(response => {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -41,7 +32,7 @@ class TableService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -51,7 +42,7 @@ class TableService {
             return response;
           })
           .catch(error => {
-            alert("An error occured while processing your data. Please check your file formats before trying again.");
+            throw error;
           });
     }
 
@@ -59,4 +50,4 @@ class TableService {
 
 }
 
-export default new TableService();
+export default new SampleService();

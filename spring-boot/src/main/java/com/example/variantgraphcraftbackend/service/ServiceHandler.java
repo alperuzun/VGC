@@ -296,15 +296,18 @@ public class ServiceHandler {
     }
 
     public MapView generateHeatMap(MapState type, String passFilter, ArrayList<String> chr, ArrayList<String> gene,
-                                   ArrayList<Integer> start, ArrayList<Integer> end) throws IOException, GeneNotFoundException {
+                                   ArrayList<Integer> start, ArrayList<Integer> end) throws IOException, GeneNotFoundException, RangeNotFoundException {
         Map<String, Map<String, List<String[]>>> helperMap = new HashMap<String, Map<String, List<String[]>>>();
         List<String[]> data = new ArrayList<String[]>();
         String title = null;
         switch (type) {
             case RANGE:
+                ParseHelper parseHelper = new ParseHelper();
                 for (int i = 0; i < chr.size(); i++) {
-                    List<String[]> retrievedVariants = this.vcfParser.getLinesByPos(chr.get(i), this.getChrStart(chr.get(i)),this.getChrEnd(chr.get(i)),
-                            start.get(i), end.get(i), passFilter, this.currFile.getPath());
+                    if (!parseHelper.chrExists(chr.get(i)) || !parseHelper.rangeValid(start.get(i), end.get(i), this.zoomController.getNumBP(chr.get(i)))) {
+                        throw new RangeNotFoundException("Invalid range: " + chr.get(i) + ":" + start.get(i) + "-" + end.get(i), 400);
+                    }
+                    List<String[]> retrievedVariants = this.vcfParser.getLinesByPos(chr.get(i), this.getChrStart(chr.get(i)),this.getChrEnd(chr.get(i)), start.get(i), end.get(i), passFilter, this.currFile.getPath());
                     data.addAll(retrievedVariants);
                     this.geneParser.getRangeToGeneInfo(helperMap, chr.get(i), retrievedVariants);
                 }

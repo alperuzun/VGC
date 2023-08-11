@@ -165,7 +165,7 @@ const Display = () => {
                   <BarView />
                 </div>
               </div>
-              <div className="flex text-md  justify-center">
+              <div className="flex mt-2 justify-center">
                 {histogramData != null && histogramData.data.xTitle}
               </div>
             </div>

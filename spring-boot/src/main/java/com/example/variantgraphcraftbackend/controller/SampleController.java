@@ -2,11 +2,19 @@ package com.example.variantgraphcraftbackend.controller;
 
 
 import com.example.variantgraphcraftbackend.controller.exceptions.GeneNotFoundException;
+import com.example.variantgraphcraftbackend.controller.exceptions.InvalidFileException;
+import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundException;
+import com.example.variantgraphcraftbackend.model.ErrorResponse;
 import com.example.variantgraphcraftbackend.model.MapState;
 import com.example.variantgraphcraftbackend.model.MapView;
 import com.example.variantgraphcraftbackend.model.NodeView;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
+
+import org.apache.catalina.connector.Response;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,41 +39,11 @@ public class SampleController {
         this.handler = handler;
     }
 
-    @GetMapping("get-heat-map-all")
-    public MapView getHeatMapAll(String passFilter) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPALL CALLED");
-
-        System.out.println("Filter is: " + passFilter);
-
-//        try {
-//
-//        } catch(IOException e) {
-//            System.out.println("IOException in getheatmapall pf SampleController.");
-//            e.printStackTrace();
-//        }
-        return null;
-    }
-
-    @GetMapping("get-heat-map-chr")
-    public MapView getHeatMapForChr(String passFilter, String chr) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPALL CALLED");
-
-        System.out.println("Filter is: " + passFilter);
-
-//        try {
-//
-//        } catch(IOException e) {
-//            System.out.println("IOException in getheatmapall pf SampleController.");
-//            e.printStackTrace();
-//        }
-        return null;
-    }
-
     /**
      * File format: 'gene,gene,gene...' OR with multiple lines.
      */
     @GetMapping("get-heat-map-gene-file")
-    public MapView getHeatMapForGeneFile(String path, String passFilter) {
+    public ResponseEntity<?> getHeatMapForGeneFile(String path, String passFilter) {
         System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPFORGENEFILE CALLED");
         System.out.println("Path: " + path);
         System.out.println("FILTER: " + passFilter);
@@ -73,15 +51,21 @@ public class SampleController {
         try {
             ArrayList<String> geneInfo = this.processGeneFile(path);
             System.out.println(geneInfo);
-            return this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneInfo, null, null);
+            MapView mapView = this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneInfo, null, null);
+            return ResponseEntity.ok(mapView);
         } catch (IOException e) {
-            System.out.println("IOException in getHeatMapForGeneFile of SampleController.");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid genes in file upload.", ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse); 
+        } catch (InvalidFileException fx) {
+            ErrorResponse errorResponse = new ErrorResponse(fx.getMessage(), fx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (RangeNotFoundException rx) {
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid genes in file upload.", rx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse); 
         }
-
-        return null;
     }
 
     /**
@@ -90,7 +74,7 @@ public class SampleController {
      * chr:pos,pos,...
      */
     @GetMapping("get-heat-map-pos-file")
-    public MapView getHeatMapForPosFile(String path, String passFilter) {
+    public ResponseEntity<?> getHeatMapForPosFile(String path, String passFilter) {
         System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPFORPOSFILE CALLED");
 
         try {
@@ -102,23 +86,34 @@ public class SampleController {
                 ArrayList<String> tempChr = new ArrayList<String>(Arrays.asList(new String[v.size()]));
                 Collections.fill(tempChr, k);
                 chr.addAll(tempChr);
-//                chr.add(k);
                 start.addAll(new ArrayList<Integer>(v));
                 end.addAll(new ArrayList<Integer>(v));
             });
-            return this.handler.generateHeatMap(MapState.RANGE, passFilter, chr, null, start, end);
-
+            MapView mapView = this.handler.generateHeatMap(MapState.RANGE, passFilter, chr, null, start, end);
+            return ResponseEntity.ok(mapView);
         } catch (IOException e) {
-            System.out.println("IOException in getHeatMapForPosFile.");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (NumberFormatException n) {
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (ArrayIndexOutOfBoundsException ax) {
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (InvalidFileException fx) {
+            ErrorResponse errorResponse = new ErrorResponse(fx.getMessage(), fx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (RangeNotFoundException rx) {
+            ErrorResponse errorResponse = new ErrorResponse("One or more invalid positions in file upload.", 400);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
-        return null;
     }
 
     @GetMapping("get-heat-map-range")
-    public MapView getHeatMapForRange(String passFilter, String range) {
+    public ResponseEntity<?> getHeatMapForRange(String passFilter, String range) {
         System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPALL CALLED");
 
         System.out.println("Filter is: " + passFilter);
@@ -140,21 +135,31 @@ public class SampleController {
             startList.add(Integer.valueOf(start));
             endList.add(Integer.valueOf(end));
 
-            return this.handler.generateHeatMap(MapState.RANGE, passFilter, chrList, null, startList, endList);
+            MapView mapView = this.handler.generateHeatMap(MapState.RANGE, passFilter, chrList, null, startList, endList);
+            return ResponseEntity.ok(mapView);
         } catch(IOException e) {
-            System.out.println("IOException in getHeatMapForRange of SampleController.");
-            e.printStackTrace();
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("IndexOutOfBoundsException in getHeatMapForRange of SampleController");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (IndexOutOfBoundsException in) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse); 
         } catch (GeneNotFoundException ex) {
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (NullPointerException n) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (RangeNotFoundException rx) {
+            ErrorResponse errorResponse = new ErrorResponse(rx.getMessage(), rx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (NumberFormatException n) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);   
         }
-        return null;
     }
 
     @GetMapping("get-heat-map-gene")
-    public MapView getHeatMapForGene(String passFilter, String gene) {
+    public ResponseEntity<?> getHeatMapForGene(String passFilter, String gene) {
         System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPGENE CALLED");
 
         gene = gene.trim();
@@ -164,17 +169,24 @@ public class SampleController {
         System.out.println("Gene is: " + gene);
 
         try {
-            return this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneList, null, null);
+            MapView mapView = this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneList, null, null);
+            return ResponseEntity.ok(mapView);
         } catch(IOException e) {
-            System.out.println("IOException in getheatmapall pf SampleController.");
-            e.printStackTrace();
+            ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        } catch (NullPointerException n) {
+            ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            return null;
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        } catch (RangeNotFoundException rx) {
+            ErrorResponse errorResponse = new ErrorResponse(rx.getMessage(), rx.getStatusCode());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
-        return null;
     }
 
-    private ArrayList<String> processGeneFile(String path) throws IOException {
+    private ArrayList<String> processGeneFile(String path) throws IOException, InvalidFileException {
         ArrayList<String> processedArray = new ArrayList<String>();
         BufferedReader input = new BufferedReader(new FileReader(path));
         String currLine = input.readLine();
@@ -185,10 +197,14 @@ public class SampleController {
             }
             currLine = input.readLine();
         }
+        input.close();
+        if (processedArray.size() < 1) {
+            throw new InvalidFileException("Invalid gene file upload.", 400);
+        }
         return processedArray;
     }
 
-    private HashMap<String, Set<Integer>> processPosFile(String path) throws IOException {
+    private HashMap<String, Set<Integer>> processPosFile(String path) throws IOException, NumberFormatException, ArrayIndexOutOfBoundsException, InvalidFileException {
         HashMap<String, Set<Integer>> processedMap = new HashMap<String, Set<Integer>>();
         BufferedReader input = new BufferedReader(new FileReader(path));
         String currLine = input.readLine();
@@ -206,6 +222,10 @@ public class SampleController {
                 processedMap.put(chr, newPosSet);
             }
             currLine = input.readLine();
+        }
+        input.close();
+        if (processedMap.isEmpty()) {
+            throw new InvalidFileException("Invalid range file upload.", 400);
         }
         return processedMap;
     }
