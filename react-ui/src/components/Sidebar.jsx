@@ -9,6 +9,8 @@ import { BsChevronDown, BsChevronRight } from 'react-icons/bs';
 import { useStateContext } from '../contexts/ContextProvider';
 import  FileDeleter  from './FileDeleter'
 import  UploadElement  from './UploadElement'
+import logo_final from './Images/logo_final.png';
+
 
 import FileService from '../services/FileService';
 import { useDisplayContext } from '../contexts/DisplayContext';
@@ -94,9 +96,11 @@ const Sidebar = () => {
             setIsClicked(initialState);
             setSearchGeneTerm('');
             setSearchRangeTerm(''); }}>
-          <div className="flex h-0.5 w-10 bg-black"></div>
+              <img className="w-56" src={logo_final}></img>
+
+          {/* <div className="flex h-0.5 w-10 bg-black"></div>
           <div className="px-4">VariantGraphCraft</div>
-          <div className="flex h-0.5 w-10 bg-black"></div>
+          <div className="flex h-0.5 w-10 bg-black"></div> */}
         </NavLink>
       </div>
       Preparing backend to receive files...
@@ -106,16 +110,17 @@ const Sidebar = () => {
 
   return (
     <div className={`${activeMenu ? '' : 'hidden'} p-2 h-full `}>
-      <div className="flex justify-between w-full items-center px-1">
+      <div className="flex rounded-lg  justify-between w-full items-center px-1">
         <NavLink className="flex w-full justify-center items-center text-xl p-2"
           to="/home" onClick={() => { 
             setSelected(undefined); 
             setIsClicked(initialState);
             setSearchGeneTerm('');
             setSearchRangeTerm(''); }}>
-          <div className="flex h-0.5 w-10 bg-black"></div>
+              <img className="w-64" src={logo_final}></img>
+          {/* <div className="flex h-0.5 w-10 bg-black"></div>
           <div className="px-4">VariantGraphCraft</div>
-          <div className="flex h-0.5 w-10 bg-black"></div>
+          <div className="flex h-0.5 w-10 bg-black"></div> */}
         </NavLink>
       </div>
 

@@ -367,29 +367,25 @@ const BarView = () => {
 
   const getChartWidth = () => {
     if (activeMenu) {
-      if (window.innerWidth >= 1200) {
-        return 850; // Fallback width for screens larger than 'xl'
-      } else if (window.innerWidth >= 992) {
-        return 700; // Width for 'lg' screens
-      } else if (window.innerWidth >= 768) {
-        return 600; // Width for 'md' screens
+      if (window.innerWidth <= 1220) {
+        return 650; // Width for 'lg' screens
+      } else if (window.innerWidth <= 1290) {
+        return 740;
+      } else if (window.innerWidth <= 1340) {
+        return 800; // Fallback width for screens larger than 'xl'
       } else {
-        return 400; // Fallback width for 'sm' and smaller screens
+        return 850;
       }
     } else {
       if (window.innerWidth >= 1400) {
         return 1200;
+      } else if (window.innerWidth >= 1300) {
+        return 1100; // Fallback width for screens larger than 'xl'
       } else if (window.innerWidth >= 1200) {
-        return 1000; // Fallback width for screens larger than 'xl'
-      } else if (window.innerWidth >= 992) {
-        return 850; // Width for 'lg' screens
-      } else if (window.innerWidth >= 768) {
-        return 750; // Width for 'md' screens
-      } else if (window.innerWidth >= 650){
-        return 550; // Fallback width for 'sm' and smaller screens
-      } else {
-        return 450;
-      }
+        return 1000; // Width for 'lg' screens
+      } else if (window.innerWidth >= 1150) {
+        return 950; // Width for 'md' screens
+      } 
     }
   };
 

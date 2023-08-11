@@ -4,6 +4,8 @@ import GraphService from '../services/GraphService'
 import FileService from '../services/FileService';
 import { NodeContext, useNodeContext } from '../contexts/NodeContext';
 import { Sprite, CanvasTexture, SpriteMaterial, TextureLoader } from "three";
+import { saveAs } from 'file-saver';
+
 
 import ForceGraph2D from "react-force-graph-2d";
 import ForceGraph3D from "react-force-graph-3d";
@@ -533,7 +535,7 @@ const NodeView = ({ w, h, setData }) => {
   }
 
   return (
-    <div className="flex items-center ml-2">
+    <div id="3d-graph" className="flex items-center ml-2">
         {processing && 
         <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
           <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>

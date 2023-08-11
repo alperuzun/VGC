@@ -124,7 +124,6 @@ const Display = () => {
                 <div className="flex ml-auto pr-12">
                   <button onClick={handleSave} className="flex p-1 ml-1 w-28 text-sm justify-center rounded-full border-1 border-slate-500  hover:bg-slate-200 ">Save</button>
 
-                {/* <button onClick={handleSave} className="flex p-1 ml-1 w-28 text-sm justify-center rounded-sm bg-slate-300">Save</button> */}
                 </div>
               </div>
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import {useNavigate} from 'react-router-dom'
-import vgc_final from './Images/vgc_final.png';
-import welcome_logo from './Images/welcome_logo.png';
+
+import React, { useEffect, useState, NavLink } from 'react'
+import { useNavigate } from 'react-router-dom'
 import legorreta_cancer_center_logo from './Images/legorreta_cancer_center_logo.png';
+import { AiOutlineFileAdd } from 'react-icons/ai';
+import { AiFillFileUnknown } from 'react-icons/ai';
 import warren_alpert_medical_school_logo from './Images/warren_alpert_medical_school_logo.png'
 import department_pathology_logo from './Images/department_pathology_logo.png'
 
@@ -10,21 +11,19 @@ import icon1 from './Images/icon1.png';
 import icon2 from './Images/icon2.png';
 import icon3 from './Images/icon3.png';
 import icon4 from './Images/icon4.png';
-import logo_no_border from './Images/logo_no_border.png';
 
+import jennifer_li_email from './Images/jennifer_li_email.png';
+import alper_uzun_email from './Images/alper_uzun_email.png';
 
 import { useStateContext } from '../contexts/ContextProvider';
 import { useDisplayContext } from '../contexts/DisplayContext';
-import { SimplePane } from './Panes';
-import "../css/DragDrop.css";
-import { AiOutlineClose } from 'react-icons/ai';
 
 
 const Welcome = () => {
 
   const navigate = useNavigate();
-  const { activeMenu, selected} = useStateContext();
-  const {handleClick} = useDisplayContext();
+  const { activeMenu, selected, setSelected, handleNewPath, refresh, setRefresh, setSearchGeneTerm, setSearchRangeTerm } = useStateContext();
+  const { handleClick } = useDisplayContext();
   const [activeGenomeSelect, setActiveGenomeSelect] = useState(false);
   const [genome, setGenome] = useState("Feb. 2009 (GRCh37/hg19)");
   const [fileList, setFileList] = useState([]);
@@ -108,40 +107,140 @@ const Welcome = () => {
 
 
   return (
-    <div className="flex h-full overflow-y-scroll z-50 bg-[#457b9d] overflow-x-clip">
-      <div className="p-2 ">
-        <div className={`flex ${activeMenu ? 'xl:w-[64rem] lg:w-[52rem] md:w-[46rem] sm:w-[36rem] ' : 'xl:w-[88rem] lg:w-[76rem] md:w-[72rem] sm:w-[60rem] w-[40rem]'}`}>
-          <div className="flex w-full p-12 justify-center items-center flex-col">
-            <div className="flex rounded-2xl">
-              <img className="" src={welcome_logo}></img>
+    <div className="flex h-full w-full">
+      <div className="flex grow px-2 py-1.5 ">
+        <div className={`flex  flex-col w-full h-full bg-slate-100 drop-shadow-md`}>
+
+          <div className="flex w-full p-6 justify-center items-center flex-col">
+            {/* Topmost row */}
+            <div className="flex flex-row w-full gap-4">
+              {/* Visualization */}
+              <div className="flex w-2/3 flex-col gap-3 justify-center items-center ">
+                <div className="flex flex-row items-center justify-center w-full gap-4">
+                  <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+                  <text className="text-lg font-extralight text-slate-700 whitespace-nowrap">Getting Started</text>
+                  <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+                </div>
+
+                <div className="flex flex-row w-full gap-2 px-2">
+                  <div className="flex flex-col w-full gap-2">
+                    <label className="flex w-full justify-center items-center rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500 text-slate-700">
+                      <div className="hidden">
+                        <input
+                          type="file"
+                          id="myfile"
+                          onChange={e => {
+                            handleNewPath(e.target.files[0]);
+                            setSelected(e.target.files[0].path);
+                            setSearchGeneTerm("");
+                            setSearchRangeTerm("");
+                            e.target.value = ''
+                          }}
+                          name="myfile"
+                          accept=".vcf"
+                          multiple />
+                      </div>
+                      <div className="flex p-1 gap-3 w-full h-24 justify-center items-center flex-row">
+                        <AiOutlineFileAdd className="w-16 h-full text-[#3f89c7]"/>
+                        <text className="flex text-slate-700">Upload VCF File</text>
+                      </div>
+                    </label>
+                    <div className="flex flex-row w-full gap-2">
+                      <div
+                      className="flex p-1 w-1/2 text-sm justify-center text-no-wrap rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500 text-slate-700"
+                      onClick={() => {
+                        const newWindow = window.open('https://github.com/alperuzun/VGC', '_blank');
+                        newWindow.opener = null; 
+                      }}
+                    >
+                      Small Example
+                    </div>
+                    <div
+                    className="flex p-1 w-1/2 text-sm justify-center text-no-wrap rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500 text-slate-700"
+                    onClick={() => {
+                      const newWindow = window.open('https://github.com/alperuzun/VGC', '_blank');
+                      newWindow.opener = null; 
+                    }}
+                    >
+                      Large Example
+                    </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="flex p-1 w-1/3 h-[8.5rem] text-sm justify-center items-center text-center flex-col rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500"
+                    onClick={() => {
+                      const newWindow = window.open('https://github.com/alperuzun/VGC', '_blank');
+                      newWindow.opener = null; 
+                    }}
+                  >
+                    <AiFillFileUnknown className="flex w-16 h-full text-[#3f89c7]"/>
+                    <text className="flex text-sm text-slate-700 ">View Documentation</text>
+                  </div>
+                </div>
+              </div>
+              {/* </div> */}
+              {/* Contact */}
+              <div className="flex flex-col w-1/3">
+                <div className="flex flex-row items-center justify-center w-full gap-4">
+                  <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+                  <text className="text-lg font-extralight text-slate-700">Contact</text>
+                  <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+                </div>
+                <div className="flex flex-col w-full h-[4rem] border-1 border-slate-300 rounded-lg mt-3 justify-center items-center">
+                  <text>Alper Uzun, PhD</text>
+                  <img src={alper_uzun_email} className="h-auto w-auto max-w-[170px] "/>
+                </div>
+                <div className="flex flex-col w-full h-[4rem] border-1 border-slate-300 rounded-lg mt-2 justify-center items-center">
+                  <text>Jennifer Li </text>
+                  <img src={jennifer_li_email} className="h-auto w-auto max-w-[170px] "/>
+                </div>
+              </div>
             </div>
 
-            <div className={`flex flex-row w-full mt-16 justify-evenly text-white text-sm ${activeMenu ? 'lg:text-[15px] md:text-[13.5px] sm:text-[11px]' : ''}`}>
-              <div className="flex flex-col justify-center items-center w-1/4 ">
-              <img className="w-12 h-12" src={icon1}></img>
-                <div className="text-center px-3 py-6 "> Rapid VCF file browsing with Histogram, Grid View, and Node Graph support</div>
+            <div className="flex flex-row items-center justify-center w-full gap-4 mt-6">
+              <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+              <text className="text-lg font-extralight text-slate-700">Features</text>
+              <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+            </div>
+{/* ${activeMenu ? 'lg:text-[15px] md:text-[13.5px] sm:text-[11px]' : ''} */}
+            <div className={`flex flex-row w-full mt-4 justify-evenly gap-2 text-slate-700 text-sm `}>
+              <div className="flex flex-col items-center w-1/4 border-1 border-slate-300 rounded-md ">
+                <img className="w-12 h-12 mt-4" src={icon1}></img>
+                <div className={`text-center ${activeMenu? "md:px-3 md:py-6 px-0.5 py-0.5" : "sm:px-3 sm:py-6 px-0.5 py-0.5"} `}> Rapid VCF file browsing with Histogram, Grid View, and Node Graph support</div>
               </div>
-              <div className="flex flex-col justify-center items-center w-1/4">
-              <img className="w-12 h-12" src={icon2}></img> 
-                <div className="text-center px-3 py-6">Rapid identification and visualization of variant pathogenicity</div>
+              <div className="flex flex-col items-center w-1/4 border-1 border-slate-300 rounded-md ">
+                <img className="w-12 h-12 mt-4" src={icon2}></img>
+                <div className={`text-center ${activeMenu? "md:px-3 md:py-6 px-0.5 py-0.5" : "sm:px-3 sm:py-6 px-0.5 py-0.5"} `}>Rapid identification and visualization of variant pathogenicity</div>
               </div>
-              <div className="flex flex-col justify-center items-center w-1/4">
-              <img className="w-12 h-12" src={icon3}></img>
-                <div className="text-center px-3 py-6">Integrated variant querying through Gnomad, MSigDB, and Clinvar databases</div>
+              <div className="flex flex-col items-center w-1/4 border-1 border-slate-300 rounded-md ">
+                <img className="w-12 h-12 mt-4" src={icon3}></img>
+                <div className={`text-center ${activeMenu? "md:px-3 md:py-6 px-0.5 py-0.5" : "sm:px-3 sm:py-6 px-0.5 py-0.5"} `}>Integrated variant querying through Gnomad, MSigDB, and Clinvar databases</div>
               </div>
-              <div className="flex flex-col justify-center items-center w-1/4">
-              <img className="w-12 h-12" src={icon4}></img>
-                <div className="text-center px-3 py-6">Displays variant-to-sample genotype relations of user-defined groups</div>
+              <div className="flex flex-col items-center w-1/4 border-1 border-slate-300 rounded-md">
+                <img className="w-12 h-12 mt-4" src={icon4}></img>
+                <div className={`text-center ${activeMenu? "md:px-3 md:py-6 px-0.5 py-0.5" : "sm:px-3 sm:py-6 px-0.5 py-0.5"} `}>Displays variant-to-sample genotype relations of user-defined groups</div>
               </div>
+            </div>
 
+            <div className="flex flex-row items-center justify-center w-full gap-4 mt-4">
+              <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
+              <text className="text-slate-700 font-extralight text-lg">Acknowledgements</text>
+              <div className="flex-grow w-full h-[1.5px] bg-slate-700"></div>
             </div>
-            <div className="flex flex-row items-center justify-center w-full">
-              <div className="w-24 h-0.5 bg-[#000000] mx-10 mt-2"></div>
-              <img className="mt-2 w-52 h-16" src={department_pathology_logo}></img>
-              <img className="mt-2 w-48 h-14 ml-10 mr-10" src={legorreta_cancer_center_logo}></img>
-              <img className="mt-2 w-48 h-16" src={warren_alpert_medical_school_logo}></img>
-              <div className="w-24 h-0.5 bg-[#000000] mx-10 mt-2"></div>
+
+            <div className="flex flex-row items-center justify-center w-full gap-2 mt-4">
+              <div className="flex items-center justify-center w-1/3 border-1 border-slate-300 rounded-md hover:border-slate-700">
+                <img className="flex m-2 h-16" src={department_pathology_logo}></img>
+              </div>
+              <div className="flex items-center justify-center w-1/3 border-1 border-slate-300 rounded-md hover:border-slate-700">
+                <img className="flex my-3 mx-4 h-14 " src={legorreta_cancer_center_logo}></img>
+              </div>
+              <div className="flex items-center justify-center w-1/3 border-1 border-slate-300 rounded-md hover:border-slate-700">
+                <img className="flex my-2 mx-3 h-16" src={warren_alpert_medical_school_logo}></img>
+              </div>
             </div>
+
           </div>
 
 
@@ -153,3 +252,4 @@ const Welcome = () => {
 }
 
 export default Welcome
+
