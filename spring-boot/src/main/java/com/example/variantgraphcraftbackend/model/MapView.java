@@ -82,6 +82,12 @@ public class MapView {
                             this.updateGroupGTMap(groupGTMap, samplesGT.get(currSample));
                         } else {
                             if (this.handleRowGTReset(groupGTMap, ceiling, currTestElement)) {
+                                // EDIT:
+                                groupGTMap = new HashMap<String, Integer>();
+                                groupGTMap.put("0/0", 0);
+                                groupGTMap.put("0/1", 0);
+                                groupGTMap.put("1/1", 0);
+
                                 ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
                                 System.out.println("Ceiling updated. Ceiling is: " + ceiling);
                                 System.out.println("GT Map is now: " + groupGTMap);
@@ -125,10 +131,11 @@ public class MapView {
             System.out.println("MATRIX ROW ADDED");
 
             if (this.endList.size() > this.endList.indexOf(ceiling) + 1) {
-                gtMap = new HashMap<String, Integer>();
-                gtMap.put("0/0", 0);
-                gtMap.put("0/1", 0);
-                gtMap.put("1/1", 0);
+                // EDIT: 
+                // gtMap = new HashMap<String, Integer>();
+                // gtMap.put("0/0", 0);
+                // gtMap.put("0/1", 0);
+                // gtMap.put("1/1", 0);
                 return true;
             } else {
                 return false;

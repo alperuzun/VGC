@@ -37,7 +37,32 @@ public class ExactTest {
     public ArrayList<String> getResult() {
         String innerList = this.testResult.substring(5, this.testResult.length() - 1);
         String[] resultArray = innerList.split(",");
+        resultArray[0] = handlePValFormat(resultArray[0]);
         return new ArrayList<String>(Arrays.asList(resultArray));
+    }
+
+
+    private String handlePValFormat(String inputString) {
+        String[] parts = inputString.split(" ");
+        String valueString = parts[parts.length - 1];
+        double value = Double.parseDouble(valueString);
+        double roundedValue = roundToSignificantFigures(value, 4);
+        String formattedValue = String.format("%.7f", roundedValue);
+        return "p.value = " + formattedValue;
+    }
+
+    private double roundToSignificantFigures(double num, int n) {
+        if (num == 0) {
+            return 0;
+        }
+
+        final double d = Math.ceil(Math.log10(num < 0 ? -num : num));
+        final int power = n - (int) d;
+
+        final double magnitude = Math.pow(10, power);
+        final long shifted = Math.round(num * magnitude);
+
+        return shifted / magnitude;
     }
 
 }

@@ -72,7 +72,7 @@ const Compare = () => {
   return (
     <div className="flex flex-col w-full h-full">
       <div className={`flex bg-slate-100 w-full h-full drop-shadow-md`}>
-        {mapObj == null && <NoQuery infoText={"Enter a query above and upload a phenotype file to view sample read depth comparisons"}/>}
+        {mapObj == null && <NoQuery infoText={"Enter a query above to view sample read depth comparisons."}/>}
         
         
         <div className="flex flex-row text-sm w-full">
@@ -82,19 +82,20 @@ const Compare = () => {
 
           {compareInfo || !activeMenu ?
             <div className="flex w-full h-full justify-center">
-              {overlay && activeMenu &&
+              {overlay && activeMenu && mapObj != null && 
                 <div className="absolute top-1 right-60 z-[60]  hover:text-slate-500" onClick={() => setCompareInfo(false)}>
                   <AiOutlineDoubleRight  />
                 </div>
               }
-              <div className={`${overlay && activeMenu? "absolute top-0 right-0 w-64 h-full" : "flex grow"} z-50 flex-col  ${mapObj != null ? "bg-white  shadow-md" : ""} text-sm`}>
+              <div className={`${overlay && activeMenu? "absolute top-0 right-0 w-64 h-full " : "flex grow"} z-50 flex-col  ${mapObj != null ? "bg-white  shadow-md" : ""} text-sm`}>
+                <div className="flex flex-col w-full h-full relative">
                 <div className="flex h-4 ml-1.5 mt-4 justify-center">
                   {mapObj != null &&
                     <text className="flex text-clip items-center">Statistical Analysis</text>
                   }
                 </div>
                 {mapObj != null && mapObj.data != null && mapObj.data.geneList != null ?
-                  <div className="flex-1 flex-col overflow-y-scroll items-center ml-2" >
+                  <div className="flex-1 flex-col overflow-y-auto items-center ml-2" >
                     {mapObj.data.geneList.map((item) => (
                       <div className="flex flex-col items-center">
                         <div className="flex w-full mt-2 bg-[#d3dee1] hover:bg-[#e3ebed] border-slate-400 py-1 cursor-pointer px-2" onClick={() => { setBrowserQuery("gene/" + item.ensembleID); console.log(item.ensembleID) }}>GENE: {item.gene} CHR: {item.chr}</div>
@@ -115,6 +116,7 @@ const Compare = () => {
                   <div>
                   </div>
                 }
+                </div>
               </div>
             </div>
             :

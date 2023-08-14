@@ -140,6 +140,7 @@ const HeatMap = () => {
   useEffect(() => {
     console.log("In heatmap starting useeffect:");
     if (prevVals.current.selected != selected) {
+      console.log("resetting...")
       setMapObj(undefined);
       setMapData(undefined);
       setHorizontalAxisLabels(undefined);
@@ -161,7 +162,12 @@ const HeatMap = () => {
         } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
           console.log("On refresh, searching range...");
           generateRangeMap();
-        } 
+        } else {
+          setMapObj(undefined);
+          setMapData(undefined);
+          setHorizontalAxisLabels(undefined);
+          setHorizontalBrackets([]);
+        }
       }
     }
   }, [refresh, selected, isClicked])
@@ -231,6 +237,12 @@ const HeatMap = () => {
   if (mapData != null && mapObj != null) {
     if (horizontalBrackets.length < 1) {
       return (
+        <div className="flex">
+        {processing && 
+        <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+          <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>
+        </div>
+        }
         <HeatMapComponent
               id="container"
               fontFamily="Open Sans"
@@ -254,10 +266,17 @@ const HeatMap = () => {
               <Inject services={[Legend]} />
 
             </HeatMapComponent>
+            </div>
       )
     } 
 
     return (
+      <div className="flex">
+        {processing && 
+        <div className="absolute inset-0 bg-slate-200 bg-opacity-60 flex flex-col z-[70]">
+          <div className="bg-slate-300 py-0.5 px-6 text-xs">Loading, please wait...</div>
+        </div>
+        }
       <HeatMapComponent
               id="container"
               fontFamily="Open Sans"
@@ -280,6 +299,7 @@ const HeatMap = () => {
             >
               <Inject services={[Legend]} />
             </HeatMapComponent>
+            </div>
     )
   }
 
