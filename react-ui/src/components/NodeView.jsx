@@ -179,7 +179,7 @@ const NodeView = ({ w, h, setData }) => {
       } catch (error) {
         alert(error.response.data.message);
       } finally {
-        setProcessing(true);
+        setProcessing(false);
       }
 
     }

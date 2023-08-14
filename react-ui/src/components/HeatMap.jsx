@@ -256,8 +256,8 @@ const HeatMap = () => {
             </HeatMapComponent>
       )
     } 
+
     return (
-    
       <HeatMapComponent
               id="container"
               fontFamily="Open Sans"
@@ -280,7 +280,6 @@ const HeatMap = () => {
             >
               <Inject services={[Legend]} />
             </HeatMapComponent>
-
     )
   }
 

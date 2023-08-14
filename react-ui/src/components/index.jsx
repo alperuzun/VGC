@@ -20,3 +20,4 @@ export { default as TabBar } from './TabBar';
 export { default as Welcome } from './Welcome';
 export { default as NoFileUploaded } from './NoFileUploaded';
 export { default as LoadingOverlay } from './LoadingOverlay';
+export { default as NoQuery } from './NoQuery';

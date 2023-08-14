@@ -76,7 +76,11 @@ public class Node {
         for (String group : keys) {
             this.groupToNumSamplesString = this.groupToNumSamplesString.concat("Group " + group + ": n=" + this.groupToNumSamples.get(group) + ", \n");
         }
-        this.groupToNumSamplesString = this.groupToNumSamplesString.substring(0, this.groupToNumSamplesString.length() - 1);
+        if (this.groupToNumSamplesString.length() > 0) {
+            this.groupToNumSamplesString = this.groupToNumSamplesString.substring(0, this.groupToNumSamplesString.length() - 1);
+        } else {
+            System.out.println("WHAT" + this.name);
+        }
     }
 
     public Long getId() {

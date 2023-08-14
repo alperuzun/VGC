@@ -46,11 +46,11 @@ const Navbar = ({ handleHelpClick }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    if (screenSize <= 700) {
-      setActiveMenu(false);
-    }
-  }, [screenSize]);
+  // useEffect(() => {
+  //   if (screenSize <= 700) {
+  //     setActiveMenu(false);
+  //   }
+  // }, [screenSize]);
 
   return (
 
@@ -59,7 +59,7 @@ const Navbar = ({ handleHelpClick }) => {
       <div class="menubutton" className="flex flex-row ">
         <button
           type="button"
-          onClick={() => setActiveMenu((prevActiveMenu) => (!prevActiveMenu))}
+          onClick={() => {setActiveMenu((prevActiveMenu) => (!prevActiveMenu)); console.log(activeMenu)}}
           className={`relative text-xl rounded-md py-1 px-3`}
         >
           <div className={`flex flex-row items-center`}>

@@ -183,8 +183,8 @@ const Sidebar = () => {
         </div>
         <span>gnomAD Browser</span>
       </div>
-      <div className={`flex min-h-[35rem] w-full mt-2 ${activeMenu && browserQuery != undefined && !browserHidden ? '' : 'hidden'} overflow-hidden`}>
-        <iframe src={"https://gnomad.broadinstitute.org/" + browserQuery + "?dataset=gnomad_r2_1"} className="flex grow"></iframe>
+      <div className={`flex grow w-full h-full mt-2 ${activeMenu && browserQuery != undefined && !browserHidden ? '' : 'hidden'} overflow-hidden`}>
+        <iframe src={"https://gnomad.broadinstitute.org/" + browserQuery + "?dataset=gnomad_r2_1"} className="flex-1"></iframe>
       </div>
     </div>
   )
