@@ -297,6 +297,7 @@ public class ServiceHandler {
 
     public MapView generateHeatMap(MapState type, String passFilter, ArrayList<String> chr, ArrayList<String> gene,
                                    ArrayList<Integer> start, ArrayList<Integer> end) throws IOException, GeneNotFoundException, RangeNotFoundException {
+        // Maps chr -> {gene -> {var, var, ..}, gene -> {var, var, ..}}, etc}                                
         Map<String, Map<String, List<String[]>>> helperMap = new HashMap<String, Map<String, List<String[]>>>();
         List<String[]> data = new ArrayList<String[]>();
         String title = null;
@@ -325,7 +326,6 @@ public class ServiceHandler {
                             helperMap.put(retrievedChr, new HashMap<String, List<String[]>>());
                         }
                         helperMap.get(retrievedChr).put(gene.get(i) + ":" + geneInfo[3], retrievedVariants);
-
                     }
                 }
                 title = "HeatMap of Read Depth by Sample, PassFilter: " + passFilter;

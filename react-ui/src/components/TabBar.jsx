@@ -18,7 +18,6 @@ const TabBar = () => {
 
 
     return (
-      // <div className="flex h-7 items-center justify-center ">
       <div className={`flex h-7  min-w-min whitespace-nowrap text-[#3f89c7] text-sm px-3 items-center justify-center cursor-pointer border-b-2 ${queryList.indexOf(name) == selectedTab ? "bg-slate-100 text-[#3f89c7] border-[#3f89c7] " : "bg-slate-300 text-slate-700 hover:text-slate-500 hover:bg-slate-200 border-slate-400 border-transparent"}`} onClick={() => {
         setCurrView(nlData[queryList.indexOf(name)]);
         setSelectedTab(queryList.indexOf(name));
@@ -32,22 +31,6 @@ const TabBar = () => {
         }}>
         {name}
       </div>
-      // </div>
-      // <div className="flex h-8 items-center ">
-      // <div className={`flex h-6 w-[` + width + `rem] text-white text-sm px-3 rounded-lg justify-center cursor-pointer ${queryList.indexOf(name) == selectedTab ? "bg-[#3f89c7]" : "bg-slate-400 "}`} onClick={() => {
-      //   setCurrView(nlData[queryList.indexOf(name)]);
-      //   setSelectedTab(queryList.indexOf(name));
-      //   setCurrDataObj(dataObj[queryList.indexOf(name)]);
-      //   console.log("Printing nlData....");
-      //   console.log(nlData);
-      //   console.log("Printing selected tab index...");
-      //   console.log(selectedTab);
-      //   console.log("Printing selected tab index...");
-      //   console.log(queryList.indexOf(name));
-      //   }}>
-      //   {name}
-      // </div>
-      // </div>
     )
   }
 

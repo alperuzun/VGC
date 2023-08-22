@@ -125,6 +125,8 @@ public class NodeController {
         System.out.println("BOOLEANS: " + HR + HT + HA);
         System.out.println("BOOLEANS: " + Boolean.parseBoolean(HR));
 
+        gene = gene.trim();
+
         try {
             NodeView nodeView = this.handler.displayGraphByGene(gene, passFilter, Boolean.parseBoolean(HR), Boolean.parseBoolean(HT), Boolean.parseBoolean(HA));
             return ResponseEntity.ok(nodeView);

@@ -47,20 +47,28 @@ public class MapView {
 
     public void populateHeatMap(Map<String, Map<String, List<String[]>>> helperMap, ArrayList<String> samples, List<String[]> variantsSorted) {
         if (this.sortedSampleList.size() == 0) this.sortedSampleList = samples;
+
         HashMap<String, List<Double>> sampleToVarDPMap = new HashMap<String, List<Double>>();
         HashMap<String, Integer> compareTemplate = new HashMap<String, Integer>();
+
         samples.forEach(s -> {compareTemplate.put(s, 0); sampleToVarDPMap.put(s, new ArrayList<Double>());});
 
         List<String> allChr = new ArrayList<String>(helperMap.keySet());
+
         for (String chr : allChr) {
+
+            System.out.println("CHR:" + chr + " -----------------------");
             List<String> allGenes = new ArrayList<String>(helperMap.get(chr).keySet());
+
             for (String geneString : allGenes) {
+                System.out.println("GENE: " + geneString);
                 String[] geneArr = geneString.split(":");
                 String gene = geneArr[0];
                 String ensembleID = geneArr[1];
                 MapTestGene currGene = new MapTestGene(gene, chr, ensembleID);
-//                List<String[]> variants = new ArrayList<String[]>(helperMap.get(chr).get(geneString));
+
                 List<String[]> variants = helperMap.get(chr).get(geneString);
+
                 for (String[] var : variants) {
                     this.yAxisLabels.add("Chr: " + chr + ", Position: " + var[1]);
                     int ceiling = this.getInitCeiling();
@@ -80,18 +88,16 @@ public class MapView {
                         sampleToVarDPMap.get(currSample).add(samplesDP.get(currSample));
                         if (i <= ceiling) {
                             this.updateGroupGTMap(groupGTMap, samplesGT.get(currSample));
-                        } else {
-                            if (this.handleRowGTReset(groupGTMap, ceiling, currTestElement)) {
-                                // EDIT:
-                                groupGTMap = new HashMap<String, Integer>();
-                                groupGTMap.put("0/0", 0);
-                                groupGTMap.put("0/1", 0);
-                                groupGTMap.put("1/1", 0);
+                        } else if (this.handleRowGTReset(groupGTMap, ceiling, currTestElement)) {
+                            // EDIT:
+                            groupGTMap = new HashMap<String, Integer>();
+                            groupGTMap.put("0/0", 0);
+                            groupGTMap.put("0/1", 0);
+                            groupGTMap.put("1/1", 0);
 
-                                ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
-                                System.out.println("Ceiling updated. Ceiling is: " + ceiling);
-                                System.out.println("GT Map is now: " + groupGTMap);
-                            }
+                            ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
+                            System.out.println("Ceiling updated. Ceiling is: " + ceiling);
+                            System.out.println("GT Map is now: " + groupGTMap);
                         }
                     }
                     //Adds the last matrix row as a MapTestElement
@@ -129,17 +135,9 @@ public class MapView {
         if (this.endList.size() > 0) {
             currTestElement.addMatrixRow(gtMap);
             System.out.println("MATRIX ROW ADDED");
-
             if (this.endList.size() > this.endList.indexOf(ceiling) + 1) {
-                // EDIT: 
-                // gtMap = new HashMap<String, Integer>();
-                // gtMap.put("0/0", 0);
-                // gtMap.put("0/1", 0);
-                // gtMap.put("1/1", 0);
                 return true;
-            } else {
-                return false;
-            }
+            } 
         }
         return false;
     }
@@ -162,7 +160,6 @@ public class MapView {
     }
 
     public boolean isEquivalent(String firstSampleGT, String secondSampleGT) {
-//        System.out.println("Comparing: " + firstSampleGT + " and " + secondSampleGT);
         String[] firstGTArr = firstSampleGT.split("[|/]+");
         String[] secondGTArr = secondSampleGT.split("[|/]+");
         if (!firstGTArr[0].equals(".") || !secondGTArr[0].equals(".")) {

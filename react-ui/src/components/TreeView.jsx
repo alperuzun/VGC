@@ -7,6 +7,7 @@ import { AiOutlineCheck } from 'react-icons/ai';
 import { useStateContext } from '../contexts/ContextProvider';
 import FileService from '../services/FileService';
 import GeneService from '../services/GeneService';
+import TabBar from './TabBar';
 
 
 
@@ -19,7 +20,7 @@ import '../css/TreeView.css';
 
 const TreeView = () => {
 
-  const { selected, setSelected, phenotypeList, pathList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, refresh } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, handleRemovePath, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, refresh } = useStateContext();
 
   const { browserQuery, setBrowserQuery, isClicked } = useDisplayContext();
 
@@ -43,50 +44,53 @@ const TreeView = () => {
   const [activePID, setActivePID] = useState(true);
   const [activeReactome, setActiveReactome] = useState(true);
 
+  const [processing, setProcessing] = useState(false);
+
   const prevVals = useRef({ selected, refresh, isClicked });
 
 
+  const handleSave = () => {
+
+  }
 
   const searchGeneFile = async () => {
     if (geneFileUpload !== undefined) {
       console.log("Searching gene file from TreeView...");
-      let retrievedData = await GeneService.getTreeForGeneFile(geneFileUpload, passFilter)
-      if (retrievedData.data !== "") {
+
+      setProcessing(true);
+      try {
+        let retrievedData = await GeneService.getTreeForGeneFile(geneFileUpload, passFilter)
         const tempTreeObjList = retrievedData.data.treeViewList;
         setTreeObjList(tempTreeObjList);
         setQueryList(retrievedData.data.queries);
         setTreeObj(tempTreeObjList[0]);
         console.log(retrievedData);
-      }
-
-    }
-
-  }
-
-
-  const searchRange = async () => {
-    if (searchRangeTerm !== undefined && searchRangeTerm != "") {
-      console.log("Searching range from TreeView...")
-      let retrievedData = await GeneService.getTreeForRange(passFilter, searchRangeTerm)
-      if (retrievedData.data !== "") {
-        console.log(retrievedData);
+      } catch (error) {
+        alert(error.response.data.message);
+      } finally {
+        setProcessing(false);
       }
     }
   }
+
 
   const searchGene = async () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
       console.log("Searching gene from TreeView...")
-      let retrievedData = await GeneService.getTreeForGene(passFilter, searchGeneTerm)
-      if (retrievedData.data !== "") {
+
+      setProcessing(true);
+      try {
+        let retrievedData = await GeneService.getTreeForGene(passFilter, searchGeneTerm)
         console.log(retrievedData);
         console.log("Logging goTermsBP...");
         console.log(retrievedData.data.goTermsBP);
-
         setQueryList([searchGeneTerm]);
         setTreeObj(retrievedData.data);
         setTreeObjList([retrievedData.data]);
-
+      } catch (error) {
+        alert(error.response.data.message);
+      } finally {
+        setProcessing(false);
       }
     }
   }
@@ -94,13 +98,18 @@ const TreeView = () => {
 
 
   const handleFileChosen = async (filePath) => {
-    await FileService.addFile({
-      path: filePath,
-      phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-      size: sizeList[sizeList.indexOf(filePath)]
-    });
-    const fileInfo = await FileService.getFileInfo();
-    setCurrentlyViewing(fileInfo.data);
+    try {
+      await FileService.addFile({
+        path: filePath,
+        phenotypePath: phenotypeList[pathList.indexOf(filePath)],
+        size: sizeList[sizeList.indexOf(filePath)]
+      });
+      const fileInfo = await FileService.getFileInfo();
+      setCurrentlyViewing(fileInfo.data);
+    } catch (error) {
+      handleRemovePath(filePath);
+      alert(error.response.data.message);
+    }
   }
 
   useEffect(() => {
@@ -122,9 +131,6 @@ const TreeView = () => {
       } else if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
         console.log("On refresh, searching gene...");
         searchGene();
-      } else if (searchRangeTerm != '' && searchRangeTerm != null && selected != null && toggleRS === true) {
-        console.log("On refresh, searching range...");
-        searchRange();
       } else if (selected != null) {
         console.log("On refresh, no existing query.");
         handleFileChosen(selected);
@@ -137,54 +143,37 @@ const TreeView = () => {
   const TabButton = ({ name, width }) => {
 
     return (
-      <div className="flex h-8 items-center ">
-        <div className={`flex h-6 w-[` + width + `rem] text-white text-sm px-3 rounded-t-lg justify-center cursor-pointer ${queryList.indexOf(name) == selectedTab ? "bg-[#3f89c7]" : "bg-slate-400 "}`} onClick={() => {
-          setSelectedTab(queryList.indexOf(name));
-          setTreeObj(treeObjList[queryList.indexOf(name)])
 
-          console.log("Printing selected tab index...");
-          console.log(selectedTab);
-          console.log("Printing selected tab index...");
-          console.log(queryList.indexOf(name));
+      <div className={`flex h-7  min-w-min whitespace-nowrap text-[#3f89c7] text-sm px-3 items-center justify-center cursor-pointer border-b-2 ${queryList.indexOf(name) == selectedTab ? "bg-slate-100 text-[#3f89c7] border-[#3f89c7] " : "bg-slate-300 text-slate-700 hover:text-slate-500 hover:bg-slate-200 border-slate-400 border-transparent"}`} onClick={() => {
+        setSelectedTab(queryList.indexOf(name));
+        setTreeObj(treeObjList[queryList.indexOf(name)])
+        console.log("Printing selected tab index...");
+        console.log(selectedTab);
+        console.log("Printing selected tab index...");
+        console.log(queryList.indexOf(name));
         }}>
-          {name}
-        </div>
+        {name}
       </div>
-    )
-  }
+      // <div className="flex h-8 items-center ">
+      //   <div className={`flex h-6 w-[` + width + `rem] text-white text-sm px-3 rounded-t-lg justify-center cursor-pointer ${queryList.indexOf(name) == selectedTab ? "bg-[#3f89c7]" : "bg-slate-400 "}`} onClick={() => {
+      //     setSelectedTab(queryList.indexOf(name));
+      //     setTreeObj(treeObjList[queryList.indexOf(name)])
 
-  const DataColumn = ({ title, mapData, width, height, titleColor, itemColor, titleOnClick, itemOnClick }) => {
-    console.log(itemColor)
-
-    return (
-      <div className={`flex flex-col p-2 w-1/3`}>
-        <span className={`flex items-center w-full text-gray-50 bg-[${itemColor}]`}>{title}</span>
-        <div className="flex flex-col overflow-auto bg-slate-200 h-[30rem]">
-          {mapData.map((item) => (
-            <span className="text-sm break-normal">{item}</span>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  const DataRow = ({ title, mapData, width, height, titleColor, itemColor, titleOnClick, itemOnClick }) => {
-    return (
-      <div className={`flex flex-col p-2 h-[10rem] w-full`}>
-        <span>{title}</span>
-        <div className="flex flex-col overflow-auto bg-slate-200 ">
-          {mapData.map((item) => (
-            <span className="text-sm break-normal">{item}</span>
-          ))}
-        </div>
-      </div>
+      //     console.log("Printing selected tab index...");
+      //     console.log(selectedTab);
+      //     console.log("Printing selected tab index...");
+      //     console.log(queryList.indexOf(name));
+      //   }}>
+      //     {name}
+      //   </div>
+      // </div>
     )
   }
 
   const FilterButton = () => {
     return (
       <div className="flex flex-row">
-        <div className="ml-12 text-sm justify-center p-1">
+        <div className=" text-sm justify-center p-1">
           FILTER:
         </div>
         <div className="flex-col">
@@ -235,9 +224,9 @@ const TreeView = () => {
 
 
   return (
-    <div className="flex w-full h-full flex-col items-center">
+    <div className="flex w-full h-full flex-col items-center ">
       
-      <div className="flex flex-row h-8 w-full bg-slate-200">
+      <div className="flex flex-row h-7 w-full bg-slate-200 " >
         {queryList.map((item) => (
           <TabButton
             name={item}
@@ -253,10 +242,15 @@ const TreeView = () => {
 
             <div className="flex h-1/8 flex-col">
 
-              <div className="flex items-center flex-row">
-                <div className="font-bold">Gene: </div>
-                <div className="py-1 px-2">{treeObj.gene}</div>
+              <div className="flex items-center justify-evenly flex-row">
+                <div className="flex flex-row justify-center">
+                  <div className="font-bold">Gene: </div>
+                  <div className="py-1 px-2">{treeObj.gene}</div>
+                </div>
                 <FilterButton />
+                <button onClick={handleSave} className="flex p-0.5 w-20 text-sm justify-center rounded-full border-1 border-slate-500  hover:bg-slate-200 ">
+                  Save
+                </button>
               </div>
 
               {treeObj.omimInformation.map((item) => (

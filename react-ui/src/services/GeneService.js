@@ -5,23 +5,44 @@ const GET_GENE_FILE_GRAPH_URL = 'http://localhost:8080/treeview/get-tree-for-gen
 
 class GeneService {
 
-    getTreeForGeneFile(path, passFilter) {
-        return axios.get(GET_GENE_FILE_GRAPH_URL, {params : {
-            path, passFilter
-        }});
-    }
+  getTreeForGeneFile(path, passFilter) {
+    return axios.get(GET_GENE_FILE_GRAPH_URL, { 
+      params: { 
+        path, passFilter 
+      }})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      });
+  }
 
-    getTreeForGene(passFilter, gene) {
-        return axios.get(GET_GENE_GRAPH_URL, {params : {
-            passFilter, gene
-        }});
-    }
+  getTreeForGene(passFilter, gene) {
+    return axios.get(GET_GENE_GRAPH_URL, {
+      params: {
+        passFilter, gene
+      }})
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        throw error;
+      })
+  }
 
-    getTreeForRange(passFilter, range) {
-        return axios.get(GET_RANGE_GRAPH_URL, {params : {
-            passFilter, range
-        }});
-    }
+  // getTreeForRange(passFilter, range) {
+  //   return axios.get(GET_RANGE_GRAPH_URL, {
+  //     params: {
+  //       passFilter, range
+  //     }})
+  //     .then(response => {
+  //       return response;
+  //     })
+  //     .catch(error => {
+  //       throw error;
+  //     })
+  // }
 
 }
 

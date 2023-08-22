@@ -117,7 +117,7 @@ const Sidebar = () => {
             setIsClicked(initialState);
             setSearchGeneTerm('');
             setSearchRangeTerm(''); }}>
-              <img className="w-64" src={logo_final}></img>
+              <img className="w-80" src={logo_final}></img>
           {/* <div className="flex h-0.5 w-10 bg-black"></div>
           <div className="px-4">VariantGraphCraft</div>
           <div className="flex h-0.5 w-10 bg-black"></div> */}

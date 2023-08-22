@@ -48,6 +48,8 @@ const NodeView = ({ w, h, setData }) => {
 
   const handleColoring = (numGroups) => {
     console.log("In handlecoloring:")
+    console.log("SingleFlag:" + singleColorFlag)
+    console.log("MultiFlag:" + multiColorFlag)
     console.log(sampleColors);
     if (!singleColorFlag && !multiColorFlag) {
       if (numGroups === 0) {
@@ -172,8 +174,8 @@ const NodeView = ({ w, h, setData }) => {
         setNLData([{ nodes: retrievedData.data.nodes, links: retrievedData.data.links }]);
         setQueryList([searchRangeTerm]);
         setCurrView({ nodes: retrievedData.data.nodes, links: retrievedData.data.links });
-        setDataObj([retrievedData]);
-        setCurrDataObj(retrievedData);
+        setDataObj([retrievedData.data]);
+        setCurrDataObj(retrievedData.data);
         console.log(retrievedData);
         handleColoring(retrievedData.data.patientGroups.length);
       } catch (error) {

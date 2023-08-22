@@ -19,8 +19,8 @@ const Gene = () => {
   }
 
   return (
-    <div className="flex flex-col w-full h-full">
-        <div className="flex px-2 py-1.5 h-full w-full bg-slate-100  drop-shadow-md">
+    <div className="flex flex-col w-full h-full overflow-hidden">
+        <div className="flex h-full w-full bg-slate-100  drop-shadow-md">
           <TreeView />
         </div>
     </div>
