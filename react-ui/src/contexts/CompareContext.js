@@ -5,12 +5,16 @@ const StateContext = createContext();
 export const CompareContext = ({ children }) => {
 
     const [mapObj, setMapObj] = useState(undefined);
+    const [replicates, setReplicates] = useState("2000");
+
 
 
   return (
     <StateContext.Provider
       value={{
-        mapObj, setMapObj
+        mapObj, setMapObj,
+        replicates, setReplicates
+
       }}
     >
       { children }

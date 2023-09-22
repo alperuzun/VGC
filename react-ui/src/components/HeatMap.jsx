@@ -12,7 +12,7 @@ const HeatMap = () => {
   const { selected, currentlyViewing, setCurrentlyViewing, searchGeneTerm, searchRangeTerm, geneFileUpload, setGeneFileUpload, posFileUpload, setPosFileUpload, toggleRS, toggleGS, refresh, phenotypeList, pathList, handleRemovePath, sizeList } = useStateContext();
   const {isClicked} = useDisplayContext();
 
-  const {mapObj, setMapObj} = useCompareContext();
+  const {mapObj, setMapObj, replicates} = useCompareContext();
   const [mapData, setMapData] = useState(undefined);
   const [horizontalAxisLabels, setHorizontalAxisLabels] = useState(undefined);
   const [verticalAxisLabels, setVerticalAxisLabels] = useState(undefined);
@@ -36,21 +36,23 @@ const HeatMap = () => {
   }
 
   const processData = (colsList) => {
-    var dataArr = []
-    var sampleList = []
+    const dataArr = []
+    const sampleList = []
     for (var i = 0; i < colsList.length; i++) {
       dataArr[i] = colsList[i].compareTo;
       sampleList[i] = colsList[i].sampleName;
     }
-    console.log(dataArr);
-    console.log(sampleList);
     setHorizontalAxisLabels(sampleList);
+    // Necessary to get around Syncfusion bug
+    setMapData(undefined);
     setMapData(dataArr);
   }
 
   const generateGeneMap = async () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
       console.log("Searching gene from heatmap...");
+      console.log(replicates)
+
       setProcessing(true);
       try {
         let retrievedData = await SampleService.getHeatMapForGene("PASS", searchGeneTerm);

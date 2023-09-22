@@ -46,19 +46,6 @@ public class MapTestElement {
         this.matrixRowsSpaceSeparated.add(newRowSpaceSeparated);
         this.matrixRowsCommaSeparated.add(newRowCommaSeparated);
         System.out.println("In addMatrixRow: " + this.matrixRowsCommaSeparated);
-        
-        // HashSet<String> groupGTs = new HashSet<String>(groupGTMap.keySet());
-
-        // String newRowSpaceSeparated = "";
-        // String newRowCommaSeparated = "";
-
-        // for (String key : groupGTs) {
-        //     newRowSpaceSeparated = newRowSpaceSeparated + groupGTMap.get(key) + " ";
-        //     newRowCommaSeparated = newRowCommaSeparated + groupGTMap.get(key) + ",";
-        // }
-        // this.matrixRowsSpaceSeparated.add(newRowSpaceSeparated);
-        // this.matrixRowsCommaSeparated.add(newRowCommaSeparated);
-        // System.out.println("In addMatrixRow: " + this.matrixRowsCommaSeparated);
     }
 
     public void handleStatisticalAnalysis() {

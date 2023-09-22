@@ -27,24 +27,26 @@ public class ExactTest {
             System.out.println(res.toString());
             this.testResult = res.toString();
         } catch (ScriptException e) {
-            this.testResult = "Evaluation Error: Please check VCF upload.";
+            this.testResult = "Analysis Error";
         } catch (org.renjin.eval.EvalException e) {
             if (this.checkZeroError(matrix)) {
-                this.testResult = "Evaluation Error: All samples have same genotype for this variant.";
+                this.testResult = "Evaluation Error";
             } else {
-                this.testResult = "Evaluation Error: Please check VCF upload.";
+                this.testResult = "Analysis Error";
             }
         }
     }
 
     public ArrayList<String> getResult() {
-        if (this.testResult.startsWith("Evaluation Error:")) {
+        if (this.testResult.startsWith("Evaluation Error") || this.testResult.startsWith("Analysis Error")) {
             return new ArrayList<String>(Arrays.asList(this.testResult));
         } else {
             String innerList = this.testResult.substring(5, this.testResult.length() - 1);
             String[] resultArray = innerList.split(",");
             resultArray[0] = handlePValFormat(resultArray[0]);
-            return new ArrayList<String>(Arrays.asList(resultArray));
+            return new ArrayList<String>(Arrays.asList(resultArray[0]));
+
+            // return new ArrayList<String>(Arrays.asList(resultArray));
             }
     }
 
