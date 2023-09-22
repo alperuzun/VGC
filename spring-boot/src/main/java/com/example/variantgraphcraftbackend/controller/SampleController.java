@@ -7,11 +7,8 @@ import com.example.variantgraphcraftbackend.controller.exceptions.RangeNotFoundE
 import com.example.variantgraphcraftbackend.model.ErrorResponse;
 import com.example.variantgraphcraftbackend.model.MapState;
 import com.example.variantgraphcraftbackend.model.MapView;
-import com.example.variantgraphcraftbackend.model.NodeView;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 
-import org.apache.catalina.connector.Response;
-import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")

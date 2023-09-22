@@ -29,9 +29,9 @@ To install VGC, click on the link corresponding to your operating system. Downlo
 
 | System | Installation Link |
 | --- | --- |
-| MacOS (darwin-x64) | [Download](https://drive.google.com/file/d/1WYQliyF_XRwceyfur-A_Tf79OJ9UOY3U/view?usp=sharing) |
-| Windows (win32-x64) | [Download](https://drive.google.com/file/d/1f3glUlDYA4dbmyZlKw38lsjC87xi4oFb/view?usp=sharing) |
-| Linux (linux-arm64) | [Download](https://drive.google.com/file/d/1GxeGOj0fmohrzulYG9a2gcoOEtkuAjiS/view?usp=sharing)|
+| MacOS (darwin-x64) [Up to Date] | [Download](https://drive.google.com/file/d/1yfylztfGF5p-FKSl4ksDX4uQBo-gB7DJ/view?usp=sharing) |
+| Windows (win32-x64) [Older Version] | [Download](https://drive.google.com/file/d/1f3glUlDYA4dbmyZlKw38lsjC87xi4oFb/view?usp=sharing) |
+| Linux (linux-arm64) [Older Version] | [Download](https://drive.google.com/file/d/1GxeGOj0fmohrzulYG9a2gcoOEtkuAjiS/view?usp=sharing)|
 
 
 ## Getting Started
