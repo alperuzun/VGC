@@ -21,10 +21,8 @@ public class ExactTest {
             String toEval = "vgc_data <- matrix(c(" + matrix + "), nrow=2, byrow = TRUE, " +
                     "dimnames = list(Samples = c(\"Controls\", \"Cases\"), " +
                     "Genotypes = c(\"0/0\", \"0/1\", \"1/1\")))";
-            System.out.println(toEval);
             engine.eval(toEval);
             SEXP res = (SEXP)engine.eval("fisher.test(vgc_data, simulate.p.value = TRUE, B = 2e3)");
-            System.out.println(res.toString());
             this.testResult = res.toString();
         } catch (ScriptException e) {
             this.testResult = "Analysis Error";
@@ -84,9 +82,6 @@ public class ExactTest {
             }
         }
 
-        System.out.println("In checkZeroError: ");
-        System.out.println(matrixAsArr[0][0] + " " + matrixAsArr[0][1] + " " + matrixAsArr[0][2] + " ");
-        System.out.println(matrixAsArr[1][0] + " " + matrixAsArr[1][1] + " " + matrixAsArr[1][2] + " ");
 
 
         if (Arrays.stream(matrixAsArr).allMatch(row -> row[0] == 0 && row[1] == 0) || 

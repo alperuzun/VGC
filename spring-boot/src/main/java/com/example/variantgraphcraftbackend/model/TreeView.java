@@ -70,7 +70,6 @@ public class TreeView {
     public void populateTree(List<String[]> variants, String retrievedChr) throws IOException {
         ClinvarParser clinvarParser = new ClinvarParser();
         for (String[] var : variants) {
-            System.out.println(var.toString());
             String[] clinvarData = clinvarParser.findVariant(Integer.valueOf(var[1]), retrievedChr, true);
             if (clinvarData == null) {
                 this.noConsensus.add(var[1]);

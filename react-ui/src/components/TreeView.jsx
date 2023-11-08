@@ -50,7 +50,6 @@ const TreeView = () => {
 
   const searchGeneFile = async () => {
     if (geneFileUpload !== undefined) {
-      console.log("Searching gene file from TreeView...");
 
       setProcessing(true);
       try {
@@ -59,7 +58,6 @@ const TreeView = () => {
         setTreeObjList(tempTreeObjList);
         setQueryList(retrievedData.data.queries);
         setTreeObj(tempTreeObjList[0]);
-        console.log(retrievedData);
       } catch (error) {
         alert(error.response.data.message);
       } finally {
@@ -71,14 +69,10 @@ const TreeView = () => {
 
   const searchGene = async () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
-      console.log("Searching gene from TreeView...")
 
       setProcessing(true);
       try {
         let retrievedData = await GeneService.getTreeForGene(passFilter, searchGeneTerm)
-        console.log(retrievedData);
-        console.log("Logging goTermsBP...");
-        console.log(retrievedData.data.goTermsBP);
         setQueryList([searchGeneTerm]);
         setTreeObj(retrievedData.data);
         setTreeObjList([retrievedData.data]);
@@ -108,7 +102,6 @@ const TreeView = () => {
   }
 
   useEffect(() => {
-    console.log("In nodeview starting useeffect:");
     if (prevVals.current.selected != selected) {
       setTreeObj(undefined);
       setTreeObjList(undefined);
@@ -121,13 +114,10 @@ const TreeView = () => {
       prevVals.current = { selected, refresh, isClicked }
     } else {
       if (geneFileUpload != null && selected != null && toggleGS === true) {
-        console.log("On refresh, searching gene FILE...");
         searchGeneFile();
       } else if (searchGeneTerm != '' && searchGeneTerm != null && selected != null && toggleGS === true) {
-        console.log("On refresh, searching gene...");
         searchGene();
       } else if (selected != null) {
-        console.log("On refresh, no existing query.");
         handleFileChosen(selected);
       }
     }
@@ -142,10 +132,6 @@ const TreeView = () => {
       <div className={`flex h-7  min-w-min whitespace-nowrap text-[#3f89c7] text-sm px-3 items-center justify-center cursor-pointer border-b-2 ${queryList.indexOf(name) == selectedTab ? "bg-slate-100 text-[#3f89c7] border-[#3f89c7] " : "bg-slate-300 text-slate-700 hover:text-slate-500 hover:bg-slate-200 border-slate-400 border-transparent"}`} onClick={() => {
         setSelectedTab(queryList.indexOf(name));
         setTreeObj(treeObjList[queryList.indexOf(name)])
-        console.log("Printing selected tab index...");
-        console.log(selectedTab);
-        console.log("Printing selected tab index...");
-        console.log(queryList.indexOf(name));
         }}>
         {name}
       </div>
@@ -259,7 +245,7 @@ const TreeView = () => {
                 <span className={`flex items-center w-full text-gray-50 bg-[#83b48a] justify-center`}>Benign</span>
                 <div className="flex-col overflow-y-scroll bg-slate-50 flex-grow w-full items-center">
                   {treeObj.benignVariants.map((item) => (
-                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
+                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item);  }}>
                       <span className="flex w-full justify-center text-xs break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">
                         Position: {item}</span>
                     </button>
@@ -270,7 +256,7 @@ const TreeView = () => {
                 <span className={`flex items-center w-full text-gray-50 bg-[#919191] justify-center`}>No Consensus</span>
                 <div className="flex flex-col overflow-y-scroll bg-slate-50 flex-grow w-full items-center">
                   {treeObj.noConsensus.map((item) => (
-                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); console.log("region/" + treeObj.chr + "-" + item + "-" + item) }}>
+                    <button className="flex w-full items-center" onClick={() => { setBrowserQuery("region/" + treeObj.chr + "-" + item + "-" + item); }}>
                       <span className="flex w-full justify-center text-xs break-normal p-1 border-t-1 border-slate-300 px-2 hover:bg-slate-100">Position: {item}</span>
                     </button>
                   ))}

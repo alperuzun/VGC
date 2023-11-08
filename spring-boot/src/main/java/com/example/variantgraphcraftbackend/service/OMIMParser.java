@@ -50,7 +50,6 @@ public class OMIMParser {
 
         while (currLine != null) {
             String[] arr = currLine.split("\t");
-//            System.out.println(arr);
             if (arr.length > 2) {
                 if (MIMNumber.equals(arr[1])) {
                     return arr[2].split(";")[0];

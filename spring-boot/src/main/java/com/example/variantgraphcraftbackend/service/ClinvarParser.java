@@ -54,8 +54,6 @@ public class ClinvarParser {
             chrJustLabel = chr;
         }
 
-        //System.out.println("In findVariant. Startpos is: ");
-        //System.out.println(startPos);
         this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/clinvarSORTED.txt")));
         int startLine = this.clinvarNav.get(chrJustLabel)[0];
         int endLine = this.clinvarNav.get(chrJustLabel)[1];
@@ -72,8 +70,6 @@ public class ClinvarParser {
         while(lineNumber < endLine) {
             String[] variantInfo = this.currLine.split("\t");
             if(Integer.valueOf(variantInfo[8].split(" ")[0]) == startPos) {
-                //System.out.println("Variant found!");
-                //System.out.println(this.currLine);
                 numberOfVariantsFound++;
                 if(allFoundVariantInfo == null) {
                     allFoundVariantInfo = new String[]{variantInfo[0], variantInfo[3], variantInfo[4], variantInfo[7], variantInfo[8], variantInfo[13]};
@@ -88,14 +84,12 @@ public class ClinvarParser {
         }
 
         this.input.close();
-        //System.out.println("Found " + numberOfVariantsFound + " variants. ");
         return allFoundVariantInfo;
     }
 
     public void populateVariantInfo(HashMap<Integer, ArrayList<SubBar>> posMap, String chr) throws IOException {
         ArrayList<Integer> locations = new ArrayList<>(posMap.keySet());
         for(int location : locations) {
-           // System.out.println(location);
         }
         for(int location : locations) {
             ArrayList<SubBar> bars = posMap.get(location);

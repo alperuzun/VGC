@@ -113,7 +113,6 @@ public class IndexWriter {
     public void writeIndex() throws IOException{
         for (String key : this.chromList) {
             String line = key + "\t" + this.indexData.get(key) + "\t" + this.numPassVariants.get(key) + "\t" + this.numPathVariants.get(key);
-            System.out.println(line);
             this.writer.write(line);
             this.writer.newLine();
         }

@@ -31,7 +31,6 @@ public class SampleController {
 
     @Autowired
     public SampleController(ServiceHandler handler) {
-        System.out.println("Constructor of SampleController called.");
         this.handler = handler;
     }
 
@@ -40,13 +39,9 @@ public class SampleController {
      */
     @GetMapping("get-heat-map-gene-file")
     public ResponseEntity<?> getHeatMapForGeneFile(String path, String passFilter) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPFORGENEFILE CALLED");
-        System.out.println("Path: " + path);
-        System.out.println("FILTER: " + passFilter);
 
         try {
             ArrayList<String> geneInfo = this.processGeneFile(path);
-            System.out.println(geneInfo);
             MapView mapView = this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneInfo, null, null);
             return ResponseEntity.ok(mapView);
         } catch (IOException e) {
@@ -71,7 +66,6 @@ public class SampleController {
      */
     @GetMapping("get-heat-map-pos-file")
     public ResponseEntity<?> getHeatMapForPosFile(String path, String passFilter) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPFORPOSFILE CALLED");
 
         try {
             HashMap<String, Set<Integer>> queryInfo = this.processPosFile(path);
@@ -110,10 +104,7 @@ public class SampleController {
 
     @GetMapping("get-heat-map-range")
     public ResponseEntity<?> getHeatMapForRange(String passFilter, String range) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPALL CALLED");
 
-        System.out.println("Filter is: " + passFilter);
-        System.out.println("Range is: " + range);
 
         try {
             range = range.trim();
@@ -156,13 +147,10 @@ public class SampleController {
 
     @GetMapping("get-heat-map-gene")
     public ResponseEntity<?> getHeatMapForGene(String passFilter, String gene) {
-        System.out.println("SAMPLECONTROLLER METHOD GETHEATMAPGENE CALLED");
 
         gene = gene.trim();
         ArrayList<String> geneList = new ArrayList<String>();
         geneList.add(gene);
-        System.out.println("Filter is: " + passFilter);
-        System.out.println("Gene is: " + gene);
 
         try {
             MapView mapView = this.handler.generateHeatMap(MapState.GENE, passFilter, new ArrayList<String>(), geneList, null, null);

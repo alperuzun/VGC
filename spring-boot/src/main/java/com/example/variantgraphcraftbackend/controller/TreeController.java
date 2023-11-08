@@ -29,7 +29,6 @@ public class TreeController {
 
     @Autowired
     public TreeController(ServiceHandler handler) {
-        System.out.println("Constructor of TreeController called.");
         this.handler = handler;
     }
 
@@ -57,11 +56,8 @@ public class TreeController {
 
     @GetMapping("get-tree-for-gene")
     public ResponseEntity<?> getTreeForGene(String passFilter, String gene) {
-        System.out.println("TREECONTROLLER METHOD GETTREEFORGENE CALLED");
 
         gene = gene.trim();
-        System.out.println("Filter is: " + passFilter);
-        System.out.println("Gene is: " + gene);
 
         try {
             TreeView treeView = this.handler.generateTree(MapState.GENE, passFilter, null, gene, null, null);
@@ -81,10 +77,7 @@ public class TreeController {
 
     // @GetMapping("get-tree-for-range")
     // public TreeView getTreeForRange(String passFilter, String range) {
-    //     System.out.println("TREECONTROLLER METHOD GETTREEFORRANGE CALLED");
 
-    //     System.out.println("Filter is: " + passFilter);
-    //     System.out.println("Range is: " + range);
 
     //     try {
     //         range = range.trim();
@@ -104,10 +97,8 @@ public class TreeController {
 
     //         return this.handler.generateTree(MapState.RANGE, passFilter, chr, null, start, end);
     //     } catch(IOException e) {
-    //         System.out.println("IOException in getHeatMapForRange of SampleController.");
     //         e.printStackTrace();
     //     } catch (IndexOutOfBoundsException e) {
-    //         System.out.println("IndexOutOfBoundsException in getHeatMapForRange of SampleController");
     //         e.printStackTrace();
     //     } catch (GeneNotFoundException ex) {
     //         return null;

@@ -57,11 +57,9 @@ public class MapView {
 
         for (String chr : allChr) {
 
-            System.out.println("CHR:" + chr + " -----------------------");
             List<String> allGenes = new ArrayList<String>(helperMap.get(chr).keySet());
 
             for (String geneString : allGenes) {
-                System.out.println("GENE: " + geneString);
                 String[] geneArr = geneString.split(":");
                 String gene = geneArr[0];
                 String ensembleID = geneArr[1];
@@ -72,7 +70,6 @@ public class MapView {
                 for (String[] var : variants) {
                     this.yAxisLabels.add("Chr: " + chr + ", Position: " + var[1]);
                     int ceiling = this.getInitCeiling();
-                    System.out.println("Ceiling is: " + ceiling);
 
                     HashMap<String, Integer> groupGTMap = new HashMap<String, Integer>();
                     groupGTMap.put("0/0", 0);
@@ -96,8 +93,6 @@ public class MapView {
                             groupGTMap.put("1/1", 0);
 
                             ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
-                            System.out.println("Ceiling updated. Ceiling is: " + ceiling);
-                            System.out.println("GT Map is now: " + groupGTMap);
                         }
                     }
                     //Adds the last matrix row as a MapTestElement
@@ -115,7 +110,6 @@ public class MapView {
             col.populateColumn(sampleToVarDPMap.get(s));
             this.mapData.add(col);
         }
-        System.out.println("DONE POPULATING. ");
     }
 
     private void updateGroupGTMap(HashMap<String, Integer> gtMap, String currSampleGT) {
@@ -134,7 +128,6 @@ public class MapView {
     private boolean handleRowGTReset(HashMap<String, Integer> gtMap, int ceiling, MapTestElement currTestElement) {
         if (this.endList.size() > 0) {
             currTestElement.addMatrixRow(gtMap);
-            System.out.println("MATRIX ROW ADDED");
             if (this.endList.size() > this.endList.indexOf(ceiling) + 1) {
                 return true;
             } 
@@ -193,7 +186,6 @@ public class MapView {
 
     public void generateGroupInfo(HashMap<String, ArrayList<String>> groupToPatientsMap) {
         ArrayList<String> sampleGroups = new ArrayList<>(groupToPatientsMap.keySet());
-        System.out.println("Generating group info....");
         int counter = 0;
         for (String groupNum : sampleGroups) {
             this.startList.add(counter);
@@ -202,8 +194,6 @@ public class MapView {
             counter = counter + groupToPatientsMap.get(groupNum).size();
             this.sortedSampleList.addAll(groupToPatientsMap.get(groupNum));
         }
-        System.out.println("Printing sorted sample list: ");
-        System.out.println(this.sortedSampleList);
     }
 
     public Long getId() {

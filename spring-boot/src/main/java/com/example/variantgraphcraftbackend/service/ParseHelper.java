@@ -58,7 +58,6 @@ public class ParseHelper {
         BufferedReader input = new BufferedReader(new FileReader(path));
         String currLine = input.readLine();
         while (currLine != null) {
-            //System.out.println("Line: " + currLine);
             String[] chrPosSeparation = currLine.split(":");
             String chr = chrPosSeparation[0];
             String[] separation = chrPosSeparation[1].split(",");

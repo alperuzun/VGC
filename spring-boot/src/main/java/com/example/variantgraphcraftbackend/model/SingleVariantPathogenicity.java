@@ -55,8 +55,6 @@ public class SingleVariantPathogenicity {
     }
 
     public void populate(PathogenicParser pathogenicParser, ArrayList<String> header) {
-        System.out.println("POPULATING SINGLE VARIANT PATHOGENICITY. VAR IS:");
-        System.out.println(this.varInfo.toString());
         this.isPathogenic = pathogenicParser.isPathogenic(this.chr, varInfo.get(1));
         String ref = this.varInfo.get(3);
         String[] alt = this.varInfo.get(4).split(",");
@@ -65,53 +63,40 @@ public class SingleVariantPathogenicity {
         if (this.isPathogenic) {
             ArrayList<String[]> mutList = pathogenicParser.getMutationInfo(this.chr, varInfo.get(1));
             for (String[] mut : mutList) {
-                System.out.println("Printing mut...");
                 for (String s : mut) {
-                    System.out.print(s + ", ");
                 }
                 this.clinvarPathogenicVariants.add(mut[2] + ":" + mut[3]);
                 //check for deletion
                 if (mut[2].length() > mut[3].length()) {
-                    System.out.println("Deletion detected! Mut[2] is " + mut[2] + ", mut[3] is " + mut[3]);
                     ArrayList<String> pathogenicDeletions = this.getDeletions(mut[2], mut[3]);
                     for (int i = 0; i < alt.length; i++) {
-                        System.out.println("\tChecking alt: " + alt[i]);
                         String altDeletion = alt[i].substring(1);
                         for (String pathDeletion : pathogenicDeletions) {
                             if (altDeletion.equals(pathDeletion)) {
-                                System.out.println("EQUIVALENT: Index" + i + " added.");
                                 pathIndices.add(i + 1);
                             }
                         }
                     }
                 //check for insertion
                 } else if (mut[2].length() < mut[3].length()) {
-                    System.out.println("Insertion detected! Mut[2] is " + mut[2] + ", mut[3] is " + mut[3]);
                     String pathInsertion = mut[3];
                     for (int i = 0; i < alt.length; i++) {
-                        System.out.println("\tChecking alt: " + alt[i]);
                         String altInsertion = alt[i];
                         if (altInsertion.equals(pathInsertion)) {
-                            System.out.println("EQUIVALENT: Index" + i + " added.");
                             pathIndices.add(i + 1);
                         }
                     }
                 //does insertion have same logic as substitution?
                 } else {
-                    System.out.println("Substitution detected! Mut[2] is " + mut[2] + ", mut[3] is " + mut[3]);
                     String pathInsertion = mut[3];
                     for (int i = 0; i < alt.length; i++) {
-                        System.out.println("\tChecking alt: " + alt[i]);
                         String altInsertion = alt[i];
                         if (altInsertion.equals(pathInsertion)) {
-                            System.out.println("EQUIVALENT: Index" + i + " added.");
                             pathIndices.add(i + 1);
                         }
                     }
                 }
             }
-            System.out.println("Pathogenic indices retrieved! Here they are: ");
-            System.out.println(pathIndices);
 
         }
         this.populateSampleInfo(header, pathIndices);

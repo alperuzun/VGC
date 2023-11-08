@@ -126,7 +126,6 @@ public class NodeView {
     public void populateSingleGeneGraph(List<String[]> variants, String gene, String[] sampleList,
                                         boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        System.out.println("BOOLEANS: " + HR + HT + HA);
         for (String[] v : variants) {
             this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null));
             int index = this.nodes.size() - 1;
@@ -147,13 +146,11 @@ public class NodeView {
                 }
             }
         }
-        System.out.println("Done populating!");
     }
 
     public void populateSingleGeneGraph(List<String[]> variants, String gene, String[] sampleList,
                                         PhenotypeReader phenotypeReader, boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        System.out.println("BOOLEANS: " + HR + HT + HA);
         for (String[] v : variants) {
             this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null));
             int index = this.nodes.size() - 1;
@@ -179,13 +176,11 @@ public class NodeView {
         }
         this.patientGroups = new ArrayList<>(phenotypeReader.getGroupList());
 
-        System.out.println("Done populating!");
     }
 
     public void populateMultiGeneGraph(List<String[]> variants, HashMap<String, String> varToGeneMap, String[] sampleList,
                                        boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        System.out.println("BOOLEANS: " + HR + HT + HA);
         for (String[] v : variants) {
             this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null));
             int index = this.nodes.size() - 1;
@@ -211,7 +206,6 @@ public class NodeView {
     public void populateMultiGeneGraph(List<String[]> variants, HashMap<String, String> varToGeneMap, String[] sampleList,
                                        PhenotypeReader phenotypeReader, boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        System.out.println("BOOLEANS: " + HR + HT + HA);
         for (String[] v : variants) {
             this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null));
             int index = this.nodes.size() - 1;

@@ -46,13 +46,11 @@ public class InfoWriter {
     public void addHeader(String currLine) throws InvalidFileException, IndexOutOfBoundsException {
         String fieldVal = currLine.substring(0, currLine.indexOf("FORMAT") + 7);
         if (!fieldVal.equals("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t")) {
-            System.out.println(fieldVal);
             throw new InvalidFileException("Invalid file input.", 400);
         }
         this.infoList.add(fieldVal);
         String sampleString = currLine.substring(currLine.indexOf("FORMAT") + 7);
         String[] sampleData = sampleString.split("\t");
-        System.out.println(sampleData);
         this.infoList.add(sampleString);
         this.infoList.add(String.valueOf(sampleData.length));
     }

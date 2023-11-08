@@ -89,7 +89,6 @@ public class BarView {
     public void populateGraph(HashMap<String, Integer> chromToVarData, ArrayList<String> chromNum) {
 
         //Process chromosome list; handle X and Y
-        System.out.println(chromToVarData);
         String x = "";
         String y = "";
         if(chromNum.contains("X")) {

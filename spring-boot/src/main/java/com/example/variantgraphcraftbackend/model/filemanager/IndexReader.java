@@ -55,8 +55,6 @@ public class IndexReader {
             this.currLine = this.input.readLine();
         }
         this.input.close();
-        System.out.println("Index retrieved and read.");
-        System.out.println(this.passFilterMap);
         return this.indexArr;
     }
 
@@ -83,8 +81,6 @@ public class IndexReader {
     }
 
     public int getStartLine(String chromosome) {
-        System.out.println(this.indexMap.keySet());
-        System.out.println("Chromosome is: " + chromosome);
         return Integer.valueOf(this.indexMap.get(chromosome)[0]);
     }
 

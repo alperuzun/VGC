@@ -79,7 +79,6 @@ public class Node {
         if (this.groupToNumSamplesString.length() > 0) {
             this.groupToNumSamplesString = this.groupToNumSamplesString.substring(0, this.groupToNumSamplesString.length() - 1);
         } else {
-            System.out.println("WHAT" + this.name);
         }
     }
 

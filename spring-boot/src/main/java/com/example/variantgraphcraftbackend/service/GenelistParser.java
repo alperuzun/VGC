@@ -53,7 +53,6 @@ public class GenelistParser {
      * @return
      */
     public String[] getGeneLocation(String gene) throws IOException, GeneNotFoundException {
-//        System.out.println("In getGeneLocation. ");
         this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
         this.currLine = this.input.readLine();
         this.currLine = this.input.readLine();
@@ -61,7 +60,6 @@ public class GenelistParser {
         while (this.currLine != null) {
             String[] geneInfo = this.currLine.split("\t");
             if(geneInfo[12].equals(gene)) {
-//                System.out.println("Gene found!");
                 return new String[] {geneInfo[2], geneInfo[4], geneInfo[5], geneInfo[16]};
             }
             this.currLine = this.input.readLine();

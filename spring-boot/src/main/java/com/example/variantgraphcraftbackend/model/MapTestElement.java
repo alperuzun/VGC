@@ -45,7 +45,6 @@ public class MapTestElement {
 
         this.matrixRowsSpaceSeparated.add(newRowSpaceSeparated);
         this.matrixRowsCommaSeparated.add(newRowCommaSeparated);
-        System.out.println("In addMatrixRow: " + this.matrixRowsCommaSeparated);
     }
 
     public void handleStatisticalAnalysis() {

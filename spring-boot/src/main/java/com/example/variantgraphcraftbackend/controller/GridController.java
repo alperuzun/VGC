@@ -28,13 +28,11 @@ public class GridController {
 
     @Autowired
     public GridController(ServiceHandler handler) {
-        System.out.println("Constructor of GridController called.");
         this.handler = handler;
     }
 
     @GetMapping("variant-view")
     public ResponseEntity<?> queryByRange(String range) {
-        System.out.println("GRIDCONTROLLER METHOD QUERYBYRANGE CALLED");
         try {
             range = range.trim();
             String chr = range.substring(0, range.indexOf(":"));
@@ -46,19 +44,15 @@ public class GridController {
             GridView girdView = this.handler.displayGridView(chr, Integer.valueOf(start), Integer.valueOf(end));
             return ResponseEntity.ok(girdView);
         } catch (IOException e) {
-            System.out.println("IOException in queryByRange of GridController.");
             ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-            System.out.println("NumberFormatException in queryByRange of GridController.");
             ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);        
         } catch (IndexOutOfBoundsException in) {
-            System.out.println("IndexOutOfBoundsException in queryByRange of GridController.");
             ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse); 
         } catch (RangeNotFoundException ex) {
-            System.out.println("RangeNotFoundException in queryByRange of GridController.");
             ex.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -68,20 +62,16 @@ public class GridController {
 
     @GetMapping("gene-view")
     public ResponseEntity<?> queryByGene(String gene) {
-        System.out.println("GRIDCONTROLLER METHOD QUERYBYGENE CALLED");
         try {
             GridView gridView = this.handler.displayGeneView(gene);
             return ResponseEntity.ok(gridView);
         } catch (IOException e) {
-            System.out.println("IOException in queryByGene of GridController.");
             ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         } catch (NumberFormatException n) {
-            System.out.println("NumberFormatException in queryByGene of GridController.");
             ErrorResponse errorResponse = new ErrorResponse("Invalid input.", 500);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (GeneNotFoundException ex) {
-            System.out.println("GeneNotFoundException in queryByGene of GridController.");
             ex.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getStatusCode());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);        

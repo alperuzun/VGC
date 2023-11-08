@@ -18,7 +18,6 @@ public class InfoReader {
      * @throws FileNotFoundException
      */
     public InfoReader(String path) throws FileNotFoundException {
-        System.out.println("Info created. Path is: " + path);
         this.path = path;
         this.currLine = "";
         this.info = new File(path);
@@ -38,8 +37,6 @@ public class InfoReader {
             this.currLine = this.input.readLine();
         }
         this.input.close();
-        System.out.println("Info read. InfoData:");
-        System.out.println(this.infoData);
         return this.infoData; //check this
     }
 
@@ -48,8 +45,6 @@ public class InfoReader {
      * @return
      */
     public String getVersion() {
-        System.out.println("InfoData: ");
-        System.out.println(this.infoData);
         return this.infoData.get(0);
     }
 

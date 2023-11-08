@@ -140,9 +140,7 @@ public class SubBar {
             this.setChromosome(variantInfo[3]);
             this.setSnpId(variantInfo[5]);
             this.inClinvar = true;
-            System.out.println("In Set Variant Info: ");
             for (int i = 0; i < variantInfo.length; i++) {
-                System.out.println(variantInfo[i]);
             }
         }
     }

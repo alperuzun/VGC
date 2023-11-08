@@ -31,7 +31,6 @@ public class VCFParser {
         File index = new File(directoryPath + "/index_" + name + ".txt");
 
         if(!info.exists() && !index.exists()) {
-            System.out.println("Neither info nor index exists...creating now...");
             File directory = new File(directoryPath);
 
             if (!directory.exists()) {
@@ -62,12 +61,9 @@ public class VCFParser {
         File directory = new File(directoryPath);
         if (!directory.exists()) {
             if (directory.mkdirs()) {
-                System.out.println("Directory created successfully: " + directoryPath);
             } else {
-                System.out.println("Failed to create the directory: " + directoryPath);
             }
         } else {
-            System.out.println("Directory already exists: " + directoryPath);
         }
         return directoryPath;
     }
@@ -87,7 +83,6 @@ public class VCFParser {
         PathogenicParser pathogenicParser = new PathogenicParser();
         pathogenicParser.loadMapping();
 
-        System.out.println("VCF file being read...");
 
         // Updates version in InfoFile through UploadedFile.
         currLine = input.readLine();

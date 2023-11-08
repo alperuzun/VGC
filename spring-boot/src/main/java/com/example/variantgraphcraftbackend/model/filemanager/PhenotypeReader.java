@@ -35,9 +35,6 @@ public class PhenotypeReader {
             this.currLine = this.input.readLine();
         }
         this.input.close();
-        System.out.println("Phenotype file retrieved and read.");
-        System.out.println("Groups to patients map: ");
-        System.out.println(this.groupToPatientsMap);
         return this.fileArr;
     }
 
