@@ -29,10 +29,6 @@ public class OMIMParser {
         while (currLine != null) {
             String[] arr = currLine.split("\t");
             if (arr.length > 2) {
-//                System.out.println(currLine);
-//                System.out.println(arr[0]);
-//                System.out.println(arr[1]);
-//                System.out.println(arr[2]);
 
                 if (gene.equals(arr[2])) {
                     return arr[0];

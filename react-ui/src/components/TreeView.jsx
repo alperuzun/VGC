@@ -1,6 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react'
-// import * as d3 from 'd3';
-// import { useD3 } from '../hooks/useD3';
 import { useDisplayContext } from '../contexts/DisplayContext';
 import { BsChevronDown, BsChevronRight, BsCheck2Circle, BsCircle } from 'react-icons/bs';
 import { AiOutlineCheck } from 'react-icons/ai';
@@ -20,15 +18,12 @@ import '../css/TreeView.css';
 
 const TreeView = () => {
 
-  const { selected, setSelected, phenotypeList, pathList, handleRemovePath, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, refresh } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, handleRemovePath, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, geneFileUpload, posFileUpload, setRefresh, refresh } = useStateContext();
 
   const { browserQuery, setBrowserQuery, isClicked } = useDisplayContext();
 
   const [treeObj, setTreeObj] = useState(undefined);
   const [treeObjList, setTreeObjList] = useState(undefined);
-
-  // const [processedTree, setProcessedTree] = useState(undefined);
-  // const [processedTreeList, setProcessedTreeList] = useState(undefined);
 
   const [queryList, setQueryList] = useState([]);
   const [selectedTab, setSelectedTab] = useState(0);
@@ -154,19 +149,6 @@ const TreeView = () => {
         }}>
         {name}
       </div>
-      // <div className="flex h-8 items-center ">
-      //   <div className={`flex h-6 w-[` + width + `rem] text-white text-sm px-3 rounded-t-lg justify-center cursor-pointer ${queryList.indexOf(name) == selectedTab ? "bg-[#3f89c7]" : "bg-slate-400 "}`} onClick={() => {
-      //     setSelectedTab(queryList.indexOf(name));
-      //     setTreeObj(treeObjList[queryList.indexOf(name)])
-
-      //     console.log("Printing selected tab index...");
-      //     console.log(selectedTab);
-      //     console.log("Printing selected tab index...");
-      //     console.log(queryList.indexOf(name));
-      //   }}>
-      //     {name}
-      //   </div>
-      // </div>
     )
   }
 
@@ -188,11 +170,11 @@ const TreeView = () => {
           <div className={`${activeFilterSelect ? "" : "hidden"} flex ml-1 justify-center z-40 fixed w-20  rounded-sm shadow`}>
             <ul class="text-sm text-gray-700 dark:text-gray-200 divide-y">
               <li className={`w-20 flex justify-center cursor-pointer ${passFilter == "PASS" ? "hover:bg-slate-200 bg-slate-200" : "bg-white hover:bg-slate-100"}  py-1`}
-                onClick={() => { setActiveFilterSelect(false); setPassFilter("PASS") }}>
+                onClick={() => { setActiveFilterSelect(false); setPassFilter("PASS"); setRefresh(!refresh); }}>
                 PASS
               </li>
               <li className={`w-20 flex justify-center cursor-pointer ${passFilter == "ALL" ? "hover:bg-slate-200 bg-slate-200" : "bg-white hover:bg-slate-100"} py-1`}
-                onClick={() => { setActiveFilterSelect(false); setPassFilter("ALL") }}>
+                onClick={() => { setActiveFilterSelect(false); setPassFilter("ALL"); setRefresh(!refresh); }}>
                 ALL
               </li>
             </ul>
@@ -248,9 +230,10 @@ const TreeView = () => {
                   <div className="py-1 px-2">{treeObj.gene}</div>
                 </div>
                 <FilterButton />
-                <button onClick={handleSave} className="flex p-0.5 w-20 text-sm justify-center rounded-full border-1 border-slate-500  hover:bg-slate-200 ">
+                {/* Future Addition: Adding download option for gene data. */}
+                {/* <button onClick={handleSave} className="flex p-0.5 w-20 text-sm justify-center rounded-full border-1 border-slate-500  hover:bg-slate-200 ">
                   Save
-                </button>
+                </button> */}
               </div>
 
               {treeObj.omimInformation.map((item) => (

@@ -26,7 +26,6 @@ const FileSelector = () => {
                 setSelected(e.target.files[0].path)
                 setSearchGeneTerm("");
                 setSearchRangeTerm("");
-                // setRefresh(!refresh);
                 e.target.value = ''
               }}
               name="myfile"

@@ -132,9 +132,6 @@ public class ServiceHandler {
 
     public BarView displayGeneHistogram(String gene, String passFilter) throws IOException, NullPointerException, GeneNotFoundException {
         String[] geneInfo = this.geneParser.getGeneLocation(gene);
-        // if (geneInfo == null) {
-        //     throw new GeneNotFoundException("Unrecognized gene: " + gene, 404);
-        // } else {
         Integer range = Integer.valueOf(geneInfo[2]) - Integer.valueOf(geneInfo[1]);
         int zoom = range.toString().length() - 3;
         int factor = (int) Math.pow(10, zoom);

@@ -31,19 +31,6 @@ class GeneService {
       })
   }
 
-  // getTreeForRange(passFilter, range) {
-  //   return axios.get(GET_RANGE_GRAPH_URL, {
-  //     params: {
-  //       passFilter, range
-  //     }})
-  //     .then(response => {
-  //       return response;
-  //     })
-  //     .catch(error => {
-  //       throw error;
-  //     })
-  // }
-
 }
 
 export default new GeneService();

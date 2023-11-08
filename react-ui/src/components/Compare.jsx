@@ -108,11 +108,16 @@ const Compare = () => {
                       {phenotypeList[pathList.indexOf(selected)] != null && 
                       <div className="flex flex-wrap font-bold px-2 py-1 border-1 border-slate-700">
                         Fisher's Exact Test with simulated p-value:
-                        <form onSubmit={(e) => { handleReplicatesSubmit(e) }} className="flex gap-2">
+                        <div className="flex gap-2">
+                          <label className="font-bold">Iterations: </label>
+                          <input value={replicates} onChange={(e) => setReplicates(e.target.value)} className="w-12" />
+                        </div>
+                        {/* Future Addition: Replicates as user input. */}
+                        {/* <form onSubmit={(e) => { handleReplicatesSubmit(e) }} className="flex gap-2">
                           <label className="font-bold">Iterations: </label>
                           <input value={replicates} onChange={(e) => setReplicates(e.target.value)} className="w-12" />
                           <input type="submit" value="Update" className="text-sm justify-center rounded-full border-1 border-slate-500 hover:bg-slate-200 px-2" />
-                        </form>
+                        </form> */}
                       </div>
                     }
 

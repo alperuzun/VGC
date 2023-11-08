@@ -451,7 +451,6 @@ const NodeView = ({ w, h, setData }) => {
     } else {
       if (selected !== null && selected !== undefined) {
         handleFileChosen(selected);
-        // A file has been selected; process file and return for user queries.
         if (geneFileUpload != null && selected != null && toggleGS === true) {
           console.log("On refresh, searching gene FILE...");
           searchGeneFile();

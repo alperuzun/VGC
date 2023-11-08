@@ -121,7 +121,6 @@ const Table = () => {
       prevVals.current = { selected, refresh, isClicked }
     } else {
       console.log("In table starting useeffect:");
-      // A file has been selected; process file and return for user queries.
       if (selected !== null && selected !== undefined) {
         handleFileChosen(selected);
         if (searchGeneTerm != '' && searchGeneTerm != null && toggleGS === true) {
@@ -149,7 +148,6 @@ const Table = () => {
     };
   }, []);
 
-  // Trigger a re-render whenever windowSize changes
   useEffect(() => {
     if (spreadSheetObj) {
       spreadSheetObj.refresh();

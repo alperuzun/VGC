@@ -8,7 +8,6 @@ const initialState = {
 }
 
 export const NodeContext = ({ children }) => {
-  // const [nlData, setNLData] = useState(initialState);
   const [nlData, setNLData] = useState([]);
 
   const [dataObj, setDataObj] = useState(undefined);
@@ -73,8 +72,6 @@ export const NodeContext = ({ children }) => {
         setCurrDataObj,
         patientGroupings, 
         setPatientGroupings
-        // clickedNode, 
-        // setClickedNode,
       }}
     >
       { children }

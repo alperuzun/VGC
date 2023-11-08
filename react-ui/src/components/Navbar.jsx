@@ -46,11 +46,7 @@ const Navbar = ({ handleHelpClick }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // useEffect(() => {
-  //   if (screenSize <= 700) {
-  //     setActiveMenu(false);
-  //   }
-  // }, [screenSize]);
+
 
   return (
 
@@ -126,35 +122,9 @@ const Navbar = ({ handleHelpClick }) => {
 
 
       </div>
-      {/* <div className="flex bg-[#3f89c7] w-full h-0.5">
-      </div> */}
     </div>
   )
 }
 
 export default Navbar
 
-
-// const AnimatedLine = () => {
-//   const lineRef = useRef(null);
-
-
-//   useEffect(() => {
-//     const newPosition = activeButtonIndex * 40;
-//     setLinePosition(newPosition);
-//   }, [activeButtonIndex]);
-
-//   return (
-//     <div
-//       className="h-2 bg-blue-500 transition-transform duration-300 ease-in-out"
-//       style={{
-//         width: '40px', 
-//         transform: `translateX(${linePosition}px)`,
-//       }}
-//       ref={lineRef}
-//     />
-//   );
-// };
-
-// const [activeButtonIndex, setActiveButtonIndex] = useState(0);
-// const [linePosition, setLinePosition] = useState(0);

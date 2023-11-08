@@ -78,7 +78,7 @@ const Display = () => {
 
 
   return (
-    <div className="flex w-full h-full overflow-x-clip">
+    <div className="flex w-full h-full overflow-x-clip overflow-y-clip">
       <div className="flex w-full flex-col">
         <SimplePane>
           <AboutData />

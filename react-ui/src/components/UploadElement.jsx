@@ -37,8 +37,6 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
           </button>
           <button className="flex grow max-w-[312px]"
             onClick={() => {
-              // setSearchGeneTerm("");
-              // setSearchRangeTerm("");
               if (selected === path) {
                 setRefresh(!refresh);
               } else {
@@ -58,27 +56,6 @@ const UploadElement = ({ path, fileDeleterToggle, size }) => {
                   handleRemovePath(path);
                   console.log("Removed! Now Selected:" );
                   console.log(selected);
-
-
-                  // var indexOfDeleted = pathList.indexOf(path);
-                  // var pathCopy = [...pathList];
-                  // pathCopy.splice(indexOfDeleted, 1)
-                  // var phenotypeCopy = [...phenotypeList];
-                  // phenotypeCopy.splice(indexOfDeleted, 1);
-                  // var sizeCopy = [...sizeList];
-                  // sizeCopy.splice(indexOfDeleted, 1);
-
-                  // setPathList(pathCopy);
-                  // setPhenotypeList(phenotypeCopy);
-                  // setSizeList(sizeCopy);
-
-                  // if (pathCopy.length === 0) {
-                  //   setSelected(undefined);
-                  // } else if (indexOfDeleted === pathCopy.length) {
-                  //   setSelected(pathCopy[indexOfDeleted - 1]);
-                  // } else {
-                  //   setSelected(pathCopy[indexOfDeleted]);
-                  // }
                 }}>
                 <AiOutlineClose />
               </button>

@@ -67,22 +67,9 @@ const Sidebar = () => {
       const pathArray = []
       const phenotypeArray = []
       const sizeArray = []
-      // for (let i = 0; i < items.data.length; i++) {
-      //   pathArray[i] = items.data[i].path
-      //   phenotypeArray[i] = items.data[i].phenotypePath
-      //   sizeArray[i] = items.data[i].size;
-      // }
       setPathList(pathArray)
       setPhenotypeList(phenotypeArray);
       setSizeList(sizeArray);
-      // console.log(items.data);
-      // console.log(sizeArray);
-      // console.log("All VCF Paths: ");
-      // console.log(pathArray)
-      // console.log("All Phenotype Paths: ");
-      // console.log(phenotypeArray);
-      // console.log("Items: ");
-      // console.log(items);
     });
   }, []);
 
