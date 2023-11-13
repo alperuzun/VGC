@@ -146,7 +146,7 @@ To search for data within a specified range, use the range search bar. For insta
 
 ## Contact 
 
-Please contact [Dr. Alper Uzun](alper_uzun@brown.edu) with any questions. 
+Please contact [Dr. Alper Uzun](mailto:alper_uzun@brown.edu) with any questions. 
 
 
 
