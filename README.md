@@ -19,10 +19,10 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 - [Using a Phenotype File](#using-a-phenotype-file)
 	- [Phenotype File Format](#phenotype-file-format)
 	- [Uploading Phenotype Data](#uploading-phenotype-data)
-- [Search Bars](#thanks)
-	- [Searching by Gene](#copyright-and-license)
+- [Search Bars](#search-bars)
+	- [Searching by Gene](#searching-by-gene)
 	- [Searching by Range](#searching-by-range)
-
+- [Contact](#contact)
 ## Installation
 
 To install VGC, click on the link corresponding to your operating system. Download and expand the zip file, and double click on the application icon to start. 
@@ -144,9 +144,9 @@ To search for data relevant to a specific gene,  enter the gene name in the gene
 
 To search for data within a specified range, use the range search bar. For instance, to search for data in the range from position `12030000` to `12040000` on chromosome 1, enter `1:12030000-12040000` in the range search bar and click the search button,or press enter. The program will display the relevant data.
 
+## Contact 
 
-
-
+Please contact [Dr. Alper Uzun](alper_uzun@brown.edu) with any questions. 
 
 
 
