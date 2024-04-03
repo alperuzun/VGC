@@ -67,8 +67,8 @@ public class TreeView {
         this.noConsensus = new ArrayList<String>();
     }
 
-    public void populateTree(List<String[]> variants, String retrievedChr) throws IOException {
-        ClinvarParser clinvarParser = new ClinvarParser();
+    public void populateTree(List<String[]> variants, String retrievedChr, String refGenome) throws IOException {
+        ClinvarParser clinvarParser = new ClinvarParser(refGenome);
         for (String[] var : variants) {
             String[] clinvarData = clinvarParser.findVariant(Integer.valueOf(var[1]), retrievedChr, true);
             if (clinvarData == null) {
@@ -95,10 +95,6 @@ public class TreeView {
         this.reactome = mSigdbParser.getReactome(this.gene);
     }
 
-//    public boolean isPathogenic() {
-//
-//
-//    }
 
     public Long getId() {
         return this.id;

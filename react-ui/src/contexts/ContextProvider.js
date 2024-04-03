@@ -11,11 +11,14 @@ export const ContextProvider = ({ children }) => {
   const [pathList, setPathList] = useState([]);
   const [phenotypeList, setPhenotypeList] = useState([]);
   const [sizeList, setSizeList] = useState([]);
-  const handleNewPath = (newFile) => {
+  const [refList, setRefList] = useState([]);
+
+  const handleNewPath = (newFile, refGenome) => {
     if (!pathList.includes(newFile.path)) {
       setPathList([...pathList, newFile.path]);
       setPhenotypeList([...phenotypeList, undefined])
       setSizeList([...sizeList, newFile.size]);
+      setRefList([...refList, refGenome]);
     }
   }
   const handleRemovePath = (removeFilePath) => {
@@ -26,10 +29,14 @@ export const ContextProvider = ({ children }) => {
     phenotypeCopy.splice(indexOfDeleted, 1);
     var sizeCopy = [...sizeList];
     sizeCopy.splice(indexOfDeleted, 1);
+    var refCopy = [...refList];
+    refCopy.splice(indexOfDeleted, 1);
 
     setPathList(pathCopy);
     setPhenotypeList(phenotypeCopy);
     setSizeList(sizeCopy);
+    setRefList(refCopy);
+
     if (pathCopy.length === 0) {
       setSelected(undefined);
     } else if (indexOfDeleted === pathCopy.length) {
@@ -69,6 +76,7 @@ export const ContextProvider = ({ children }) => {
         pathList, setPathList, handleNewPath, handleRemovePath,
         phenotypeList, setPhenotypeList,handlePhenotypeFileChange,
         sizeList, setSizeList,
+        refList, setRefList,
         searchRangeTerm, setSearchRangeTerm,
         searchGeneTerm, setSearchGeneTerm,
         geneFileUpload, setGeneFileUpload,

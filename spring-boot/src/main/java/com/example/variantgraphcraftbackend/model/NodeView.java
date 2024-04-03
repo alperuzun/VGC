@@ -26,8 +26,9 @@ public class NodeView {
     private List<Link> links;
     @ElementCollection
     private List<String> patientGroups;
+    private String refGenome;
 
-    public NodeView(String title, int numGenes, String queryType, String rankType) {
+    public NodeView(String title, int numGenes, String queryType, String rankType, String refGenome) {
         this.title = title;
         this.numGenes = numGenes;
         this.queryType = queryType;
@@ -36,6 +37,7 @@ public class NodeView {
         this.nodes = new ArrayList<Node>();
         this.links = new ArrayList<Link>();
         this.patientGroups = new ArrayList<String>();
+        this.refGenome = refGenome;
     }
 
     public NodeView() {
@@ -64,7 +66,7 @@ public class NodeView {
     public void populateSinglePosGraph(String[] variant, String gene, String[] sampleList,
                      boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        this.nodes.add(new Node(variant[0], variant[1], "variant", 0, gene, null));
+        this.nodes.add(new Node(variant[0], variant[1], "variant", 0, gene, null, this.refGenome));
 
         for (int i = 0; i < sampleList.length; i++) {
             String[] info = variant[9 + i].split(":");
@@ -88,7 +90,7 @@ public class NodeView {
     public void populateSinglePosGraph(String[] variant, String gene, String[] sampleList, PhenotypeReader phenotypeReader,
                      boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
-        this.nodes.add(new Node(variant[0], variant[1], "variant", 0, gene, null));
+        this.nodes.add(new Node(variant[0], variant[1], "variant", 0, gene, null, this.refGenome));
 
         for (int i = 0; i < sampleList.length; i++) {
             String[] info = variant[9 + i].split(":");
@@ -127,7 +129,7 @@ public class NodeView {
                                         boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
         for (String[] v : variants) {
-            this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null));
+            this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null, this.refGenome));
             int index = this.nodes.size() - 1;
             for (int i = 0; i < sampleList.length; i++) {
                 String[] info = v[9 + i].split(":");
@@ -152,7 +154,7 @@ public class NodeView {
                                         PhenotypeReader phenotypeReader, boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
         for (String[] v : variants) {
-            this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null));
+            this.nodes.add(new Node(v[0], v[1], "variant", 0, gene, null, this.refGenome));
             int index = this.nodes.size() - 1;
             for (int i = 0; i < sampleList.length; i++) {
                 String[] info = v[9 + i].split(":");
@@ -182,7 +184,7 @@ public class NodeView {
                                        boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
         for (String[] v : variants) {
-            this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null));
+            this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null, this.refGenome));
             int index = this.nodes.size() - 1;
             for (int i = 0; i < sampleList.length; i++) {
                 String[] info = v[9 + i].split(":");
@@ -207,7 +209,7 @@ public class NodeView {
                                        PhenotypeReader phenotypeReader, boolean HR, boolean HT, boolean HA) {
         HashSet<String> samplesLinked = new HashSet<>();
         for (String[] v : variants) {
-            this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null));
+            this.nodes.add(new Node(v[0], v[1], "variant", 0, varToGeneMap.get(v[1]), null, this.refGenome));
             int index = this.nodes.size() - 1;
             for (int i = 0; i < sampleList.length; i++) {
                 String[] info = v[9 + i].split(":");
@@ -245,6 +247,14 @@ public class NodeView {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getRefGenome() {
+        return this.refGenome;
+    }
+
+    public void setRefGenome(String refGenome) {
+        this.refGenome = refGenome;
     }
 
     public int getNumGenes() {

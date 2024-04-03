@@ -12,22 +12,34 @@ public class PathogenicParser {
     private BufferedReader input;
     private Map<String, Set<String>> loadMap; //chr -> map(pos)
     private Map<String, HashMap<String, HashSet<String>>> mutMap; //chr -> hashmap( pos -> name )
+    private int chrIdx;
+    private int locIdx;
+    private String clinvarPath;
 
 
-    public PathogenicParser() {
+    public PathogenicParser(String refGenome) {
         this.loadMap = new HashMap<String, Set<String>>();
         this.mutMap = new HashMap<String, HashMap<String, HashSet<String>>>();
+        if (refGenome == "GRCh37") {
+            this.chrIdx = 7;
+            this.locIdx = 8;
+            this.clinvarPath = "/clinvar_pathogenic_sorted_grch37.txt";
+        } else {
+            this.chrIdx = 9;
+            this.locIdx = 10;
+            this.clinvarPath = "/clinvar_pathogenic_sorted_grch38.txt";
+        }
     }
 
     public void loadAll() throws IOException {
         ParseHelper helper = new ParseHelper();
-        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/clinvar_pathogenicSORTED.txt")));
+        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(this.clinvarPath)));
         String currLine = this.input.readLine();
         while (currLine != null) {
             String[] split = currLine.split("\t");
-            String chr = split[7];
+            String chr = split[this.chrIdx];
             if (helper.chrExists(chr)) {
-                String[] variants = split[8].split(" ");
+                String[] variants = split[this.locIdx].split(" ");
                 if (!this.loadMap.containsKey(chr)) {
                     this.loadMap.put(chr, new HashSet<String>());
                     this.mutMap.put(chr, new HashMap<String, HashSet<String>>());
@@ -47,13 +59,13 @@ public class PathogenicParser {
 
     public void loadMapping() throws IOException {
         ParseHelper helper = new ParseHelper();
-        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/clinvar_pathogenicSORTED.txt")));
+        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(this.clinvarPath)));
         String currLine = this.input.readLine();
         while (currLine != null) {
             String[] split = currLine.split("\t");
-            String chr = split[7];
+            String chr = split[this.chrIdx];
             if (helper.chrExists(chr)) {
-                String[] variants = split[8].split(" ");
+                String[] variants = split[this.locIdx].split(" ");
                 if (!this.loadMap.containsKey(chr)) {
                     this.loadMap.put(chr, new HashSet<String>());
                 }
@@ -62,7 +74,6 @@ public class PathogenicParser {
             currLine = this.input.readLine();
         }
         this.input.close();
-
     }
 
     public boolean isPathogenic(String chr, String var) {
@@ -71,7 +82,7 @@ public class PathogenicParser {
                 return true;
             }
             return false;
-        } catch (NullPointerException e) { //Y chr not in pathogenic data.
+        } catch (NullPointerException e) { 
             return false;
         }
     }
@@ -95,3 +106,4 @@ public class PathogenicParser {
         return mutInfo;
     }
 }
+

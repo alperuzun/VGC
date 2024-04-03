@@ -39,28 +39,17 @@ const Display = () => {
 
 
   const handleUndo = () => {
-    console.log("Undoing barAction.");
-    console.log(historyIndex)
     if (historyIndex > 0) {
-      console.log(barHistory[historyIndex - 1]);
       setHistogramData(barHistory[historyIndex - 1]);
       setHistoryIndex(historyIndex - 1);
-      console.log("BarHistory: ");
-      console.log(barHistory);
     }
   }
 
   const handleRedo = () => {
-    console.log("Redoing barAction.");
     if (historyIndex != undefined) {
       if (historyIndex < barHistory.length - 1) {
-        console.log(barHistory[historyIndex + 1]);
         setHistogramData(barHistory[historyIndex + 1]);
         setHistoryIndex(historyIndex + 1);
-        console.log("BarHistory: ");
-        console.log(barHistory);
-        console.log("GeneHistory: ");
-        console.log(geneHistory);
       }
     }
   }

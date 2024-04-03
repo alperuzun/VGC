@@ -1,11 +1,13 @@
 import React, {useState} from 'react'
 import { useDisplayContext } from '../contexts/DisplayContext';
+import { useStateContext } from '../contexts/ContextProvider';
 import { BarChart, Bar, LabelList, Cell, Label, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { BiCaretRight, BiCaretDown } from 'react-icons/bi'
 
 const AnalysisComponent = ({ variant }) => {
 
   const { browserQuery, setBrowserQuery } = useDisplayContext();
+  const { selected, pathList, refList } = useStateContext();
   const [showHidden, setShowHidden] = useState(false);
 
   const processExactTest = (matrixString) => {
@@ -28,13 +30,22 @@ const AnalysisComponent = ({ variant }) => {
 
   }
 
+
+  const handleSetBrowserQuery = (setString) => {
+    if (refList[pathList.indexOf(selected)] === "GRCh37") {
+      setBrowserQuery(setString + "?dataset=gnomad_r2_1");
+    } else {
+      setBrowserQuery(setString + "?dataset=gnomad_r4");
+    }
+  }
+
   return (
     <div className="flex flex-col w-11/12 mt-2">
       <div className="flex px-2 py-1 justify-center items-center  bg-[#ebebeb] hover:bg-[#f2f2f2] cursor-pointer" >
         <div class="flex-none  hover:text-slate-500 cursor-pointer" onClick={() => setShowHidden(!showHidden)}>
         {showHidden ? <BiCaretDown /> : <BiCaretRight />}
         </div>
-        <div class="grow justify-between flex flex-row" onClick={() => setBrowserQuery("region/" + variant.varChr + "-" + variant.varPos + "-" + variant.varPos)}>
+        <div class="grow justify-between flex flex-row" onClick={() => handleSetBrowserQuery("region/" + variant.varChr + "-" + variant.varPos + "-" + variant.varPos)}>
         <text class="flex">Variant: {variant.varPos}</text>
         <text className={`${parseFloat(variant.testResult[0].substring(10)) <= 0.05 ? " text-red-500" : " "} font-bold flex ml-auto`}>{variant.testResult[0]}</text>
         </div>

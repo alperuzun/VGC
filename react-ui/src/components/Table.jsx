@@ -8,7 +8,7 @@ import NoFileUploaded from './NoFileUploaded';
 import { useDisplayContext } from '../contexts/DisplayContext';
 
 const Table = () => {
-  const { selected, setSelected, phenotypeList, pathList, sizeList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh, handleRemovePath } = useStateContext();
+  const { selected, setSelected, phenotypeList, pathList, sizeList, refList, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh, handleRemovePath } = useStateContext();
   const { isClicked } = useDisplayContext();
 
   const [label, setlabel] = useState(undefined);
@@ -23,7 +23,6 @@ const Table = () => {
 
   const handleSave = (type) => {
     if (spreadSheetObj != undefined) {
-      console.log(type);
       spreadSheetObj.save({ url: 'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save', fileName: "Sample", saveType: type });
     } else {
       alert("Please enter a query to save results. ");
@@ -46,14 +45,9 @@ const Table = () => {
       }
       allData.push(newRow);
     }
-    console.log(allData);
     if (testJsonData != undefined) {
       const oldEnd = testJsonData.length;
       const newEnd = allData.length;
-      console.log("Old end: ")
-      console.log(oldEnd);
-      console.log("New end: ")
-      console.log(newEnd);
       if (oldEnd > newEnd) {
         spreadSheetObj.delete(newEnd + 1, oldEnd, 'Row', 0);
       }
@@ -66,7 +60,6 @@ const Table = () => {
     try {
       if (searchRangeTerm != null && searchRangeTerm != "") {
         var dataObj = await TableService.queryByRange(searchRangeTerm)
-        console.log(dataObj);
         setlabel(dataObj.data.queryName);
         generateJSON(dataObj.data.header, dataObj.data.rowData);
       }
@@ -82,8 +75,6 @@ const Table = () => {
     setProcessing(true);
     try {
       if (searchGeneTerm != null && searchGeneTerm != "") {
-        console.log("In searchGene.")
-        console.log(searchGeneTerm);
         let test = searchGeneTerm
         var dataObj = await TableService.queryByGene(test)
         setlabel(dataObj.data.queryName);
@@ -102,7 +93,8 @@ const Table = () => {
       await FileService.addFile({
         path: filePath,
         phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-        size: sizeList[sizeList.indexOf(filePath)]
+        size: sizeList[pathList.indexOf(filePath)],
+        refGenome: refList[pathList.indexOf(filePath)]
       });
       const fileInfo = await FileService.getFileInfo();
       setCurrentlyViewing(fileInfo.data);
@@ -120,17 +112,13 @@ const Table = () => {
       handleFileChosen(selected);
       prevVals.current = { selected, refresh, isClicked }
     } else {
-      console.log("In table starting useeffect:");
       if (selected !== null && selected !== undefined) {
         handleFileChosen(selected);
         if (searchGeneTerm != '' && searchGeneTerm != null && toggleGS === true) {
-          console.log("On refresh, searching gene...");
           searchGene();
         } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
-          console.log("On refresh, searching range...");
           searchRange();
         } else {
-          console.log("On refresh, no existing query.");
           setlabel("Enter a search term above.");
         }
       } 

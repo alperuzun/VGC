@@ -10,41 +10,56 @@ public class ClinvarParser {
     private BufferedReader input;
     private String currLine;
     private HashMap<String, int[]> clinvarNav;
-    private Map<String, Set<String>> loadMap;
+    private int chrIdx;
+    private int locIdx;
+    private int startLineIdx;
+    private int endLineIdx;
+    private String clinvarPath;
 
-    public ClinvarParser() {
+    public ClinvarParser(String refGenome) {
         this.clinvarNav = new HashMap<String, int[]>();
         this.populateClinvarNav();
-        this.loadMap = new HashMap<String, Set<String>>();
+        if (refGenome == "GRCh37") {
+            this.chrIdx = 7;
+            this.locIdx = 8;
+            this.startLineIdx = 0;
+            this.endLineIdx = 1;
+            this.clinvarPath = "/clinvar_sorted_grch37.txt";
+        } else {
+            this.chrIdx = 9;
+            this.locIdx = 10;
+            this.startLineIdx = 2;
+            this.endLineIdx = 3;
+            this.clinvarPath = "/clinvar_sorted_grch38.txt";
+        }
     }
 
+
     private void populateClinvarNav() {
-        this.clinvarNav.put("1", new int[] {1, 7712});
-        this.clinvarNav.put("2", new int[] {7713, 16227});
-        this.clinvarNav.put("3", new int[] {16228, 21018});
-        this.clinvarNav.put("4", new int[] {21019, 23758});
-        this.clinvarNav.put("5", new int[] {23759, 28052});
-        this.clinvarNav.put("6", new int[] {28053, 31978});
-        this.clinvarNav.put("7", new int[] {31979, 36393});
-        this.clinvarNav.put("8", new int[] {36394, 39125});
-        this.clinvarNav.put("9", new int[] {39126, 43558});
-        this.clinvarNav.put("10", new int[] {43559, 46703});
-        this.clinvarNav.put("11", new int[] {46704, 52407});
-        this.clinvarNav.put("12", new int[] {52408, 57019});
-        this.clinvarNav.put("13", new int[] {57020, 62300});
-        this.clinvarNav.put("14", new int[] {62301, 65499});
-        this.clinvarNav.put("15", new int[] {65000, 68197});
-        this.clinvarNav.put("16", new int[] {68198, 73772});
-        this.clinvarNav.put("17", new int[] {73773, 82726});
-        this.clinvarNav.put("18", new int[] {82727, 84236});
-        this.clinvarNav.put("19", new int[] {84237, 89026});
-        this.clinvarNav.put("20", new int[] {89027, 90836});
-        this.clinvarNav.put("21", new int[] {90837, 92121});
-        this.clinvarNav.put("22", new int[] {92122, 93988});
-        this.clinvarNav.put("X", new int[] {93989, 98660});
-        this.clinvarNav.put("Y", new int[] {98661, 98663});
-        this.clinvarNav.put("", new int[] {98664, 98778});
-        this.clinvarNav.put("MT", new int[] {98779, 98897});
+        this.clinvarNav.put("1", new int[] {1, 11510, 1, 11510});
+        this.clinvarNav.put("2", new int[] {11511, 24084, 11511, 24079});
+        this.clinvarNav.put("3", new int[] {24085, 31345, 24080, 31338});
+        this.clinvarNav.put("4", new int[] {31346, 35569, 31339, 35561});
+        this.clinvarNav.put("5", new int[] {35570, 42270, 35562, 42262});
+        this.clinvarNav.put("6", new int[] {42271, 48152, 42263, 48144});
+        this.clinvarNav.put("7", new int[] {48153, 54971, 48145, 54961});
+        this.clinvarNav.put("8", new int[] {54972, 59084, 54962, 59074});
+        this.clinvarNav.put("9", new int[] {59085, 65480, 59075, 65470});
+        this.clinvarNav.put("10", new int[] {65481, 70202, 65471, 70192});
+        this.clinvarNav.put("11", new int[] {70203, 78559, 70193, 78549});
+        this.clinvarNav.put("12", new int[] {78560, 85075, 78550, 85066});
+        this.clinvarNav.put("13", new int[] {85076, 91317, 85067, 91305});
+        this.clinvarNav.put("14", new int[] {91318, 95086, 91306, 95074});
+        this.clinvarNav.put("15", new int[] {95087, 99978, 95075, 99967});
+        this.clinvarNav.put("16", new int[] {99979, 108117, 99968, 108107});
+        this.clinvarNav.put("17", new int[] {108118, 120455, 108108, 120444});
+        this.clinvarNav.put("18", new int[] {120456, 122643, 120445, 122632});
+        this.clinvarNav.put("19", new int[] {122644, 129579, 122633, 129548});
+        this.clinvarNav.put("20", new int[] {129580, 132279, 129549, 132248});
+        this.clinvarNav.put("21", new int[] {132280, 134083, 132249, 134050});
+        this.clinvarNav.put("22", new int[] {134084, 136996, 134051, 136963});
+        this.clinvarNav.put("X", new int[] {136997, 144165, 136964, 144129});
+        this.clinvarNav.put("Y", new int[] {144166, 144168, 144130, 144133});
     }
     public String[] findVariant(int startPos, String chr, boolean onlyPathogenic) throws IOException {
         String chrJustLabel;
@@ -54,25 +69,25 @@ public class ClinvarParser {
             chrJustLabel = chr;
         }
 
-        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/clinvarSORTED.txt")));
-        int startLine = this.clinvarNav.get(chrJustLabel)[0];
-        int endLine = this.clinvarNav.get(chrJustLabel)[1];
-        int lineNumber = 0;
+        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(this.clinvarPath)));
+        int startLine = this.clinvarNav.get(chrJustLabel)[this.startLineIdx];
+        int endLine = this.clinvarNav.get(chrJustLabel)[this.endLineIdx];
+        int lineNumber = -1;
 
         while(lineNumber < startLine) {
             this.currLine = this.input.readLine();
             lineNumber++;
         }
 
-        int numberOfVariantsFound = 0;
         String[] allFoundVariantInfo = null;
 
         while(lineNumber < endLine) {
             String[] variantInfo = this.currLine.split("\t");
-            if(Integer.valueOf(variantInfo[8].split(" ")[0]) == startPos) {
-                numberOfVariantsFound++;
+
+            String s = variantInfo[this.locIdx].split(" ")[0];
+            if(!s.equals("") && Integer.valueOf(s) == startPos) {
                 if(allFoundVariantInfo == null) {
-                    allFoundVariantInfo = new String[]{variantInfo[0], variantInfo[3], variantInfo[4], variantInfo[7], variantInfo[8], variantInfo[13]};
+                    allFoundVariantInfo = new String[]{variantInfo[0], variantInfo[3], variantInfo[4], variantInfo[this.chrIdx], variantInfo[this.locIdx], variantInfo[13]};
                 } else {
                     allFoundVariantInfo[0] = allFoundVariantInfo[0] + "&&nextvariant&&" + variantInfo[0];
                     allFoundVariantInfo[1] = allFoundVariantInfo[1] + "&&nextvariant&&" + variantInfo[3];
@@ -89,8 +104,7 @@ public class ClinvarParser {
 
     public void populateVariantInfo(HashMap<Integer, ArrayList<SubBar>> posMap, String chr) throws IOException {
         ArrayList<Integer> locations = new ArrayList<>(posMap.keySet());
-        for(int location : locations) {
-        }
+
         for(int location : locations) {
             ArrayList<SubBar> bars = posMap.get(location);
             if (bars.size() == 1) {

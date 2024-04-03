@@ -28,7 +28,7 @@ public class ServiceHandler {
     private HashMap<String, UploadedFile> pathMap;
     private UploadedFile currFile;
     private ZoomController zoomController;
-    private ClinvarParser clinvarParser;
+    // private ClinvarParser clinvarParser;
 
     /**
      * Constructor of ServiceHandler. Note that this class is created BEFORE the
@@ -42,9 +42,10 @@ public class ServiceHandler {
         this.phenotypeMap = new HashMap<UploadedFile, PhenotypeReader>();
         this.pathMap = new HashMap<String, UploadedFile>();
         this.vcfParser = new VCFParser(this.infoMap, this.indexMap);
-        this.geneParser = new GenelistParser("genelist_ensemble_updated.txt");
+        // this.geneParser = new GenelistParser("genelist_ensemble_updated.txt");
+        this.geneParser = new GenelistParser();
         this.zoomController = new ZoomController();
-        this.clinvarParser = new ClinvarParser();
+        // this.clinvarParser = new ClinvarParser();
     }
 
     /**
@@ -65,7 +66,6 @@ public class ServiceHandler {
         this.currFile = file;
         this.vcfParser.processSelectedFile(file);
         this.pathMap.put(file.getPath(), file);
-
     }
 
     public void selectByPath(String vcfPath, String phenotypePath, boolean updatePhenotype) throws IOException, IndexOutOfBoundsException, InvalidFileException {
@@ -86,6 +86,10 @@ public class ServiceHandler {
         return new ArrayList<>(Arrays.asList(fullHeader));
     }
 
+    public String getReferenceGenome() {
+        return this.infoMap.get(this.currFile).getRefGenome();
+    }
+
     //BAR_GRAPH RELATED METHODS -------------------------------------------------------------------------
     public BarView displayBarView(String passFilter) {
         BarView chromToVar = new BarView("Variants per Chromosome", "Chromosome", "Variants", null, null);
@@ -104,7 +108,7 @@ public class ServiceHandler {
             this.zoomController.readBPInfo();
         }
         HashMap<Integer, Integer> template = this.zoomController.generateDataTemplate(chr);
-        this.vcfParser.getChromHistrogramData(chr, 1000000, template, this.getChrStart(chr), this.getChrEnd(chr), passFilter, this.currFile.getPath());
+        this.vcfParser.getChromHistrogramData(chr, 1000000, template, this.getChrStart(chr), this.getChrEnd(chr), passFilter, this.currFile.getPath(), this.getReferenceGenome());
         BarView zoomedGraph = new BarView("Variants Found by Position on Chromosome " + chr +
                 ", Range: ALL" + ", FILTER: " + passFilter, "Position",
                 "Number of Variants", "1000000", chr);
@@ -116,22 +120,23 @@ public class ServiceHandler {
         HashMap<Integer, Integer> template = new HashMap<Integer, Integer>();
         HashMap<Integer, ArrayList<String[]>> posMap = new HashMap<Integer, ArrayList<String[]>>();
         int increment = this.zoomController.generateZoomedTemplate(template, posMap, start, end, zoomFactor);
-        this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr), start, end, passFilter, this.currFile.getPath());
+        this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr), start, end, passFilter, this.currFile.getPath(), this.getReferenceGenome());
         HashMap<Integer, ArrayList<SubBar>> subBarMap = new HashMap<Integer, ArrayList<SubBar>>();
         if (increment <= 10000) {
-            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, chr);
-            this.clinvarParser.populateVariantInfo(subBarMap, chr);
+            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, chr, this.getReferenceGenome());
+            ClinvarParser clinvarParser = new ClinvarParser(this.getReferenceGenome());
+            clinvarParser.populateVariantInfo(subBarMap, chr);
         }
         BarView zoomedGraph = new BarView("Variants Found by Position on Chromosome " + chr +
                 ", Range: " + start + "-" + end + ", FILTER: " + passFilter,
                 "Position", "Number of Variants", String.valueOf(increment), chr);
         zoomedGraph.populateZoomedGraph(template, subBarMap);
-        zoomedGraph.setSvpData(posMap, this.getFileHeader());
+        zoomedGraph.setSvpData(posMap, this.getFileHeader(), this.getReferenceGenome());
         return zoomedGraph;
     }
 
     public BarView displayGeneHistogram(String gene, String passFilter) throws IOException, NullPointerException, GeneNotFoundException {
-        String[] geneInfo = this.geneParser.getGeneLocation(gene);
+        String[] geneInfo = this.geneParser.getGeneLocation(gene, this.getReferenceGenome());
         Integer range = Integer.valueOf(geneInfo[2]) - Integer.valueOf(geneInfo[1]);
         int zoom = range.toString().length() - 3;
         int factor = (int) Math.pow(10, zoom);
@@ -143,11 +148,12 @@ public class ServiceHandler {
                 Integer.valueOf(geneInfo[2]), factor);
         this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr),
                 Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]),
-                passFilter, this.currFile.getPath());
+                passFilter, this.currFile.getPath(), this.getReferenceGenome());
         HashMap<Integer, ArrayList<SubBar>> subBarMap = new HashMap<Integer, ArrayList<SubBar>>();
         if (increment <= 10000) {
-            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, geneInfo[0].substring(3));
-            this.clinvarParser.populateVariantInfo(subBarMap, geneInfo[0]);
+            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, geneInfo[0].substring(3), this.getReferenceGenome());
+            ClinvarParser clinvarParser = new ClinvarParser(this.getReferenceGenome());
+            clinvarParser.populateVariantInfo(subBarMap, geneInfo[0]);
         }
         BarView zoomedGraph = new BarView("Variants Found on Gene " + gene + " on Chromosome " + chr +
                 ", Range: " + geneInfo[1] + "-" + geneInfo[2] + ", FILTER: " + passFilter,
@@ -155,7 +161,7 @@ public class ServiceHandler {
                 geneInfo[0].substring(3));
         zoomedGraph.populateZoomedGraph(template, subBarMap);
         return zoomedGraph;
-        // }
+        
     }
 
     public BarView displayRangeHistogram(String chr, int start, int end, String passFilter) throws IOException, RangeNotFoundException {
@@ -169,11 +175,12 @@ public class ServiceHandler {
 
         int increment = this.zoomController.generateTemplateForRangeGraph(template, posMap, start, end);
         this.vcfParser.getChromHistrogramData(chr, increment, template, posMap, this.getChrStart(chr), this.getChrEnd(chr),
-                                                start, end, passFilter, this.currFile.getPath());
+                                                start, end, passFilter, this.currFile.getPath(), this.getReferenceGenome());
         HashMap<Integer, ArrayList<SubBar>> subBarMap = new HashMap<Integer, ArrayList<SubBar>>();
         if (increment <= 10000) {
-            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, chr);
-            this.clinvarParser.populateVariantInfo(subBarMap, chr);
+            subBarMap = this.geneParser.getGeneInfoForVariants(posMap, chr, this.getReferenceGenome());
+            ClinvarParser clinvarParser = new ClinvarParser(this.getReferenceGenome());
+            clinvarParser.populateVariantInfo(subBarMap, chr);
         }
         BarView zoomedGraph = new BarView("Variants Found by Range on Chromosome " + chr +
                                                 ", Range: " + start + "-" + end + ", FILTER: " + passFilter,
@@ -195,7 +202,7 @@ public class ServiceHandler {
             throw new RangeNotFoundException("Invalid range: " + chr + ":" + startPos + "-" + endPos, 400);
         }
 
-        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), startPos, endPos, "ALL", this.currFile.getPath());
+        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), startPos, endPos, "ALL", this.currFile.getPath(), this.getReferenceGenome());
 
         GridView table = new GridView("Table view of variants between " + startPos + " and " + endPos +
                 " on chromosome " + chr +  " . ");
@@ -211,7 +218,7 @@ public class ServiceHandler {
      * Displays table view by gene. Calls method above.
      */
     public GridView displayGeneView(String gene) throws IOException, GeneNotFoundException {
-        String[] geneInfo = this.geneParser.getGeneLocation(gene);
+        String[] geneInfo = this.geneParser.getGeneLocation(gene, this.getReferenceGenome());
         GridView table;
         try {
             table = this.displayGridView(geneInfo[0].substring(3), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]));
@@ -229,19 +236,19 @@ public class ServiceHandler {
      * Returns single VCF line as arrayList.
      */
     public ArrayList<String> getLineForPos(String chr, int startPos, int endPos) throws IOException, IndexOutOfBoundsException {
-        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), startPos, endPos, "ALL", this.currFile.getPath());
+        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), startPos, endPos, "ALL", this.currFile.getPath(), this.getReferenceGenome());
         return new ArrayList<String>(Arrays.asList(varList.get(0)));
     }
 
     //NODE_GRAPH RELATED METHODS -------------------------------------------------------------------------
     public NodeView displayGraphByGene(String gene, String passFilter, boolean HR, boolean HT, boolean HA) throws IOException, GeneNotFoundException {
-        String[] geneInfo = this.geneParser.getGeneLocation(gene);
+        String[] geneInfo = this.geneParser.getGeneLocation(gene, this.getReferenceGenome());
         String chr = geneInfo[0].substring(3);
         ArrayList<String> info = new ArrayList<String>(Arrays.asList(geneInfo));
         info.add(0, gene);
-        NodeView nodeView = new NodeView("Node Graph for Gene " + gene, 1, "gene", "dp");
+        NodeView nodeView = new NodeView("Node Graph for Gene " + gene, 1, "gene", "dp", this.getReferenceGenome());
         nodeView.setGraphInfo(info);
-        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath());
+        List<String[]> varList = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath(), this.getReferenceGenome());
         String[] sampleList = this.infoMap.get(this.currFile).getAllPatients().split("\t");
         if (this.phenotypeMap.containsKey(this.currFile)) {
             nodeView.populateSingleGeneGraph(varList, gene, sampleList, this.phenotypeMap.get(this.currFile), HR, HT, HA);
@@ -257,7 +264,7 @@ public class ServiceHandler {
             throw new RangeNotFoundException("Invalid range: " + chr + ":" + start + "-" + end, 400);
         }
 
-        List<String[]> var = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), start, end, passFilter, this.currFile.getPath());
+        List<String[]> var = this.vcfParser.getLinesByPos(chr, this.getChrStart(chr), this.getChrEnd(chr), start, end, passFilter, this.currFile.getPath(), this.getReferenceGenome());
 
         if (var.size() > 1000) {
             throw new NodeRangeOverflowException("The indicated range contains over 1000 variants. Please select a smaller range for Node Graph visualization.", 400);
@@ -266,7 +273,7 @@ public class ServiceHandler {
         HashMap<String, String> varToGeneMap = new HashMap<String, String>();
         HashMap<String, ArrayList<String>> geneToVarMap = new HashMap<String, ArrayList<String>>();
         for (String[] v : var) {
-            String[] geneInfo = this.geneParser.findInfoByPos(Integer.valueOf(v[1]), chr);
+            String[] geneInfo = this.geneParser.findInfoByPos(Integer.valueOf(v[1]), chr, this.getReferenceGenome());
             varToGeneMap.put(v[1], geneInfo[2]);
             if (geneToVarMap.containsKey(geneInfo[2])) {
                 geneToVarMap.get(geneInfo[2]).add(v[1]);
@@ -276,7 +283,7 @@ public class ServiceHandler {
             }
         }
         if (var.size() > 0) {
-            NodeView nodeView = new NodeView("Node Graph for Variant Range " + start + " to " + end, 1, "range", "dp");
+            NodeView nodeView = new NodeView("Node Graph for Variant Range " + start + " to " + end, 1, "range", "dp", this.getReferenceGenome());
             String[] sampleList = this.infoMap.get(this.currFile).getAllPatients().split("\t");
             ArrayList<String> info = new ArrayList<String>(Arrays.asList(new String[] {"0", chr, String.valueOf(start), String.valueOf(end)}));
             nodeView.setGraphInfo(info);
@@ -287,7 +294,7 @@ public class ServiceHandler {
             }
             return nodeView;
         } else {
-            NodeView nodeView = new NodeView("Node Graph for Variant Position " + start + " to " + end, 1, "range", "dp");
+            NodeView nodeView = new NodeView("Node Graph for Variant Position " + start + " to " + end, 1, "range", "dp", this.getReferenceGenome());
             return nodeView;
         }
     }
@@ -305,19 +312,19 @@ public class ServiceHandler {
                     if (!parseHelper.chrExists(chr.get(i)) || !parseHelper.rangeValid(start.get(i), end.get(i), this.zoomController.getNumBP(chr.get(i)))) {
                         throw new RangeNotFoundException("Invalid range: " + chr.get(i) + ":" + start.get(i) + "-" + end.get(i), 400);
                     }
-                    List<String[]> retrievedVariants = this.vcfParser.getLinesByPos(chr.get(i), this.getChrStart(chr.get(i)),this.getChrEnd(chr.get(i)), start.get(i), end.get(i), passFilter, this.currFile.getPath());
+                    List<String[]> retrievedVariants = this.vcfParser.getLinesByPos(chr.get(i), this.getChrStart(chr.get(i)),this.getChrEnd(chr.get(i)), start.get(i), end.get(i), passFilter, this.currFile.getPath(), this.getReferenceGenome());
                     data.addAll(retrievedVariants);
-                    this.geneParser.getRangeToGeneInfo(helperMap, chr.get(i), retrievedVariants);
+                    this.geneParser.getRangeToGeneInfo(helperMap, chr.get(i), retrievedVariants, this.getReferenceGenome());
                 }
                 title = "HeatMap of Read Depth by Sample, PassFilter: " + passFilter;
                 break;
             case GENE:
                 for (int i = 0; i < gene.size(); i++) {
-                    String[] geneInfo = this.geneParser.getGeneLocation(gene.get(i));
+                    String[] geneInfo = this.geneParser.getGeneLocation(gene.get(i), this.getReferenceGenome());
                     if (geneInfo != null) {
                         String retrievedChr = geneInfo[0].substring(3);
                         List<String[]> retrievedVariants = this.vcfParser.getLinesByPos(retrievedChr, this.getChrStart(retrievedChr), this.getChrEnd(retrievedChr),
-                                Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath());
+                                Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath(), this.getReferenceGenome());
                         data.addAll(retrievedVariants);
                         if (!helperMap.containsKey(retrievedChr)) {
                             helperMap.put(retrievedChr, new HashMap<String, List<String[]>>());
@@ -329,7 +336,7 @@ public class ServiceHandler {
                 break;
         }
         if(data.size() == 0) {
-            return null;
+            throw new GeneNotFoundException("Unrecognized gene(s)." , 404);
         }
         MapView map = new MapView(title, passFilter);
         if (this.phenotypeMap.containsKey(this.currFile)) {
@@ -345,19 +352,19 @@ public class ServiceHandler {
 
         List<String[]> data = new ArrayList<String[]>();
         String retrievedChr = null;
-        String[] geneInfo = this.geneParser.getGeneLocation(gene);
+        String[] geneInfo = this.geneParser.getGeneLocation(gene, this.getReferenceGenome());
         if (geneInfo != null) {
             retrievedChr = geneInfo[0].substring(3);
             List<String[]> retrievedLines = this.vcfParser.getLinesByPos(retrievedChr, this.getChrStart(retrievedChr), this.getChrEnd(retrievedChr),
-                    Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath());
+                    Integer.valueOf(geneInfo[1]), Integer.valueOf(geneInfo[2]), passFilter, this.currFile.getPath(), this.getReferenceGenome());
             data.addAll(retrievedLines);
         }
         String title = "Tree view of gene: " + gene + ", Pass Filter: " + passFilter;
         if(data.size() == 0) {
-            return null;
+            throw new GeneNotFoundException("Unrecognized gene: " + gene , 404);
         }
         TreeView tree = new TreeView(gene, title, retrievedChr);
-        tree.populateTree(data, retrievedChr);
+        tree.populateTree(data, retrievedChr, this.getReferenceGenome());
         return tree;
     }
 

@@ -6,6 +6,7 @@ import com.example.variantgraphcraftbackend.model.*;
 import com.example.variantgraphcraftbackend.repository.FileRepository;
 import com.example.variantgraphcraftbackend.service.ServiceHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -60,6 +64,26 @@ public class FileController {
     public List<UploadedFile> getFiles() {
         return this.fileRepository.findAll();
     }
+
+    // @GetMapping("change-ref-genome")
+    // public ResponseEntity<?> changeReference(String newRef) {
+    //     try {
+    //         this.handler.changeReferenceGenome(newRef);
+    //         return ResponseEntity.ok(newRef);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //         ErrorResponse errorResponse = new ErrorResponse("An internal server error occurred.", 500);
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    //     }
+    // }
+
+    // @GetMapping("get-ref-genome")
+    // public ResponseEntity<?> getReference() {
+    //     String ref = this.handler.getReferenceGenome();
+    //     return ResponseEntity.ok(ref);
+    // }
+    
+
 
     /**
      * Adds a file to the fileRepository.

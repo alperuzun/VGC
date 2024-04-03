@@ -12,7 +12,7 @@ import ForceGraph3D from "react-force-graph-3d";
 import { useDisplayContext } from '../contexts/DisplayContext';
 
 const NodeView = ({ w, h, setData }) => {
-  const { activeMenu, selected, currentlyViewing, setCurrentlyViewing, phenotypeList, pathList, handleRemovePath, sizeList, searchRangeTerm, searchGeneTerm, geneFileUpload, posFileUpload, toggleRS, toggleGS, refresh } = useStateContext();
+  const { activeMenu, selected, currentlyViewing, setCurrentlyViewing, phenotypeList, pathList, handleRemovePath, sizeList, refList, searchRangeTerm, searchGeneTerm, geneFileUpload, posFileUpload, toggleRS, toggleGS, refresh } = useStateContext();
   const { isClicked } = useDisplayContext();
 
   const { setNLData, setDataObj, view2D, nodeSize, gtList, passFilter, highlightFormat, settingsVisible, sampleColors, setSampleColors, variantColor, setQueryList, currView, setCurrView, currDataObj, setCurrDataObj, patientGroupings, setPatientGroupings } = useNodeContext();
@@ -47,17 +47,11 @@ const NodeView = ({ w, h, setData }) => {
   }
 
   const handleColoring = (numGroups) => {
-    console.log("In handlecoloring:")
-    console.log("SingleFlag:" + singleColorFlag)
-    console.log("MultiFlag:" + multiColorFlag)
-    console.log(sampleColors);
     if (!singleColorFlag && !multiColorFlag) {
       if (numGroups === 0) {
-        console.log("Patient groupings do no exist.");
         var colorArray = ["#BABABA"]
         setSampleColors(colorArray);
       } else if (numGroups > 0) {
-        console.log("Patient groupings exist.");
         var colorArray = []
         var currColor = "#BABABA"
         var increment = 150 / numGroups;
@@ -71,7 +65,6 @@ const NodeView = ({ w, h, setData }) => {
       setSingleColorFlag(true);
     } else if (!multiColorFlag)  {
       if (numGroups > 0) {
-        console.log("Patient groupings exist.");
         var colorArray = []
         var currColor = "#BABABA"
         var increment = 150 / numGroups;
@@ -88,7 +81,6 @@ const NodeView = ({ w, h, setData }) => {
 
   const searchGeneFile = async () => {
     if (geneFileUpload !== undefined) {
-      console.log("Searching gene file from NodeView...")
       setProcessing(true);
       try {
         let retrievedData = await GraphService.getGeneFileNodeGraph(geneFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
@@ -102,7 +94,6 @@ const NodeView = ({ w, h, setData }) => {
         setCurrView(tempnlData[0]);
         setDataObj(tempNodeViews);
         setCurrDataObj(tempNodeViews[0]);
-        console.log(retrievedData);
         handleColoring(tempNodeViews[0].patientGroups.length);
       } catch (error) {
         alert(error.response.data.message);
@@ -115,7 +106,6 @@ const NodeView = ({ w, h, setData }) => {
 
   const searchPosFile = async () => {
     if (posFileUpload !== undefined) {
-      console.log("Searching range file from NodeView...")
       setProcessing(true);
       try {
         let retrievedData = await GraphService.getPosFileNodeGraph(posFileUpload, passFilter, gtList[0], gtList[1], gtList[2])
@@ -129,7 +119,6 @@ const NodeView = ({ w, h, setData }) => {
         setCurrView(tempnlData[0]);
         setDataObj(tempNodeViews);
         setCurrDataObj(tempNodeViews[0]);
-        console.log(retrievedData);
         handleColoring(tempNodeViews[0].patientGroups.length);
       } catch (error) {
         alert(error.response.data.message);
@@ -142,9 +131,6 @@ const NodeView = ({ w, h, setData }) => {
 
   const searchGene = async () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
-      console.log("Searching gene from NodeView...")
-      console.log(gtList);
-
       setProcessing(true);
       try {
         let retrievedData = await GraphService.getGeneNodeGraph(searchGeneTerm, passFilter, gtList[0], gtList[1], gtList[2])
@@ -153,8 +139,6 @@ const NodeView = ({ w, h, setData }) => {
         setCurrView({ nodes: retrievedData.data.nodes, links: retrievedData.data.links });
         setDataObj([retrievedData.data]);
         setCurrDataObj(retrievedData.data);
-
-        console.log(retrievedData);
         handleColoring(retrievedData.data.patientGroups.length);
       } catch (error) {
         alert(error.response.data.message);
@@ -167,7 +151,6 @@ const NodeView = ({ w, h, setData }) => {
 
   const searchRange = async () => {
     if (searchRangeTerm !== undefined && searchRangeTerm != "") {
-      console.log("Searching range from NodeView...")
       setProcessing(true);
       try {
         let retrievedData = await GraphService.getRangeNodeGraph(searchRangeTerm, passFilter, gtList[0], gtList[1], gtList[2])
@@ -176,7 +159,6 @@ const NodeView = ({ w, h, setData }) => {
         setCurrView({ nodes: retrievedData.data.nodes, links: retrievedData.data.links });
         setDataObj([retrievedData.data]);
         setCurrDataObj(retrievedData.data);
-        console.log(retrievedData);
         handleColoring(retrievedData.data.patientGroups.length);
       } catch (error) {
         alert(error.response.data.message);
@@ -192,7 +174,8 @@ const NodeView = ({ w, h, setData }) => {
       await FileService.addFile({
         path: filePath,
         phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-        size: sizeList[sizeList.indexOf(filePath)]
+        size: sizeList[pathList.indexOf(filePath)],
+        refGenome: refList[pathList.indexOf(filePath)]
       }); 
       const fileInfo = await FileService.getFileInfo();
       setCurrentlyViewing(fileInfo.data);
@@ -365,8 +348,8 @@ const NodeView = ({ w, h, setData }) => {
                 <strong>Clinvar information: </strong>
                 <div>${node.groupToNumSamplesString}</div>
                 ${getNodeLabelHelper(node.variantName, node.conditions, node.significance)}
-                <div><strong>GRCh37 chromosome:</strong> ${node.chromosome}</div>
-                <div><strong>GRCh37 location:</strong> ${node.name}</div>
+                <div><strong>Chromosome:</strong> ${node.chromosome}</div>
+                <div><strong>Location:</strong> ${node.name}</div>
                 <div><strong>dbSNP ID:</strong> ${node.snpId}</div></div>`
     } else if (node.type == "variant" && !node.inClinvar) {
       return `<div className="text-[#2f2f2f] bg-white flex flex-col"><div>
@@ -421,26 +404,28 @@ const NodeView = ({ w, h, setData }) => {
     }
   }
 
+
+  const handleSetBrowserQuery = (setString) => {
+    if (refList[pathList.indexOf(selected)] === "GRCh37") {
+      setBrowserQuery(setString + "?dataset=gnomad_r2_1");
+    } else {
+      setBrowserQuery(setString + "?dataset=gnomad_r4");
+    }
+  }
+
   const handleNodeClick = (node, event, setData) => {
-    console.log("here?")
 
     if (clickedNode == node || node.type == "sample") {
       setClickedNode(null);
     } else {
       setClickedNode(node);
-      console.log("Logging browser query term: ");
-      console.log("Current object: ");
-      console.log(currDataObj);
-      console.log(currDataObj.graphInfo[1] + "-" + node.name)
-      setBrowserQuery("region/" + currDataObj.graphInfo[1] + "-" + node.name);
+      handleSetBrowserQuery("region/" + currDataObj.graphInfo[1] + "-" + node.name);
       setData(getNodeLabel(node));
     }
   }
 
   useEffect(() => {
-    console.log("In nodeview starting useeffect:");
     if (prevVals.current.selected != selected) {
-      console.log("New selected:");
       setDataObj(undefined);
       setCurrView(undefined);
       setCurrDataObj(undefined);
@@ -452,16 +437,12 @@ const NodeView = ({ w, h, setData }) => {
       if (selected !== null && selected !== undefined) {
         handleFileChosen(selected);
         if (geneFileUpload != null && selected != null && toggleGS === true) {
-          console.log("On refresh, searching gene FILE...");
           searchGeneFile();
         } else if (posFileUpload != null && toggleRS === true) {
-          console.log("On refresh, searching pos FILE...");
           searchPosFile();
         } else if (searchGeneTerm != '' && searchGeneTerm != null && toggleGS === true) {
-          console.log("On refresh, searching gene...");
           searchGene();
         } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
-          console.log("On refresh, searching range...");
           searchRange();
         } 
       } 

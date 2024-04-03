@@ -9,7 +9,7 @@ import { useDisplayContext } from '../contexts/DisplayContext';
 
 
 const HeatMap = () => {
-  const { selected, currentlyViewing, setCurrentlyViewing, searchGeneTerm, searchRangeTerm, geneFileUpload, setGeneFileUpload, posFileUpload, setPosFileUpload, toggleRS, toggleGS, refresh, phenotypeList, pathList, handleRemovePath, sizeList } = useStateContext();
+  const { selected, currentlyViewing, setCurrentlyViewing, searchGeneTerm, searchRangeTerm, geneFileUpload, setGeneFileUpload, posFileUpload, setPosFileUpload, toggleRS, toggleGS, refresh, phenotypeList, pathList, handleRemovePath, sizeList, refList } = useStateContext();
   const {isClicked} = useDisplayContext();
 
   const {mapObj, setMapObj, replicates} = useCompareContext();
@@ -29,8 +29,6 @@ const HeatMap = () => {
     }
     if (multiLevelLabels.length > 0) {
       setHorizontalBrackets(multiLevelLabels);
-      console.log("MLLabels: ");
-      console.log(multiLevelLabels);
     }
     return multiLevelLabels;
   }
@@ -49,13 +47,9 @@ const HeatMap = () => {
 
   const generateGeneMap = async () => {
     if (searchGeneTerm !== undefined && searchGeneTerm != "") {
-      console.log("Searching gene from heatmap...");
-      console.log(replicates)
-
       setProcessing(true);
       try {
         let retrievedData = await SampleService.getHeatMapForGene("PASS", searchGeneTerm);
-        console.log(retrievedData);
         processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
         processData(retrievedData.data.mapData);
         setVerticalAxisLabels(retrievedData.data.yAxisLabels);
@@ -70,11 +64,9 @@ const HeatMap = () => {
 
   const generateRangeMap = async () => {
     if (searchRangeTerm !== undefined && searchRangeTerm != "") {
-      console.log("Searching range from heatmap...");
       setProcessing(true);
       try {
         let retrievedData = await SampleService.getHeatMapForRange("PASS", searchRangeTerm);
-        console.log(retrievedData);
         processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
         processData(retrievedData.data.mapData);
         setVerticalAxisLabels(retrievedData.data.yAxisLabels);
@@ -89,11 +81,9 @@ const HeatMap = () => {
 
   const generateGeneFileMap = async () => {
     if (geneFileUpload !== undefined) {
-      console.log("Searching gene file from heatmap...");
       setProcessing(true);
       try {
         let retrievedData = await SampleService.getHeatMapForGeneFile(geneFileUpload, "PASS");
-        console.log(retrievedData);
         processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
         processData(retrievedData.data.mapData);
         setVerticalAxisLabels(retrievedData.data.yAxisLabels);
@@ -108,11 +98,9 @@ const HeatMap = () => {
 
   const generatePosFileMap = async () => {
     if (posFileUpload !== undefined) {
-      console.log("Search pos file from heatmap...")
       setProcessing(true);
       try {
         let retrievedData = await SampleService.getHeatMapForPosFile(posFileUpload, "PASS");
-        console.log(retrievedData);
         processBrackets(retrievedData.data.nameList, retrievedData.data.startList, retrievedData.data.endList);
         processData(retrievedData.data.mapData);
         setVerticalAxisLabels(retrievedData.data.yAxisLabels);
@@ -129,7 +117,8 @@ const HeatMap = () => {
     try {
       await FileService.addFile({ path: filePath, 
         phenotypePath: phenotypeList[pathList.indexOf(filePath)], 
-        size: sizeList[pathList.indexOf(filePath)]  });
+        size: sizeList[pathList.indexOf(filePath)],
+        refGenome: refList[pathList.indexOf(filePath)]  });
       const fileInfo = await FileService.getFileInfo();
       setCurrentlyViewing(fileInfo.data);
     } catch (error) {
@@ -139,9 +128,7 @@ const HeatMap = () => {
   }
 
   useEffect(() => {
-    console.log("In heatmap starting useeffect:");
     if (prevVals.current.selected != selected) {
-      console.log("resetting...")
       setMapObj(undefined);
       setMapData(undefined);
       setHorizontalAxisLabels(undefined);
@@ -152,16 +139,12 @@ const HeatMap = () => {
       if (selected !== null && selected !== undefined) {
         handleFileChosen(selected); 
         if (geneFileUpload != null && toggleGS === true) {
-          console.log("On refresh, searching gene FILE...");
           generateGeneFileMap();
         } else if (posFileUpload != null && toggleRS === true) {
-          console.log("On refresh, searching pos FILE...");
           generatePosFileMap();
         } else if (searchGeneTerm != '' && searchGeneTerm != null && toggleGS === true) {
-          console.log("On refresh, searching gene...");
           generateGeneMap();
         } else if (searchRangeTerm != '' && searchRangeTerm != null && toggleRS === true) {
-          console.log("On refresh, searching range...");
           generateRangeMap();
         } else {
           setMapObj(undefined);

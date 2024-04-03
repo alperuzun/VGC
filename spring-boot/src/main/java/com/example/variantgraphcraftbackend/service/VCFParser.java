@@ -21,6 +21,7 @@ public class VCFParser {
 
     public void processSelectedFile(UploadedFile file) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         String storePath = this.makeGeneratedFilesDirectory();
+        String refGenome = file.getRefGenome();
 
         File vcf = new File(file.getPath());
         String name = vcf.getName();
@@ -39,8 +40,11 @@ public class VCFParser {
 
             InfoWriter infoWriter = new InfoWriter(info);
             IndexWriter indexWriter = new IndexWriter(index);
-            this.read(file, infoWriter, indexWriter);
+
+            this.read(file, infoWriter, indexWriter, refGenome);
             infoWriter.addChrom(indexWriter.getNumChrom(), indexWriter.getChromList());
+            infoWriter.addRefGenome(refGenome);
+
             infoWriter.writeInfo();
             indexWriter.writeIndex();
         }
@@ -52,6 +56,7 @@ public class VCFParser {
         this.infoMap.put(file, infoReader);
         this.indexMap.put(file, indexReader);
     }
+
 
     private String makeGeneratedFilesDirectory() {
         String userHome = System.getProperty("user.home");
@@ -73,14 +78,14 @@ public class VCFParser {
      * Initial read of an added vcf file. Called once a new
      * UploadedFile is saved to the FileRepository.
      */
-    private void read(UploadedFile file, InfoWriter infoWriter, IndexWriter indexWriter) throws IOException, IndexOutOfBoundsException, InvalidFileException {
+    private void read(UploadedFile file, InfoWriter infoWriter, IndexWriter indexWriter, String refGenome) throws IOException, IndexOutOfBoundsException, InvalidFileException {
         String currLine = "";
         String prevLine = "";
         int lineNumber = 0;
         String path = file.getPath();
         File vcf = new File(path);
         BufferedReader input = new BufferedReader(new FileReader(vcf));
-        PathogenicParser pathogenicParser = new PathogenicParser();
+        PathogenicParser pathogenicParser = new PathogenicParser(refGenome);
         pathogenicParser.loadMapping();
 
 
@@ -170,7 +175,7 @@ public class VCFParser {
         return varList;
     }
 
-    public List<String[]> getLinesByPos(String chr, int startLine, int endLine, int startPos, int endPos, String passFilter, String vcf) throws IOException {
+    public List<String[]> getLinesByPos(String chr, int startLine, int endLine, int startPos, int endPos, String passFilter, String vcf, String refGenome) throws IOException {
         List<String[]> varList = new ArrayList<String[]>();
         int counter = 0;
         BufferedReader input = new BufferedReader(new FileReader(vcf));
@@ -209,7 +214,7 @@ public class VCFParser {
                 counter++;
             }
         } else {
-            PathogenicParser pathogenicParser = new PathogenicParser();
+            PathogenicParser pathogenicParser = new PathogenicParser(refGenome);
             pathogenicParser.loadMapping();
             while(currLine != null) {
                 if(counter >= startLine) {
@@ -240,7 +245,7 @@ public class VCFParser {
     public HashMap<Integer, ArrayList<String[]>> getChromHistrogramData(String chr, int range, HashMap<Integer, Integer> histogramData,
                                                                        HashMap<Integer, ArrayList<String[]>> posMap,
                                                                        int startLine, int endLine, int start, int end,
-                                                                       String passFilter, String vcf) throws IOException {
+                                                                       String passFilter, String vcf, String refGenome) throws IOException {
         int counter = 0;
         BufferedReader input = new BufferedReader(new FileReader(vcf));
         String currLine = input.readLine();
@@ -285,7 +290,7 @@ public class VCFParser {
                 counter++;
             }
         } else {
-            PathogenicParser pathogenicParser = new PathogenicParser();
+            PathogenicParser pathogenicParser = new PathogenicParser(refGenome);
             pathogenicParser.loadMapping();
             while(currLine != null) {
                 if(counter >= startLine) {
@@ -311,8 +316,8 @@ public class VCFParser {
     }
 
     public HashMap<Integer, Integer> getChromHistrogramData(String chr, int range, HashMap<Integer, Integer> histogramData,
-                                                            int startLine, int endLine, String passFilter, String vcf) throws IOException {
-        PathogenicParser pathogenicParser = new PathogenicParser();
+                                                            int startLine, int endLine, String passFilter, String vcf, String refGenome) throws IOException {
+        PathogenicParser pathogenicParser = new PathogenicParser(refGenome);
         pathogenicParser.loadMapping();
         int counter = 0;
         BufferedReader input = new BufferedReader(new FileReader(vcf));

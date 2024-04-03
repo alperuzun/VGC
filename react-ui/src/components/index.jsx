@@ -2,7 +2,6 @@ import { FreezePane } from '@syncfusion/ej2/excel-export';
 
 export { default as Sidebar } from './Sidebar';
 export { default as Navbar } from './Navbar';
-export { default as FileSelector } from './FileSelector';
 export { default as FileDeleter } from './FileDeleter';
 export { default as UploadElement } from './UploadElement';
 export { default as Display } from './Display';

@@ -39,6 +39,10 @@ public class InfoWriter {
         this.infoList.add(version);
     }
 
+    public void addRefGenome(String refGenome) {
+        this.infoList.set(0, this.infoList.get(0) + "\t" + refGenome);
+    }
+
     /**
      * Adds the header fields & number of patients to the infoList.
      * @param currLine
@@ -86,6 +90,9 @@ public class InfoWriter {
      * Writes the contents of infoList.
      */
     public void writeInfo() throws IOException{
+        // String version = this.infoList.get(0);
+        // this.infoList.set(0, version + "\t" + ref);
+
         for (String s : this.infoList) {
             this.writer.write(s);
             this.writer.newLine();

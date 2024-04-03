@@ -53,12 +53,12 @@ public class BarView {
         }
     }
 
-    public void setSvpData(HashMap<Integer, ArrayList<String[]>> posMap, ArrayList<String> header) throws IOException {
+    public void setSvpData(HashMap<Integer, ArrayList<String[]>> posMap, ArrayList<String> header, String refGenome) throws IOException {
         ArrayList<Integer> sortedList = new ArrayList<Integer>(posMap.keySet());
         Collections.sort(sortedList);
         if (this.isFullyZoomed(posMap, sortedList)) {
             this.zoomFactor = "1";
-            PathogenicParser pathogenicParser = new PathogenicParser();
+            PathogenicParser pathogenicParser = new PathogenicParser(refGenome);
             pathogenicParser.loadAll();
             for (int i : sortedList) {
                 if (posMap.get(i).size() > 0) {

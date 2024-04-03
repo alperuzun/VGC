@@ -26,23 +26,11 @@ const Welcome = () => {
   const navigate = useNavigate();
   const { activeMenu, selected, setSelected, handleNewPath, refresh, setRefresh, setSearchGeneTerm, setSearchRangeTerm } = useStateContext();
   const { handleClick } = useDisplayContext();
-  const [activeGenomeSelect, setActiveGenomeSelect] = useState(false);
-  const [genome, setGenome] = useState("Feb. 2009 (GRCh37/hg19)");
-  const [fileList, setFileList] = useState([]);
   const [pathList, setPathList] = useState([]);
   const [phenotypeList, setPhenotypeList] = useState([]);
   const [phenotypePathList, setPhenotypePathList] = useState([]);
 
 
-  const handleVCFSelection = (file, path) => {
-    setFileList([...fileList, file]);
-    setPathList([...pathList, path]);
-    console.log("In handle selection!");
-    console.log(file);
-    console.log(path);
-    console.log(fileList);
-    console.log(pathList);
-  }
 
   const handlePhenotypeSelection = (file, path, matchToVCF) => {
     const updatedList = phenotypeList;
@@ -53,11 +41,6 @@ const Welcome = () => {
 
     setPhenotypeList(updatedList);
     setPhenotypePathList(updatedPathList);
-    console.log("In handle selection!");
-    console.log(file);
-    console.log(path);
-    console.log(phenotypeList);
-    console.log(phenotypePathList);
   }
 
   const getFileSize = (size) => {
@@ -82,8 +65,6 @@ const Welcome = () => {
               id="myfile"
               onChange={e => {
                 handlePhenotypeSelection(e.target.files[0], e.target.files[0].path, matchToVCF);
-                console.log("Phenotype file being selected! Match to VCF is:");
-                console.log(matchToVCF);
               }}
               name="myfile"
               accept=".txt"
@@ -98,11 +79,9 @@ const Welcome = () => {
   }
 
   useEffect(() => {
-    console.log("here");
     if (selected != undefined) {
       handleClick('barGraph');
       navigate("/bar_graph");
-
     }
 
   }, [selected])
@@ -125,14 +104,42 @@ const Welcome = () => {
                 </div>
 
                 <div className="flex flex-row w-full gap-2 px-2">
-                  <div className="flex flex-col w-full gap-2">
+                  <div className="flex flex-row w-full gap-2">
                     <label className="flex w-full justify-center items-center rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500 text-slate-700">
                       <div className="hidden">
                         <input
                           type="file"
                           id="myfile"
                           onChange={e => {
-                            handleNewPath(e.target.files[0]);
+                            handleNewPath(e.target.files[0], "GRCh37");
+                            setSelected(e.target.files[0].path);
+                            setSearchGeneTerm("");
+                            setSearchRangeTerm("");
+                            e.target.value = ''
+                          }}
+                          name="myfile"
+                          accept=".vcf"
+                          multiple />
+                      </div>
+
+                      <div className="flex p-1 gap-3 w-full h-[8.5rem] justify-center items-center flex-row">
+                        <AiOutlineFileAdd className="w-16 h-full text-[#3f89c7]" />
+                        <div className="flex-col">
+                          <text className="flex text-slate-700">Upload VCF File</text>
+                          <text className="flex text-xs text-slate-700">Genome Assembly: GRCh37</text>
+
+                        </div>
+                      </div>
+
+                    </label>
+
+                    <label className="flex w-full justify-center items-center rounded-lg cursor-pointer border-1 border-[#3f89c7] hover:bg-slate-200 transition-colors duration-500 text-slate-700">
+                      <div className="hidden">
+                        <input
+                          type="file"
+                          id="myfile"
+                          onChange={e => {
+                            handleNewPath(e.target.files[0], "GRCh38");
                             setSelected(e.target.files[0].path);
                             setSearchGeneTerm("");
                             setSearchRangeTerm("");
@@ -144,7 +151,11 @@ const Welcome = () => {
                       </div>
                       <div className="flex p-1 gap-3 w-full h-[8.5rem] justify-center items-center flex-row">
                         <AiOutlineFileAdd className="w-16 h-full text-[#3f89c7]" />
-                        <text className="flex text-slate-700">Upload VCF File</text>
+                        <div className="flex-col">
+                          <text className="flex text-slate-700">Upload VCF File</text>
+                          <text className="flex text-xs text-slate-700">Genome Assembly: GRCh38</text>
+
+                        </div>
                       </div>
                     </label>
                 

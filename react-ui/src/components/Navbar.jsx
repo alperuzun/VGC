@@ -55,7 +55,7 @@ const Navbar = ({ handleHelpClick }) => {
       <div class="menubutton" className="flex flex-row ">
         <button
           type="button"
-          onClick={() => {setActiveMenu((prevActiveMenu) => (!prevActiveMenu)); console.log(activeMenu)}}
+          onClick={() => {setActiveMenu((prevActiveMenu) => (!prevActiveMenu));}}
           className={`relative text-xl rounded-md py-1 px-3`}
         >
           <div className={`flex flex-row items-center`}>

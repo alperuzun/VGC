@@ -16,7 +16,7 @@ import AnalysisComponent from './AnalysisComponent';
 
 const Compare = () => {
 
-  const { activeMenu, selected, phenotypeList, pathList, toggleRS, toggleGS, refresh, setRefresh } = useStateContext();
+  const { activeMenu, selected, phenotypeList, pathList, refList, toggleRS, toggleGS, refresh, setRefresh } = useStateContext();
   const { browserQuery, setBrowserQuery } = useDisplayContext();
   const { mapObj, setMapOb, replicates, setReplicates } = useCompareContext();
 
@@ -43,6 +43,14 @@ const Compare = () => {
   const handleReplicatesSubmit = (e) => {
     e.preventDefault();
     setRefresh(!refresh);
+  }
+
+  const handleSetBrowserQuery = (setString) => {
+    if (refList[pathList.indexOf(selected)] === "GRCh37") {
+      setBrowserQuery(setString + "?dataset=gnomad_r2_1");
+    } else {
+      setBrowserQuery(setString + "?dataset=gnomad_r4");
+    }
   }
 
   useEffect(() => {
@@ -109,8 +117,8 @@ const Compare = () => {
                       <div className="flex flex-wrap font-bold px-2 py-1 border-1 border-slate-700">
                         Fisher's Exact Test with simulated p-value:
                         <div className="flex gap-2">
-                          <label className="font-bold">Iterations: </label>
-                          <input value={replicates} onChange={(e) => setReplicates(e.target.value)} className="w-12" />
+                          <label className="font-bold">Iterations: 2000</label>
+                          {/* <input value={replicates} onChange={(e) => setReplicates(e.target.value)} className="w-12" /> */}
                         </div>
                         {/* Future Addition: Replicates as user input. */}
                         {/* <form onSubmit={(e) => { handleReplicatesSubmit(e) }} className="flex gap-2">
@@ -123,7 +131,7 @@ const Compare = () => {
 
                       {mapObj.data.geneList.map((item) => (
                         <div className="flex flex-col items-center">
-                          <div className="flex w-full mt-2 bg-[#d3dee1] hover:bg-[#e3ebed] border-slate-400 py-1 cursor-pointer px-2" onClick={() => { setBrowserQuery("gene/" + item.ensembleID); console.log(item.ensembleID) }}>GENE: {item.gene} CHR: {item.chr}</div>
+                          <div className="flex w-full mt-2 bg-[#d3dee1] hover:bg-[#e3ebed] border-slate-400 py-1 cursor-pointer px-2" onClick={() => { handleSetBrowserQuery("gene/" + item.ensembleID); }}>GENE: {item.gene} CHR: {item.chr}</div>
                           {item.variants.map((variant) => (
                             <AnalysisComponent variant={variant}/>
                           ))}

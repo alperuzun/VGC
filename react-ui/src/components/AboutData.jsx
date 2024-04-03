@@ -34,11 +34,7 @@ const AboutData = () => {
 
 
   useEffect(() => {
-    console.log("changed selection!");
-    console.log(selectedBarEntry);
     if (histogramData != null && histogramData.data.svpData[selectedBarEntry] != null) {
-      console.log(histogramData.data.svpData);
-      console.log(histogramData.data.svpData[selectedBarEntry]);
       setPotentialPathVar(histogramData.data.svpData[selectedBarEntry].clinvarPathogenicVariants);
       setPathogenicList(histogramData.data.svpData[selectedBarEntry].pathogenicSamples);
       setBenignList(histogramData.data.svpData[selectedBarEntry].benignSamples);

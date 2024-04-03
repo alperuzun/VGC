@@ -45,7 +45,11 @@ public class InfoReader {
      * @return
      */
     public String getVersion() {
-        return this.infoData.get(0);
+        return this.infoData.get(0).split("\t")[0];
+    }
+
+    public String getRefGenome() {
+        return this.infoData.get(0).split("\t")[1];
     }
 
     public String getFieldVals() {
@@ -91,5 +95,23 @@ public class InfoReader {
         }
         return chromosomes;
     }
+
+
+    // /**
+    //  * Changes the reference genome (GRCh37 vs. GRCh38) and overwrite the info file with this update. 
+    //  * @return
+    //  */
+    // public void editRefGenome(String newRefGenome) throws IOException{
+    //     BufferedWriter writer = new BufferedWriter(new FileWriter(this.info));
+
+    //     this.infoData.set(0, this.getVersion() + "\t" + newRefGenome);
+
+    //     for (String s : this.infoData) {
+    //         writer.write(s);
+    //         writer.newLine();
+    //     }
+    //     writer.flush();
+    //     writer.close();
+    // }
 
 }

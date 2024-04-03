@@ -22,12 +22,6 @@ const TabBar = () => {
         setCurrView(nlData[queryList.indexOf(name)]);
         setSelectedTab(queryList.indexOf(name));
         setCurrDataObj(dataObj[queryList.indexOf(name)]);
-        console.log("Printing nlData....");
-        console.log(nlData);
-        console.log("Printing selected tab index...");
-        console.log(selectedTab);
-        console.log("Printing selected tab index...");
-        console.log(queryList.indexOf(name));
         }}>
         {name}
       </div>

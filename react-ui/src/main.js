@@ -14,8 +14,8 @@ let child;
 let pid;
 
 const startServer = (port) => {
-  //JAR will need to be updated manually if backend code is updated.
-  console.log("path is: ", app.getAppPath())
+  // JAR will need to be updated manually if backend code is updated.
+  // console.log("path is: ", app.getAppPath())
 
   const jarFilePath = path.join(app.getAppPath(), 'jars', 'variantgraphcraft-backend-0.0.1-SNAPSHOT.jar');
 

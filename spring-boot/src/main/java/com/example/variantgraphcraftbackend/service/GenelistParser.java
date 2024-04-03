@@ -8,13 +8,13 @@ import java.util.*;
 
 public class GenelistParser {
 
-    private File genelist;
+    // private File genelist;
     private BufferedReader input;
     private String currLine;
     private HashMap<String, int[]> fileNav;
 
-    public GenelistParser(String path) throws FileNotFoundException {
-        this.genelist = new File(path);
+    public GenelistParser() throws FileNotFoundException {
+        // this.genelist = new File(path);
         this.fileNav = new HashMap<>();
         this.populateMap();
     }
@@ -52,8 +52,10 @@ public class GenelistParser {
      * @param gene
      * @return
      */
-    public String[] getGeneLocation(String gene) throws IOException, GeneNotFoundException {
-        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
+    public String[] getGeneLocation(String gene, String ref) throws IOException, GeneNotFoundException {
+
+        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensembl_" + ref + ".txt")));
+
         this.currLine = this.input.readLine();
         this.currLine = this.input.readLine();
 
@@ -66,11 +68,9 @@ public class GenelistParser {
         }
         this.input.close();
         throw new GeneNotFoundException("Unrecognized gene: " + gene, 404);
-
-        // return null;
     }
 
-    public HashMap<Integer, ArrayList<SubBar>> getGeneInfoForVariants(HashMap<Integer, ArrayList<String[]>> keyToVarMap, String chr) throws IOException {
+    public HashMap<Integer, ArrayList<SubBar>> getGeneInfoForVariants(HashMap<Integer, ArrayList<String[]>> keyToVarMap, String chr, String ref) throws IOException {
         ArrayList<Integer> xMarks = new ArrayList<>(keyToVarMap.keySet());
         Collections.sort(xMarks);
         HashMap<Integer, ArrayList<SubBar>> geneMap = new HashMap<Integer, ArrayList<SubBar>>();
@@ -87,7 +87,7 @@ public class GenelistParser {
                 if (pos < Integer.valueOf(info[3])) {
                     currSub.setVal(currSub.getVal() + 1);
                 } else {
-                    info = this.findInfoByPos(pos, chr);
+                    info = this.findInfoByPos(pos, chr, ref);
                     if (currSub == null) {
                         currSub = new SubBar(info[0], Integer.valueOf(info[1]), 1, info[2], pos);
                         currSub.setLocation(pos);
@@ -110,9 +110,8 @@ public class GenelistParser {
         return geneMap;
     }
 
-    public String[] findInfoByPos(int varPos, String chr) throws IOException {
-        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
-
+    public String[] findInfoByPos(int varPos, String chr, String ref) throws IOException {
+        this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensembl_" + ref + ".txt")));
         this.currLine = this.input.readLine();
         this.currLine = this.input.readLine();
 
@@ -162,8 +161,8 @@ public class GenelistParser {
      * Gets gene information for compareSamples range query.
      */
     public void getRangeToGeneInfo(Map<String, Map<String, List<String[]>>> helperMap,
-                                   String chr, List<String[]> variants) throws IOException {
-        Map<String, List<String[]>> varForGene = this.findGeneByVariants(chr, variants);
+                                   String chr, List<String[]> variants, String ref) throws IOException {
+        Map<String, List<String[]>> varForGene = this.findGeneByVariants(chr, variants, ref);
         List<String> geneList = new ArrayList<String>(varForGene.keySet());
         if (!helperMap.containsKey(chr)) {
             helperMap.put(chr, new HashMap<String, List<String[]>>());
@@ -177,14 +176,16 @@ public class GenelistParser {
         }
     }
 
-    private Map<String, List<String[]>> findGeneByVariants(String chr, List<String[]> variants) throws IOException {
+    private Map<String, List<String[]>> findGeneByVariants(String chr, List<String[]> variants, String ref) throws IOException {
         Map<String, List<String[]>> varForGene = new HashMap<String, List<String[]>>();
         int startRead = this.fileNav.get(chr)[0];
         int endRead = this.fileNav.get(chr)[1];
 
         for (int i = 0; i < variants.size(); i++) {
             int currPos = Integer.valueOf(variants.get(i)[1]);
-            this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
+            // this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensemble_updated.txt")));
+
+            this.input = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/genelist_ensembl_" + ref + ".txt")));
 
             this.currLine = this.input.readLine();
             this.currLine = this.input.readLine();

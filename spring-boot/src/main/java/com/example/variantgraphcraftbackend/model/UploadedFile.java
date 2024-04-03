@@ -11,17 +11,19 @@ public class UploadedFile {
     private String path;
     private String phenotypePath;
     private String size;
+    private String refGenome;
 
 
     public UploadedFile() {
 
     }
 
-    public UploadedFile(String path, String phenotypePath, String size) {
+    public UploadedFile(String path, String phenotypePath, String size, String refGenome) {
         super();
         this.path = path;
         this.phenotypePath = phenotypePath;
         this.size = size;
+        this.refGenome = refGenome;
     }
 
     public long getId() {
@@ -54,5 +56,13 @@ public class UploadedFile {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public String getRefGenome() {
+        return this.refGenome;
+    }
+
+    public void setRefGenome(String refGenome) {
+        this.refGenome = refGenome;
     }
 }

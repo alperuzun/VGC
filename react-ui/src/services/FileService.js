@@ -7,6 +7,9 @@ const ZOOMED_GRAPH_URL = 'http://localhost:8080/bargraph/view-magnify';
 const FURTHER_ZOOMED_GRAPH_URL = 'http://localhost:8080/bargraph/further-magnify';
 const QUERY_GENE_GRAPH_URL = 'http://localhost:8080/bargraph/gene-graph';
 const QUERY_RANGE_GRAPH_URL = 'http://localhost:8080/bargraph/range-graph';
+const CHANGE_REF_URL = 'http://localhost:8080/api/change-ref-genome';
+const GET_REF_URL = 'http://localhost:8080/api/get-ref-genome';
+
 
 class UserService {
 
@@ -41,6 +44,26 @@ class UserService {
             throw error;
           });
     }
+
+    // changeReference(newRef) {
+    //   return axios.get(CHANGE_REF_URL, {params : { newRef }})
+    //     .then(response => {
+    //       return response;
+    //     })
+    //     .catch(error => {
+    //       throw error;
+    //     });
+    // }
+
+    // getReference() {
+    //   return axios.get(GET_REF_URL)
+    //     .then(response => {
+    //       return response;
+    //     })
+    //     .catch(error => {
+    //       throw error;
+    //     });
+    // }
 
     getVarToChromGraph(passFilter) {
         return axios.get(USERS_REST_BARGRAPH_URL, {params : { passFilter }})

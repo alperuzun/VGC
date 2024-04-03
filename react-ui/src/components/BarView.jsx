@@ -12,7 +12,7 @@ import LoadingOverlay from './LoadingOverlay';
 const BarView = () => {
   const { histogramData, setHistogramData, barHistory, setBarHistory, handleBarAction, historyIndex, setHistoryIndex, geneHistory, setGeneHistory, mapHistory, setMapHistory, passFilter, setPassFilter, selectedBarEntry, setSelectedBarEntry } = useBarContext();
   const { isClicked, browserQuery, setBrowserQuery} = useDisplayContext();
-  const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, handleRemovePath, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
+  const { activeMenu, selected, setSelected, pathList, phenotypeList, sizeList, refList, handleRemovePath, currentlyViewing, setCurrentlyViewing, searchRangeTerm, setSearchRangeTerm, searchGeneTerm, setSearchGeneTerm, toggleRS, setToggleRS, toggleGS, setToggleGS, refresh, setRefresh } = useStateContext();
 
   const prevVals = useRef({ selected, refresh, isClicked });
   const [processing, setProcessing] = useState(false);
@@ -64,7 +64,6 @@ const BarView = () => {
       for (let i = 0; i < nameArray.length; i++) {
         if (significanceArray[i].startsWith("Pathogenic")) {
           pathogenicVariantCount++
-          console.log(pathogenicVariantCount)
           html = html + '<br /><div> \
           <div><strong>&#40;' + (pathogenicVariantCount) + '&#41; Variant name:</strong> ' + nameArray[i] + '</div> \
           <div><strong>Condition&#40;s&#41;:</strong> ' + conditionArray[i] + '</div> \
@@ -122,7 +121,7 @@ const BarView = () => {
                   )}
                   {subBar.inClinvar ?
                     <div>
-                      <div><strong>Clinvar information: </strong> GRCh37 chromosome: {subBar.chromosome}, GRCh37 location: {subBar.location}, dbSNP ID: {subBar.snpId} </div>
+                      <div><strong>Clinvar information: </strong> Chromosome: {subBar.chromosome}, Location: {subBar.location}, dbSNP ID: {subBar.snpId} </div>
                       <div dangerouslySetInnerHTML={{ __html: GeneExonToolTipHelper(subBar.name, subBar.conditions, subBar.significance) }} />
                     </div> :
                     <strong>Variant not found in Clinvar</strong>}
@@ -184,18 +183,11 @@ const BarView = () => {
   }
 
   const handleGeneQuery = async () => {
-    console.log("Calling handleGeneQuery with: ")
-    console.log("HistoryIndex: " + historyIndex)
     setProcessing(true);
     try {
       const newData = await FileService.getHistogramByGene(searchGeneTerm.trim(), passFilter);
-      console.log(newData);
       if (newData.data.zoomFactor <= 10000) {
         const { sorted, map } = processData(newData.data.data)
-        console.log("Processed data:")
-        console.log(sorted);
-        console.log("Map:")
-        console.log(map);
         handleBarAction(newData, sorted, map);
         setHistogramData(newData);
       } else {
@@ -203,54 +195,47 @@ const BarView = () => {
         setHistogramData(newData);
       }
     } catch (error) {
-      console.log("In gene query, error...")
-      console.log(error);
       alert(error.response.data.message);
     } finally {
-      console.log("In gene query, setting processing to false...")
       setProcessing(false);
     }
   }
 
+  const handleSetBrowserQuery = (setString) => {
+    if (refList[pathList.indexOf(selected)] === "GRCh37") {
+      setBrowserQuery(setString + "?dataset=gnomad_r2_1");
+    } else {
+      setBrowserQuery(setString + "?dataset=gnomad_r4");
+    }
+  }
+
   const handleRangeQuery = async (chr, start, end) => {
-    console.log("Calling handleRangeQuery with: ")
-    console.log("HistoryIndex: " + historyIndex)
     setProcessing(true);
     try {
       const newData = await FileService.getHistogramByRange(chr, start, end, passFilter);
       if (newData.data.zoomFactor <= 10000) {
         const { sorted, map } = processData(newData.data.data)
-        console.log("Processed data:")
-        console.log(sorted);
-        console.log("Map:")
-        console.log(map);
         handleBarAction(newData, sorted, map);
-        setHistogramData(newData);
-        setBrowserQuery("region/" + chr + "-" + start + "-" + end);
       } else {
         handleBarAction(newData, undefined, undefined);
-        setHistogramData(newData);
-        setBrowserQuery("region/" + chr + "-" + start + "-" + end);
       }
+      setHistogramData(newData);
+      handleSetBrowserQuery("region/" + chr + "-" + start + "-" + end);
     } catch (error) {
-      console.log("In range query, error...")
-      console.log(error);
       alert(error.response.data.message);    
     } finally {
-      console.log("In range query, setting processing to false...")
       setProcessing(false);
     }
 
   }
 
   const handleFileChosen = async (filePath) => {
-    console.log("In handleFileChosen...");
-
     try {
       await FileService.addFile({
         path: filePath,
         phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-        size: sizeList[pathList.indexOf(filePath)]
+        size: sizeList[pathList.indexOf(filePath)],
+        refGenome: refList[pathList.indexOf(filePath)]
       });
       const genericGraph = await FileService.getVarToChromGraph(passFilter);
       const fileInfo = await FileService.getFileInfo();
@@ -264,12 +249,13 @@ const BarView = () => {
   }
 
   const handleReset = async (filePath) => {
-    console.log("In handleReset...");
     try {
       await FileService.addFile({
         path: filePath,
         phenotypePath: phenotypeList[pathList.indexOf(filePath)],
-        size: sizeList[pathList.indexOf(filePath)]
+        size: sizeList[pathList.indexOf(filePath)],
+        refGenome: refList[pathList.indexOf(filePath)]
+
       });
       const genericGraph = await FileService.getVarToChromGraph(passFilter);
       const fileInfo = await FileService.getFileInfo();
@@ -279,17 +265,13 @@ const BarView = () => {
       setGeneHistory([undefined]);
       setMapHistory([undefined]);
       setHistoryIndex(0);
-      console.log(barHistory);
-      console.log("Index:" + historyIndex);
     } catch (error) {
-      console.log(error)
       handleRemovePath(filePath);    
       alert(error.response.data.message);
     }
   }
 
   useEffect(() => {
-    console.log("in useeffect")
     if (prevVals.current.selected !== selected) {
       setHistoryIndex(undefined);
       setHistogramData(undefined);
@@ -323,7 +305,6 @@ const BarView = () => {
   }
 
   const handleClick = async (index, entry) => {
-    console.log("click!");
     setProcessing(true);
     if (histogramData.data.chr === undefined || histogramData.data.zoomFactor === null) {
       const newData = await FileService.getZoomedgraph(index, passFilter);
@@ -331,15 +312,12 @@ const BarView = () => {
       setHistogramData(newData);
     } else {
       if (histogramData.data.zoomFactor != 1) {
-        console.log("here! about to zoom w/ g/e info.");
         const endNum = Number(entry.x) + Number(histogramData.data.zoomFactor)
         const newData = await FileService.getFurtherZoom(histogramData.data.chr,
           entry.x,
           endNum.toString(),
           histogramData.data.zoomFactor,
           passFilter);
-        console.log("post call");
-
         if (newData.data.zoomFactor <= 10000) {
           const { sorted, map } = processData(newData.data.data)
           handleBarAction(newData, sorted, map);
@@ -348,17 +326,9 @@ const BarView = () => {
           handleBarAction(newData, undefined, undefined);
           setHistogramData(newData);
         }
-        console.log("Post call, new data is: ");
-        console.log(newData);
-        console.log("Post call, new history is: ");
-        console.log(barHistory);
       } else {
-        setBrowserQuery("region/" + histogramData.data.chr + "-" + histogramData.data.xMarkToVarMap[entry.x]);
-        console.log("At full zoom! X entry: " + entry.x);
+        handleSetBrowserQuery("region/" + histogramData.data.chr + "-" + histogramData.data.xMarkToVarMap[entry.x]);
         setSelectedBarEntry(entry.x);
-        console.log("Index is: " + index);
-        console.log("Entry is: " + entry.x);
-        console.log("Pos is: " + histogramData.data.xMarkToVarMap[entry.x]);
       }
     }
     setProcessing(false);

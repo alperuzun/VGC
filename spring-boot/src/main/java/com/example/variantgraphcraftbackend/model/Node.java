@@ -36,7 +36,7 @@ public class Node {
         this.group = group;
     }
 
-    public Node(String chr, String name, String type, int size, String gene, String group) {
+    public Node(String chr, String name, String type, int size, String gene, String group, String refGenome) {
         try {
             this.name = name;
             this.type = type;
@@ -52,7 +52,7 @@ public class Node {
             this.inClinvar = false;
             this.groupToNumSamplesString = "";
             this.groupToNumSamples = new LinkedHashMap<String, Integer>();
-            ClinvarParser parser = new ClinvarParser();
+            ClinvarParser parser = new ClinvarParser(refGenome);
             this.setVariantInfo(Integer.parseInt(name), chr, parser);
         } catch (IOException e) {
             e.printStackTrace();
