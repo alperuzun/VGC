@@ -24,11 +24,13 @@ public class MapTestElement {
     private List<String> sampleGroupNames;
     @ElementCollection
     private List<String> testResult;
+    private int numVarInGene;
 
-    public MapTestElement(String varPos, String chr, String gene) {
+    public MapTestElement(String varPos, String chr, String gene, int numVarInGene) {
         this.varPos = varPos;
         this.varGene = gene;
         this.varChr = chr;
+        this.numVarInGene = numVarInGene;
         this.matrixRowsSpaceSeparated = new ArrayList<String>();
         this.matrixRowsCommaSeparated = new ArrayList<String>();
         this.genotypes = new ArrayList<String>(Arrays.asList(new String[] {"0/0", "0/1", "1/1"}));
@@ -47,9 +49,11 @@ public class MapTestElement {
         this.matrixRowsCommaSeparated.add(newRowCommaSeparated);
     }
 
+    /*
+     * Handles statistical analysis, where N = Variants in Gene.
+     */
     public void handleStatisticalAnalysis() {
-
-        ExactTest exactTest = new ExactTest();
+        ExactTest exactTest = new ExactTest(this.numVarInGene);
         exactTest.runFisherExact(this.getRowsAsList());
         this.setTestResult(exactTest.getResult());
     }
@@ -94,6 +98,15 @@ public class MapTestElement {
     public void setVarChr(String varChr) {
         this.varChr = varChr;
     }
+
+    public int getNumVarInGene() {
+        return this.numVarInGene;
+    }
+
+    public void setNumVarInGene(int numVarInGene) {
+        this.numVarInGene = numVarInGene;
+    }
+
 
     public List<String> getMatrixRowsSpaceSeparated() {
         return this.matrixRowsSpaceSeparated;

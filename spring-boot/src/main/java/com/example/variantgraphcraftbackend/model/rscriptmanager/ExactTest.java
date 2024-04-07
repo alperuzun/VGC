@@ -10,8 +10,10 @@ import java.util.Arrays;
 public class ExactTest {
 
     private String testResult;
+    private int n;
 
-    public ExactTest() {
+    public ExactTest(int n) {
+        this.n = n;
     }
 
     public void runFisherExact(String matrix) {
@@ -25,12 +27,12 @@ public class ExactTest {
             SEXP res = (SEXP)engine.eval("fisher.test(vgc_data, simulate.p.value = TRUE, B = 2e3)");
             this.testResult = res.toString();
         } catch (ScriptException e) {
-            this.testResult = "Analysis Error";
+            this.testResult = "Analysis Error\t ";
         } catch (org.renjin.eval.EvalException e) {
             if (this.checkZeroError(matrix)) {
-                this.testResult = "Evaluation Error";
+                this.testResult = "Evaluation Error\t ";
             } else {
-                this.testResult = "Analysis Error";
+                this.testResult = "Analysis Error\t ";
             }
         }
     }
@@ -53,8 +55,14 @@ public class ExactTest {
         String valueString = parts[parts.length - 1];
         double value = Double.parseDouble(valueString);
         double roundedValue = roundToSignificantFigures(value, 4);
+        
+        double adjustedValue = value * this.n;
+        double roundedAdjustedValue = roundToSignificantFigures(adjustedValue, 4);
+        
         String formattedValue = String.format("%.4f", roundedValue);
-        return "p.value = " + formattedValue;
+        String formattedAdjustedValue = String.format("%.4f", roundedAdjustedValue);
+
+        return "Nominal p-value: " + formattedValue +  "\t" + "Adjusted p-value: " + formattedAdjustedValue;
     }
 
     private double roundToSignificantFigures(double num, int n) {

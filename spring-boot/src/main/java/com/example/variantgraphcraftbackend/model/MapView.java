@@ -76,7 +76,7 @@ public class MapView {
                     groupGTMap.put("0/1", 0);
                     groupGTMap.put("1/1", 0);
 
-                    MapTestElement currTestElement = new MapTestElement(var[1], chr, gene);
+                    MapTestElement currTestElement = new MapTestElement(var[1], chr, gene, variants.size());
                     HashMap<String, String> samplesGT = this.getGT(var, samples);
                     HashMap<String, Double> samplesDP = this.getDP(var, samples);
 
@@ -91,6 +91,8 @@ public class MapView {
                             groupGTMap.put("0/0", 0);
                             groupGTMap.put("0/1", 0);
                             groupGTMap.put("1/1", 0);
+
+                            this.updateGroupGTMap(groupGTMap, samplesGT.get(currSample));
 
                             ceiling = this.endList.get(this.endList.indexOf(ceiling) + 1);
                         }
@@ -119,9 +121,7 @@ public class MapView {
             String equivalentKey = this.checkEquivalency(gtMap, currSampleGT);
             if (equivalentKey != null) {
                 gtMap.put(equivalentKey, gtMap.get(equivalentKey) + 1);
-            } else {
-//                THROW EXCEPTION?
-            }
+            } 
         }
     }
 

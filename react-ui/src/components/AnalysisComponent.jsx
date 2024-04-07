@@ -30,6 +30,18 @@ const AnalysisComponent = ({ variant }) => {
 
   }
 
+  const handleSignificanceNominal = (resultString) => {
+    if (parseFloat(resultString.substring(17, 23)) <= 0.05) {
+      return true;
+    }
+  }
+
+  const handleSignificanceAdjusted = (resultString, n) => {
+    if (parseFloat(resultString.substring(42, 48)) <= 0.05 / parseFloat(n)) {
+      return true;
+    }
+  }
+
 
   const handleSetBrowserQuery = (setString) => {
     if (refList[pathList.indexOf(selected)] === "GRCh37") {
@@ -40,14 +52,21 @@ const AnalysisComponent = ({ variant }) => {
   }
 
   return (
-    <div className="flex flex-col w-11/12 mt-2">
+    <div className="flex flex-col w-11/12 mt-2 bg-black">
       <div className="flex px-2 py-1 justify-center items-center  bg-[#ebebeb] hover:bg-[#f2f2f2] cursor-pointer" >
         <div class="flex-none  hover:text-slate-500 cursor-pointer" onClick={() => setShowHidden(!showHidden)}>
         {showHidden ? <BiCaretDown /> : <BiCaretRight />}
         </div>
-        <div class="grow justify-between flex flex-row" onClick={() => handleSetBrowserQuery("region/" + variant.varChr + "-" + variant.varPos + "-" + variant.varPos)}>
+        <div class="grow justify-between flex flex-col" onClick={() => handleSetBrowserQuery("region/" + variant.varChr + "-" + variant.varPos + "-" + variant.varPos)}>
         <text class="flex">Variant: {variant.varPos}</text>
-        <text className={`${parseFloat(variant.testResult[0].substring(10)) <= 0.05 ? " text-red-500" : " "} font-bold flex ml-auto`}>{variant.testResult[0]}</text>
+        <div class="flex flex-row gap-3">
+        <text className={`${ handleSignificanceNominal(variant.testResult[0]) ? " text-red-500" : " "} font-bold text-xs flex ml-auto`} >
+          {variant.testResult[0].split('\t')[0]}
+          </text>
+          <text className={`${ handleSignificanceAdjusted(variant.testResult[0], variant.numVarInGene) ? " text-red-500" : " "} font-bold text-xs flex ml-auto`}>
+          {variant.testResult[0].split('\t')[1]}
+          </text>
+          </div>
         </div>
       </div>
       <div className={`${showHidden ? "" : "hidden"} flex flex-col`}>

@@ -92,7 +92,7 @@ const Compare = () => {
 
 
         <div className="flex flex-row text-sm w-full">
-          <div className="flex h-full w-[40rem] p-2 justify-center">
+          <div className="flex h-full w-[38rem] p-2 justify-center">
             <HeatMap />
           </div>
 

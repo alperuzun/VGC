@@ -25,7 +25,7 @@ const HeatMap = () => {
   const processBrackets = (nameList, startList, endList) => {
     var multiLevelLabels = [];
     for (var i = 0; i < nameList.length; i++) {
-      multiLevelLabels.push({ start: Number(startList[i]), end: Number(endList[i]), text: "Sample Group " + nameList[i] });
+      multiLevelLabels.push({ start: Number(startList[i]), end: Number(endList[i]), text: nameList[i] });
     }
     if (multiLevelLabels.length > 0) {
       setHorizontalBrackets(multiLevelLabels);
