@@ -20,7 +20,7 @@ public class PathogenicParser {
     public PathogenicParser(String refGenome) {
         this.loadMap = new HashMap<String, Set<String>>();
         this.mutMap = new HashMap<String, HashMap<String, HashSet<String>>>();
-        if (refGenome == "GRCh37") {
+        if (refGenome.equals("GRCh37")) {
             this.chrIdx = 7;
             this.locIdx = 8;
             this.clinvarPath = "/clinvar_pathogenic_sorted_grch37.txt";

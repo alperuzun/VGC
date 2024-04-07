@@ -19,7 +19,7 @@ public class ClinvarParser {
     public ClinvarParser(String refGenome) {
         this.clinvarNav = new HashMap<String, int[]>();
         this.populateClinvarNav();
-        if (refGenome == "GRCh37") {
+        if (refGenome.equals("GRCh37")) {
             this.chrIdx = 7;
             this.locIdx = 8;
             this.startLineIdx = 0;

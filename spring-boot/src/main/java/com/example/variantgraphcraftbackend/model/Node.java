@@ -204,6 +204,7 @@ public class Node {
 
     public void setVariantInfo(int location, String chr, ClinvarParser parser) throws IOException {
         String[] variantInfo = parser.findVariant(Integer.valueOf(this.name), chr, true);
+
         if(variantInfo != null) {
             this.setVariantName(variantInfo[0]);
             this.setConditions(variantInfo[1]);
