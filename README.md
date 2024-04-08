@@ -9,6 +9,7 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 	- [The VCF File Format](#the-vcf-file-format)
 	- [Uploading a File](#uploading-a-file)
 	- [Removing a File](#removing-a-file)
+- [Database Version Info](#database-version-info)
 - [Navigation](#navigation)
 - [Visualization](#visualization)
 	- [Bar Graph](#bar-graph)
@@ -33,8 +34,6 @@ To install VGC, click on the link corresponding to your operating system. Downlo
 | Windows (win32-x64) | [Download](https://drive.google.com/file/d/1v-TPCaIUohNN-0jedrj-b9FwYigDD07V/view?usp=sharing) |
 | Linux (linux-arm64) | [Download](https://drive.google.com/file/d/1fbcyz9R1htEz6k4X30zbvRQqsTMPrF52/view?usp=sharing)|
 
-ClinVar data last updated: April 1, 2024
-
 ## Getting Started
 
 ### The VCF File Format
@@ -51,6 +50,19 @@ To upload a file, use the `+` button located on the top right of the side bar. S
 ### Removing a File
 
 To remove a file, click the pencil icon labeled `Edit VCF(s)`. Then, click the `delete` button which will appear in place of the `upload phenotype` button. 
+
+## Database Version Info
+
+| Database | Version Used (Source) |
+| --- | --- |
+| ClinVar | Last Updated: April 1, 2024 |
+| Biocarta Pathways Dataset | GSEA \| MSigDB Release Version: 7.5.1  |
+| KEGG: Kyoto Encyclopedia of Genes and Genomes | GSEA \| MSigDB Release Version: 7.5.1 |
+| PID: Pathway Interaction Database | GSEA \| MSigDB Release Version: 7.5.1 |
+| BP: Gene sets derived from the GO Biological Process ontology | GSEA \| MSigDB Release Version: 7.5.1 |
+| CC: Gene sets derived from the GO Cellular Component ontology | GSEA \| MSigDB Release Version: 7.5.1 |
+| MF: Gene sets derived from the GO Molecular Function ontology | GSEA \| MSigDB Release Version: 7.5.1 |
+| OMIM (Online Mendelian Inheritance in Man) | Generated: August 5, 2022 |
 
 
 ## Navigation
