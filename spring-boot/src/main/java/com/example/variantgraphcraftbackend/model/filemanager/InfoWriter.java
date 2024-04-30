@@ -77,9 +77,11 @@ public class InfoWriter {
     public void addChrom(int chromNumber, ArrayList<String> chromList) {
         if (chromList.contains("X") && chromList.contains("Y")) {
             this.infoList.add(String.valueOf(chromNumber - 1));
+        } else {
+            this.infoList.add(String.valueOf(chromNumber));
         }
         Collections.sort(chromList);
-        this.infoList.add(String.valueOf(chromNumber));
+        
         for (String key : chromList) {
             this.infoList.add(key);
         }
