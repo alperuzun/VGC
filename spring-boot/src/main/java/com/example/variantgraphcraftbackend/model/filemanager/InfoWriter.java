@@ -79,7 +79,7 @@ public class InfoWriter {
             this.infoList.add(String.valueOf(chromNumber - 1));
         }
         Collections.sort(chromList);
-
+        this.infoList.add(String.valueOf(chromNumber));
         for (String key : chromList) {
             this.infoList.add(key);
         }

@@ -52,7 +52,7 @@ const AnalysisComponent = ({ variant }) => {
   }
 
   return (
-    <div className="flex flex-col w-11/12 mt-2 bg-black">
+    <div className="flex flex-col w-11/12 mt-2 ">
       <div className="flex px-2 py-1 justify-center items-center  bg-[#ebebeb] hover:bg-[#f2f2f2] cursor-pointer" >
         <div class="flex-none  hover:text-slate-500 cursor-pointer" onClick={() => setShowHidden(!showHidden)}>
         {showHidden ? <BiCaretDown /> : <BiCaretRight />}

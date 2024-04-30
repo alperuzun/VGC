@@ -55,6 +55,7 @@ public class VCFParser {
         indexReader.readIndex();
         this.infoMap.put(file, infoReader);
         this.indexMap.put(file, indexReader);
+        
     }
 
 

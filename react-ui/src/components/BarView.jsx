@@ -307,7 +307,10 @@ const BarView = () => {
   const handleClick = async (index, entry) => {
     setProcessing(true);
     if (histogramData.data.chr === undefined || histogramData.data.zoomFactor === null) {
-      const newData = await FileService.getZoomedgraph(index, passFilter);
+      // const newData = await FileService.getZoomedgraph(index, passFilter);
+      const newData = await FileService.getZoomedgraph(entry.x, passFilter);
+
+
       handleBarAction(newData, undefined, undefined);
       setHistogramData(newData);
     } else {
