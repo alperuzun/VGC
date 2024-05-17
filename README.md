@@ -4,6 +4,7 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 
 ## Table of contents
 
+- [Requirements] (#requirements)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 	- [The VCF File Format](#the-vcf-file-format)
@@ -24,6 +25,11 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 	- [Searching by Gene](#searching-by-gene)
 	- [Searching by Range](#searching-by-range)
 - [Contact](#contact)
+
+## Reqiuremenets
+
+VGC requires Java version 1.8 or higher. 
+
 ## Installation
 
 To install VGC, click on the link corresponding to your operating system. Download and expand the zip file, and double click on the application icon to start.  
