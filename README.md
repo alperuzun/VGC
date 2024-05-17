@@ -4,7 +4,7 @@ Variant Graph Craft (VGC) is an interactive genomic variant visualization progra
 
 ## Table of contents
 
-- [Requirements] (#requirements)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 	- [The VCF File Format](#the-vcf-file-format)
